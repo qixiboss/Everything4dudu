@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#dbe3f4">
+  <meta name="theme-color" content="#dbe3f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141a2e" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Dudu 的个人学习与成长空间">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <title>Everything 4 Dudu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23586bcf'/%3E%3Ctext x='32' y='43' font-family='system-ui' font-size='26' font-weight='800' fill='white' text-anchor='middle'%3E4D%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="shared/home.css">
 </head>
 <body>
@@ -23,58 +25,51 @@
           <svg class="battery" viewBox="0 0 26 14"><rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M24 5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3.5" y="3.5" width="16" height="7" rx="1.5"/></svg>
         </div>
       </div>
+      <p class="hero-clock"><time data-home-time aria-label="当前时间">09:41</time></p>
       <p class="eyebrow" data-home-date>8月11日 星期二</p>
-      <h1>你好，Dudu</h1>
-      <p class="home-subtitle">今天也向目标靠近一点。</p>
+      <h1 data-home-greeting>你好，Dudu</h1>
+      <p class="home-subtitle" data-home-subtitle>今天也向目标靠近一点。</p>
     </header>
 
-    <div class="pages" data-pages aria-label="应用页面">
-      <div class="app-grid" data-page="0" aria-label="应用">
-        <a class="app" href="words/" data-protected-app="words">
-          <span class="app-icon app-icon-words" aria-hidden="true">
-            <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-          </span>
-          <span class="app-name">词汇学习</span>
-          <span class="app-caption">Words</span>
-        </a>
-        <a class="app" href="training/" data-protected-app="training">
-          <span class="app-icon app-icon-training" aria-hidden="true">
-            <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
-          </span>
-          <span class="app-name">训练记录</span>
-          <span class="app-caption">Training</span>
-        </a>
-        <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
-          <span class="app-icon app-icon-schedule" aria-hidden="true">
-            <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="app-name">考研日程</span>
-          <span class="app-caption">Schedule</span>
-        </a>
-        <button class="app app-login" type="button" data-login-open aria-haspopup="dialog">
-          <span class="app-icon app-icon-login" aria-hidden="true">
-            <svg viewBox="0 0 64 64"><circle cx="32" cy="25" r="11" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 52c2-10 9-15 18-15s16 5 18 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
-            <span class="login-dot" data-login-dot></span>
-          </span>
-          <span class="app-name" data-login-label>用户登录</span>
-          <span class="app-caption" data-login-caption>跨设备同步</span>
-        </button>
-        <a class="app" href="changelog/" data-protected-app="changelog">
-          <span class="app-icon app-icon-changelog" aria-hidden="true">
-            <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-          </span>
-          <span class="app-name">更新记录</span>
-          <span class="app-caption">Changelog</span>
-        </a>
-      </div>
+    <div class="app-grid" aria-label="应用">
+      <a class="app" href="words/" data-protected-app="words">
+        <span class="app-icon app-icon-words" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+        </span>
+        <span class="app-name">词汇学习</span>
+        <span class="app-caption">Words</span>
+      </a>
+      <a class="app" href="training/" data-protected-app="training">
+        <span class="app-icon app-icon-training" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+        </span>
+        <span class="app-name">训练记录</span>
+        <span class="app-caption">Training</span>
+      </a>
+      <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
+        <span class="app-icon app-icon-schedule" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="app-name">考研日程</span>
+        <span class="app-caption">Schedule</span>
+      </a>
+      <a class="app" href="changelog/" data-protected-app="changelog">
+        <span class="app-icon app-icon-changelog" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+        </span>
+        <span class="app-name">更新记录</span>
+        <span class="app-caption">Changelog</span>
+      </a>
     </div>
 
-    <div class="page-dots" data-page-dots aria-hidden="true"></div>
-
     <footer class="home-dock">
-      <div>
+      <div class="dock-inner">
         <span class="dock-mark" aria-hidden="true">4D</span>
-        <p><strong>Everything 4 Dudu</strong><small>你的学习与成长空间</small></p>
+        <p class="dock-text"><strong>Everything 4 Dudu</strong><small>你的学习与成长空间</small></p>
+        <button class="dock-account" type="button" data-login-open aria-haspopup="dialog">
+          <span class="login-dot" data-login-dot></span>
+          <span data-login-label>用户登录</span>
+        </button>
       </div>
     </footer>
   </main>

@@ -1,6 +1,7 @@
 :root {
   color-scheme: light;
   --ink: #17203b;
+  --ink-soft: rgba(43, 52, 83, .68);
   --shadow: 0 28px 80px rgba(36, 46, 91, .22);
 }
 
@@ -46,8 +47,11 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 .wallpaper-glow { position: absolute; z-index: -2; border-radius: 999px; filter: blur(2px); pointer-events: none; }
-.wallpaper-glow-one { width: 310px; height: 310px; top: -112px; right: -130px; background: rgba(255,255,255,.58); }
-.wallpaper-glow-two { width: 260px; height: 260px; bottom: 80px; left: -170px; background: rgba(241,207,226,.52); }
+.wallpaper-glow-one { width: 310px; height: 310px; top: -112px; right: -130px; background: rgba(255,255,255,.58); animation: drift-one 17s ease-in-out infinite; }
+.wallpaper-glow-two { width: 260px; height: 260px; bottom: 80px; left: -170px; background: rgba(241,207,226,.52); animation: drift-two 22s ease-in-out infinite; }
+
+@keyframes drift-one { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(-16px, 14px, 0); } }
+@keyframes drift-two { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(18px, -12px, 0); } }
 
 .status-bar {
   height: 31px;
@@ -61,31 +65,59 @@ button { -webkit-tap-highlight-color: transparent; }
   letter-spacing: .01em;
 }
 
+.status-bar time { font-variant-numeric: tabular-nums; }
 .status-icons { display: flex; align-items: center; gap: 5px; }
 .status-icons svg { width: 17px; height: 13px; fill: currentColor; }
 .status-icons .battery { width: 24px; }
-.home-header { padding: 38px 3px 0; }
 
-.eyebrow { margin: 0 0 7px; color: rgba(41,52,88,.64); font-size: 13px; font-weight: 680; letter-spacing: .06em; }
-.home-header h1 { margin: 0; font-size: clamp(34px, 10vw, 44px); line-height: 1.08; letter-spacing: -.045em; }
-.home-subtitle { margin: 11px 0 0; color: rgba(43,52,83,.68); font-size: 15px; }
+/* 锁屏式头部：巨钟为视觉主角，日期与问候语依次排列。 */
+.home-header { padding: 22px 3px 0; }
 
+.hero-clock {
+  margin: 0;
+  font-family: "SF Pro Rounded", ui-rounded, Inter, "PingFang SC", system-ui, sans-serif;
+  font-size: clamp(62px, 16.5vw, 82px);
+  font-weight: 640;
+  line-height: 1;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hero-clock time {
+  background: linear-gradient(175deg, #28325b, #5d6ea8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eyebrow { margin: 13px 0 7px; color: rgba(41,52,88,.64); font-size: 13px; font-weight: 680; letter-spacing: .06em; }
+.home-header h1 { margin: 0; font-size: clamp(30px, 9vw, 40px); line-height: 1.08; letter-spacing: -.045em; }
+.home-subtitle { margin: 10px 0 0; color: var(--ink-soft); font-size: 15px; }
+
+/* 四个应用排成两行两列，登录入口在底部 Dock 里。 */
 .app-grid {
-  width: 100%;
-  flex: 0 0 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 34px;
-  row-gap: 32px;
-  margin-top: 53px;
+  row-gap: 30px;
+  margin-top: 46px;
   padding: 0 9px;
 }
 
-.pages {
-  display: block;
-}
+/* 入场动效：头部下沉、图标依次浮起、Dock 最后出现。 */
+@keyframes fade-down { from { opacity: 0; transform: translateY(-12px); } }
+@keyframes app-in { from { opacity: 0; transform: translateY(16px) scale(.95); } }
 
-/* 应用都在同一页，图标网格一行最多两个。 */
+.home-header { animation: fade-down .5s ease both; }
+.app-grid .app { animation: app-in .55s cubic-bezier(.22,.8,.31,1) both; }
+.app-grid .app:nth-child(1) { animation-delay: .06s; }
+.app-grid .app:nth-child(2) { animation-delay: .12s; }
+.app-grid .app:nth-child(3) { animation-delay: .18s; }
+.app-grid .app:nth-child(4) { animation-delay: .24s; }
+.home-dock { animation: app-in .55s .34s cubic-bezier(.22,.8,.31,1) both; }
+
+::selection { background: rgba(122,140,239,.35); }
 
 .app {
   min-width: 0;
@@ -113,20 +145,27 @@ button { -webkit-tap-highlight-color: transparent; }
   transition: transform .18s ease, box-shadow .18s ease;
 }
 
+/* 顶部高光，让图标像一块抛光玻璃。 */
+.app-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 68% at 50% 0%, rgba(255,255,255,.4), rgba(255,255,255,0) 56%);
+  pointer-events: none;
+}
+
+.app-icon-words { background: linear-gradient(145deg, #7a8cef, #586bcf); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(99,119,220,.34); }
+.app-icon-training { background: linear-gradient(145deg, #fd9b7c, #ed6e76); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(237,110,118,.3); }
+.app-icon-schedule { background: linear-gradient(145deg, #68cdb9, #3cae9c); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(60,174,156,.3); }
+.app-icon-changelog { background: linear-gradient(145deg, #e3b071, #c4843f); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(196,132,63,.32); }
+
 .app:hover .app-icon { transform: translateY(-3px) scale(1.025); box-shadow: inset 0 1px 1px rgba(255,255,255,.4), 0 16px 29px rgba(51,58,101,.25); }
 .app:active .app-icon { transform: scale(.94); }
 .app:focus-visible { outline: 3px solid rgba(55,75,145,.55); outline-offset: 8px; border-radius: 13px; }
 .app-icon svg { width: 47px; height: 47px; }
-.app-icon-words { background: linear-gradient(145deg, #7a8cef, #586bcf); }
-.app-icon-training { background: linear-gradient(145deg, #fd9b7c, #ed6e76); }
-.app-icon-schedule { background: linear-gradient(145deg, #68cdb9, #3cae9c); }
-.app-icon-changelog { background: linear-gradient(145deg, #e3b071, #c4843f); }
-.app-icon-login { background: linear-gradient(145deg, #a786db, #8161b8); }
 .app-name { margin-top: 11px; font-size: 15px; font-weight: 720; letter-spacing: -.01em; }
 .app-caption { margin-top: 2px; color: rgba(43,52,83,.57); font-size: 11px; font-weight: 560; }
-
-.login-dot { position: absolute; top: 7px; right: 7px; width: 10px; height: 10px; border: 2px solid #8b6ac2; border-radius: 50%; background: #f8cadb; }
-.login-dot.is-online { background: #83e2b5; }
 
 .home-dock {
   position: absolute;
@@ -136,18 +175,46 @@ button { -webkit-tap-highlight-color: transparent; }
   padding: 13px 16px;
   border: 1px solid rgba(255,255,255,.52);
   border-radius: 25px;
-  background: rgba(255,255,255,.39);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 13px 30px rgba(47,50,87,.1);
+  background: rgba(255,255,255,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 13px 30px rgba(47,50,87,.12);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
-.home-dock > div { display: flex; align-items: center; gap: 12px; }
+.dock-inner { display: flex; align-items: center; gap: 12px; }
 .dock-mark { width: 43px; height: 43px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 14px; color: white; background: linear-gradient(145deg,#29365c,#596c9f); box-shadow: 0 8px 16px rgba(46,57,95,.2); font-size: 13px; font-weight: 850; letter-spacing: -.04em; }
-.home-dock p { margin: 0; min-width: 0; }
-.home-dock strong, .home-dock small { display: block; }
-.home-dock strong { font-size: 13px; }
-.home-dock small { margin-top: 2px; color: rgba(43,52,83,.57); font-size: 10px; }
+.dock-text { margin: 0; min-width: 0; flex: 1 1 auto; }
+.dock-text strong, .dock-text small { display: block; }
+.dock-text strong { font-size: 13px; }
+.dock-text small { margin-top: 2px; color: rgba(43,52,83,.57); font-size: 10px; }
+
+.dock-account {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 150px;
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid rgba(255,255,255,.62);
+  border-radius: 999px;
+  color: #3d4661;
+  background: rgba(255,255,255,.5);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 720;
+  transition: background .16s ease, transform .16s ease;
+}
+
+.dock-account span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dock-account:hover { background: rgba(255,255,255,.85); }
+.dock-account:active { transform: scale(.96); }
+.dock-account:focus-visible { outline: 3px solid rgba(55,75,145,.55); outline-offset: 2px; }
+
+.login-dot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: #cf9fd9; }
+.login-dot.is-online { background: #4cc38a; }
 
 .login-layer { position: fixed; inset: 0; z-index: 100; display: grid; align-items: end; justify-items: center; }
 .login-layer[hidden] { display: none; }
@@ -174,9 +241,6 @@ button { -webkit-tap-highlight-color: transparent; }
 .sheet-kicker { margin: 0 0 7px; color: #8466b7; font-size: 11px; font-weight: 820; letter-spacing: .13em; }
 .login-sheet h2 { margin: 0; font-size: 29px; line-height: 1.15; letter-spacing: -.035em; }
 .sheet-copy { margin: 12px 0 24px; color: #69718a; font-size: 14px; line-height: 1.65; }
-.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0 0 22px; padding: 4px; border-radius: 13px; background: #efedf4; }
-.auth-tabs button { min-height: 39px; border: 0; border-radius: 10px; color: #777d91; background: transparent; cursor: pointer; font-size: 13px; font-weight: 750; }
-.auth-tabs button.is-active { color: #674994; background: white; box-shadow: 0 3px 10px rgba(50,45,72,.09); }
 .login-form label { display: block; margin: 14px 0 8px; color: #3d4661; font-size: 12px; font-weight: 720; }
 .login-form label:first-child { margin-top: 0; }
 .credential-field { height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #e0ddea; border-radius: 15px; background: white; box-shadow: 0 6px 16px rgba(38,43,73,.05); }
@@ -195,7 +259,6 @@ button { -webkit-tap-highlight-color: transparent; }
 .account-email { margin: 18px 0 0; padding: 14px 16px; border-radius: 14px; color: #584274; background: #f1ecf8; font-weight: 720; overflow-wrap: anywhere; }
 
 [hidden] { display: none !important; }
-.password-hint { margin: 8px 2px 0; color: #8b90a2; font-size: 11px; line-height: 1.5; }
 
 @media (min-width: 520px) {
   .phone-home { border: 8px solid rgba(255,255,255,.82); border-radius: 48px; }
@@ -206,23 +269,12 @@ button { -webkit-tap-highlight-color: transparent; }
 
 @media (max-height: 710px) {
   .phone-home { min-height: 100dvh; }
-  .home-header { padding-top: 22px; }
-  .app-grid { margin-top: 34px; row-gap: 23px; }
-  .pages { margin-top: 34px; }
-  .pages .app-grid { margin-top: 0; }
+  .home-header { padding-top: 14px; }
+  .hero-clock { font-size: 54px; }
+  .eyebrow { margin-top: 9px; }
+  .app-grid { margin-top: 30px; row-gap: 22px; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
-  .login-sheet.is-registering { padding-top: 12px; }
-  .login-sheet.is-registering .sheet-handle { margin-bottom: 12px; }
-  .login-sheet.is-registering .sheet-icon { width: 50px; height: 50px; margin-bottom: 10px; border-radius: 16px; }
-  .login-sheet.is-registering .sheet-icon svg { width: 31px; height: 31px; }
-  .login-sheet.is-registering .sheet-kicker { margin-bottom: 4px; }
-  .login-sheet.is-registering .sheet-copy { margin: 8px 0 14px; }
-  .login-sheet.is-registering .auth-tabs { margin-bottom: 14px; }
-  .login-sheet.is-registering .auth-tabs button { min-height: 36px; }
-  .login-sheet.is-registering .login-form label { margin-top: 10px; }
-  .login-sheet.is-registering .credential-field { height: 48px; }
-  .login-sheet.is-registering .primary-button { min-height: 48px; margin-top: 10px; }
 }
 
 @media (max-width: 519px) {
@@ -243,10 +295,9 @@ button { -webkit-tap-highlight-color: transparent; }
     box-shadow: none;
   }
   .status-bar { display: none; }
-  .home-header { padding-top: clamp(18px, 4.6vh, 38px); }
-  .app-grid { margin-top: clamp(36px, 6vh, 53px); }
-  .pages { margin-top: clamp(36px, 6vh, 53px); }
-  .pages .app-grid { margin-top: 0; }
+  .home-header { padding-top: clamp(12px, 3.4vh, 30px); }
+  .hero-clock { font-size: clamp(58px, 17.5vw, 74px); }
+  .app-grid { margin-top: clamp(32px, 5vh, 46px); }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
 }

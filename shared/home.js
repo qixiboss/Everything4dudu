@@ -4,17 +4,46 @@
   var layer;
   var lastFocus;
   var pendingHref = '';
-  var pages;
 
   function text(selector, value) {
     var node = document.querySelector(selector);
     if (node) node.textContent = value;
   }
 
+  function greeting(hour) {
+    if (hour < 6) return '夜深了';
+    if (hour < 12) return '早上好';
+    if (hour < 14) return '中午好';
+    if (hour < 18) return '下午好';
+    return '晚上好';
+  }
+
+  function subtitleFor(hour) {
+    if (hour < 6) return '夜深了，早点休息，明天再战。';
+    if (hour < 12) return '今天也向目标靠近一点。';
+    if (hour < 14) return '好好吃饭，下午继续。';
+    if (hour < 18) return '下午也元气满满。';
+    return '整理今天的收获，再看看明天的安排。';
+  }
+
   function updateClock() {
     var now = new Date();
-    text('[data-home-time]', new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }).format(now));
-    text('[data-home-date]', new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(now));
+    var time = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }).format(now);
+    var monthDay = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric' }).format(now);
+    var weekday = new Intl.DateTimeFormat('zh-CN', { weekday: 'long' }).format(now);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-home-time]'), function (node) { node.textContent = time; });
+    text('[data-home-date]', monthDay + ' ' + weekday);
+    text('[data-home-greeting]', greeting(now.getHours()) + '，Dudu');
+    text('[data-home-subtitle]', subtitleFor(now.getHours()));
+  }
+
+  /* 对齐到整分钟再进入每分钟一次的刷新，避免时钟滞后。 */
+  function startClock() {
+    updateClock();
+    window.setTimeout(function () {
+      updateClock();
+      window.setInterval(updateClock, 60000);
+    }, 60000 - (Date.now() % 60000) + 50);
   }
 
   function sessionEmail(session) {
@@ -35,10 +64,11 @@
     if (guest) guest.hidden = !!email;
     if (account) account.hidden = !email;
     text('[data-account-email]', email);
-    text('[data-login-label]', email ? '我的账户' : '用户登录');
-    text('[data-login-caption]', email ? shortEmail(email) : '跨设备同步');
+    text('[data-login-label]', email ? shortEmail(email) : '用户登录');
     var dot = document.querySelector('[data-login-dot]');
     if (dot) dot.classList.toggle('is-online', !!email);
+    var pill = document.querySelector('[data-login-open]');
+    if (pill) pill.title = email ? '当前账户：' + email : '';
     var submit = document.querySelector('[data-auth-submit]');
     if (submit && !email) submit.disabled = false;
     var signOut = document.querySelector('[data-home-signout]');
@@ -141,22 +171,12 @@
     return { href: routes[params.get('next')] || '', login: params.get('login') === '1' };
   }
 
-  /* 应用都在同一页，无翻页逻辑。以下只保留窗口切换时的
-   * 焦点管理，避免键盘操作进入隐藏元素。 */
-
-  function bindPages() {
-    pages = document.querySelector('[data-pages]');
-    if (!pages) return;
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     layer = document.querySelector('[data-login-layer]');
-    updateClock();
-    window.setInterval(updateClock, 30000);
+    startClock();
     document.querySelector('[data-login-open]').addEventListener('click', openLogin);
     Array.prototype.forEach.call(document.querySelectorAll('[data-login-close]'), function (button) { button.addEventListener('click', closeLogin); });
     document.addEventListener('keydown', handleKeydown);
-    bindPages();
     bindLogin();
     bindProtectedApps();
     var requested = requestedApp();

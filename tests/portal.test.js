@@ -71,7 +71,7 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /href="training\/" data-protected-app="training"/);
   assert.match(home, /href="exam-schedule\/" data-protected-app="exam-schedule"/);
   assert.match(home, /href="changelog\/" data-protected-app="changelog"/);
-  assert.match(home, /data-pages/);
+  assert.match(home, /hero-clock/);
   assert.match(home, /data-login-open/);
   assert.match(home, /role="dialog"/);
   assert.match(home, /autocomplete="current-password"/);
