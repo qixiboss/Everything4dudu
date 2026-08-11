@@ -82,12 +82,10 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 .pages {
-  display: flex;
-  overflow-x: hidden;
-  transform: translateX(0);
-  transition: transform .3s cubic-bezier(.22,.8,.31,1);
-  will-change: transform;
+  display: block;
 }
+
+/* 应用都在同一页，图标网格一行最多两个。 */
 
 .app {
   min-width: 0;
@@ -129,9 +127,6 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .login-dot { position: absolute; top: 7px; right: 7px; width: 10px; height: 10px; border: 2px solid #8b6ac2; border-radius: 50%; background: #f8cadb; }
 .login-dot.is-online { background: #83e2b5; }
-.page-dots { display: flex; justify-content: center; gap: 6px; margin-top: 42px; }
-.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(38,48,80,.2); transition: width .22s ease, background-color .22s ease; }
-.page-dots span.is-active { width: 18px; border-radius: 5px; background: rgba(38,48,80,.48); }
 
 .home-dock {
   position: absolute;
@@ -217,7 +212,6 @@ button { -webkit-tap-highlight-color: transparent; }
   .pages .app-grid { margin-top: 0; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
-  .page-dots { margin-top: 22px; }
   .login-sheet.is-registering { padding-top: 12px; }
   .login-sheet.is-registering .sheet-handle { margin-bottom: 12px; }
   .login-sheet.is-registering .sheet-icon { width: 50px; height: 50px; margin-bottom: 10px; border-radius: 16px; }
@@ -253,12 +247,10 @@ button { -webkit-tap-highlight-color: transparent; }
   .app-grid { margin-top: clamp(36px, 6vh, 53px); }
   .pages { margin-top: clamp(36px, 6vh, 53px); }
   .pages .app-grid { margin-top: 0; }
-  .page-dots { margin-top: clamp(26px, 5vh, 42px); margin-bottom: 30px; }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
-  .pages { transition: none; }
 }
