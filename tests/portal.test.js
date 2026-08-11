@@ -63,7 +63,7 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
 }
 
 test('主页把应用标记为登录后访问且不暴露公开注册入口', () => {
-  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html', 'changelog/index.html'].forEach((file) => {
+  ['index.html', '_site/words/index.html', '_site/training/index.html', '_site/exam-schedule/index.html', 'changelog/index.html'].forEach((file) => {
     assert.equal(fs.existsSync(path.join(root, file)), true, file);
   });
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -77,8 +77,22 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /autocomplete="current-password"/);
   assert.doesNotMatch(home, /data-auth-mode="register"|register-password-confirm/);
   assert.match(home, /Content-Security-Policy/);
-  const schedule = fs.readFileSync(path.join(root, 'exam-schedule/index.html'), 'utf8');
+  const schedule = fs.readFileSync(path.join(root, '_site/exam-schedule/index.html'), 'utf8');
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
+
+  /* 更新记录是纯手维护的静态页面:共享脚本块之后只有 changelog.js,没有应用级适配器。 */
+  const changelog = fs.readFileSync(path.join(root, 'changelog/index.html'), 'utf8');
+  const changelogScripts = changelog.split('\n').filter((line) => line.includes('<script defer')).map((line) => line.trim());
+  assert.deepEqual(changelogScripts, [
+    '<script defer src="../shared/vendor/supabase.js"></script>',
+    '<script defer src="../shared/config.js"></script>',
+    '<script defer src="../shared/hub-auth.js"></script>',
+    '<script defer src="../shared/auth-gate.js"></script>',
+    '<script defer src="../shared/sync-store.js"></script>',
+    '<script defer src="../shared/hub-sync.js"></script>',
+    '<script defer src="../shared/hub-shell.js"></script>',
+    '<script defer src="changelog.js"></script>'
+  ]);
 });
 
 test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除本地会话', async () => {
@@ -126,7 +140,7 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.match(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
   ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
-    const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
+    const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
     const auth = html.indexOf('../shared/hub-auth.js');
     const gateIndex = html.indexOf('../shared/auth-gate.js');
     const sync = html.indexOf('../shared/sync-store.js');
@@ -137,8 +151,8 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
 });
 
 test('词汇学习先建立登录会话与云端同步，再恢复本地档案', () => {
-  const features = fs.readFileSync(path.join(root, 'words/js/features.js'), 'utf8');
-  const wordSync = fs.readFileSync(path.join(root, 'words/js/hub-sync.js'), 'utf8');
+  const features = fs.readFileSync(path.join(root, '_site/words/js/features.js'), 'utf8');
+  const wordSync = fs.readFileSync(path.join(root, '_site/words/js/hub-sync.js'), 'utf8');
   assert.ok(features.indexOf('WordTales.Auth.init()') < features.indexOf('WordTales.LearningProgress.init()'));
   assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.CloudSync.connectProfile()'));
   assert.match(wordSync, /HubAppSync\.start/);
@@ -151,33 +165,42 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   assert.match(shell, /href="\.\.\/"/);
   assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
   ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
-    const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
+    const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
     assert.match(html, /<div id="hub-shell"><\/div>/);
   });
 });
 
-test('上游同步验证、提交并在同一工作流中部署同步后的默认分支', () => {
-  const workflow = fs.readFileSync(path.join(root, '.github/workflows/sync-upstreams.yml'), 'utf8');
-  assert.match(workflow, /schedule:/);
+test('门户构建从应用仓库检出,推送与上游通知都触发部署', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
+  assert.match(workflow, /repository_dispatch/);
+  assert.match(workflow, /upstream-app-updated/);
   assert.match(workflow, /repository: qixiboss\/WordTales/);
   assert.match(workflow, /repository: qixiboss\/Train_record/);
   assert.match(workflow, /repository: qixiboss\/-Graduate-Entrance-Exam-Schedule/);
-  assert.ok(workflow.indexOf('npm run verify') < workflow.indexOf('git commit'));
-  assert.match(workflow, /changed=true/);
-  assert.match(workflow, /needs\.sync\.outputs\.changed == 'true'/);
-  assert.match(workflow, /ref: \$\{\{ github\.event\.repository\.default_branch \}\}/);
+  assert.match(workflow, /path: words/);
+  assert.match(workflow, /path: training/);
+  assert.match(workflow, /path: exam-schedule/);
+  assert.match(workflow, /npm run verify/);
+  assert.match(workflow, /group: pages/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
 
-  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'upstreams.json'), 'utf8'));
-  assert.equal(Object.keys(manifest.sources).length, 3);
-  Object.values(manifest.sources).forEach((source) => assert.match(source.commit, /^[0-9a-f]{40}$/));
+  /* 应用仓库侧:push 时向门户发送 repository_dispatch 通知。 */
+  ['words/.github/workflows/notify-portal.yml', 'training/.github/workflows/notify-portal.yml', 'exam-schedule/.github/workflows/notify-portal.yml'].forEach((file) => {
+    assert.equal(fs.existsSync(path.join(root, file)), true, file);
+    const notify = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.match(notify, /createDispatchEvent/);
+    assert.match(notify, /upstream-app-updated/);
+    assert.match(notify, /PORTAL_PAT/);
+  });
 });
 
 test('GitHub Pages 工作流验证、构建并发布静态站点产物', () => {
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
   assert.match(workflow, /pages: write/);
   assert.match(workflow, /id-token: write/);
-  assert.ok(workflow.indexOf('npm run verify') < workflow.indexOf('npm run build'));
+  /* verify 内部先 build 再 test/check,产物是构建后的 _site/。 */
+  assert.match(workflow, /npm run verify/);
+  assert.doesNotMatch(workflow, /npm run build/);
   assert.match(workflow, /actions\/configure-pages@v6/);
   assert.match(workflow, /actions\/upload-pages-artifact@v5/);
   assert.match(workflow, /actions\/deploy-pages@v5/);

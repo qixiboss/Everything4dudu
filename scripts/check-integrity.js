@@ -11,7 +11,8 @@ const vm = require('vm');
  * 的约束集中到一个零依赖脚本里。脚本只读取文件，不修复数据，适合在提交前和
  * GitHub Pages 发布前重复执行。
  */
-const htmlPath = path.resolve(__dirname, '../words/index.html');
+/* 应用在构建时从各自仓库克隆整合,校验对象是 _site/ 的构建产物。 */
+const htmlPath = path.resolve(__dirname, '../_site/words/index.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 const errors = [];
 

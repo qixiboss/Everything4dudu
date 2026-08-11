@@ -1,34 +1,38 @@
 # Everything 4 Dudu
 
-统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、更新记录和用户登录五个应用图标。三个学习应用（及更新记录）保持独立页面，但都要求先使用同一个预先创建的 Supabase 邮箱密码账号登录，随后才会读取和操作学习数据；更新记录随账户跨设备同步。
+统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、更新记录和用户登录五个应用图标。三个学习应用保持独立页面，但都要求先使用同一个预先创建的 Supabase 邮箱密码账号登录，随后才会读取和操作学习数据。
 
 生产站点：<https://qixiboss.github.io/Everything4dudu/>
 
 ## 本地查看
 
 ```sh
-python3 -m http.server 8000
+npm run build          # 从 words/、training/、exam-schedule/ 三个克隆整合应用,输出 _site/
+cd _site && python3 -m http.server 8000
 ```
 
 访问 `/`、`/words/`、`/training/`、`/exam-schedule/` 或 `/changelog/`。
 
-## 自动跟随三个应用仓库
+## 应用在各自仓库开发
 
-门户每 15 分钟检查一次以下仓库：
+三个应用保持独立仓库,各自有自己的 GitHub Pages:
 
 - `qixiboss/WordTales` → `/words/`
 - `qixiboss/Train_record` → `/training/`
 - `qixiboss/-Graduate-Entrance-Exam-Schedule` → `/exam-schedule/`
 
-发现新提交后，GitHub Actions 会重新生成三个应用目录（以及门户自有的 `/changelog/`）、注入统一导航、登录门和同步适配器，运行完整验证，然后把结果提交回本仓库，并在同一次工作流中直接发布 GitHub Pages。实际部署通常会比上游提交晚 15 分钟左右，再加一次 Pages 构建时间。
+本仓库的 `words/`、`training/`、`exam-schedule/` 是这三个仓库的本地克隆(不入库,已 gitignore),仅作为构建输入:开发时直接在克隆里改代码并 `git push` 到各自仓库即可。门户的整合(共享登录/同步脚本、CSP、返回主页入口)由 `scripts/integrate.js` 在构建 `_site/` 时注入,不修改应用源码。
 
-可以在 Actions 中手动运行 **Sync upstream applications**。如果需要近乎即时同步，也可以从三个源仓库发送 `repository_dispatch` 事件，事件类型为 `upstream-app-updated`；轮询仍作为兜底。
+**部署时机**:
 
-`words/`、`training/`、`exam-schedule/` 是自动生成目录，不应直接维护。`changelog/` 是门户自有应用，维护入口位于该目录（`index.html`、`changelog.css`、`changelog.js`、`hub-sync.js`），上游同步时由 `scripts/sync-upstreams.js` 重新注入共享脚本并重新生成。门户接入代码位于 `integrations/`，生成规则位于 `scripts/sync-upstreams.js`，每次同步采用的源提交记录在 `upstreams.json`。如果上游页面结构变化导致无法安全注入，任务会验证失败且不会提交损坏版本。
+- 推送门户仓库 → 立即重新构建部署;
+- 推送任一应用仓库 → 其 `notify-portal.yml` 工作流会通知门户自动重新部署(需要在三个应用仓库配置 `PORTAL_PAT` secret:一个只授权 `qixiboss/Everything4dudu` 的 fine-grained token,权限 Actions: write)。
+
+`changelog/` 是门户自有应用,只在本仓库维护。
 
 ## 更新记录
 
-`/changelog/` 记录门户自身的每次发布。内置种子条目随每次部署一起发布；应用内新增的条目以 `entry:<版本号>` 为键按账户同步。种子条目在加载时会与云端合并（云端较新则覆盖），所以修改种子后部署，已同步过新版本的设备不会被旧种子覆盖。
+`/changelog/` 记录门户自身的每次发布。内置种子条目在 `changelog/changelog.js` 的 `SEED` 中维护,发布新版本时随提交更新;页面是只读的,不提供手动添加,也不按账户同步。
 
 ## Supabase 部署
 
@@ -49,5 +53,5 @@ python3 -m http.server 8000
 ## 验证
 
 ```sh
-npm run verify
+npm run verify    # build + test + check,校验的是构建产物 _site/
 ```

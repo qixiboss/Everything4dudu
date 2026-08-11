@@ -1,27 +1,12 @@
 #!/usr/bin/env node
+/* 门户整合:把三个应用仓库(本地克隆)的原始代码复制到目标目录,注入
+ * 门户共享脚本、CSP、登录门与同步适配器。由 build-site.js 在构建 _site/
+ * 时调用;应用代码只存在于各自的仓库,本文件不提交任何应用内容。 */
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { execFileSync } = require('node:child_process');
 
-const root = path.resolve(__dirname, '..');
-const upstreamRoot = path.resolve(process.env.UPSTREAM_ROOT || path.join(root, '_upstreams'));
-const stagingRoot = fs.mkdtempSync(path.join(root, '.upstream-sync-'));
-
-const sources = {
-  words: {
-    directory: 'WordTales',
-    repository: 'https://github.com/qixiboss/WordTales.git'
-  },
-  training: {
-    directory: 'Train_record',
-    repository: 'https://github.com/qixiboss/Train_record.git'
-  },
-  examSchedule: {
-    directory: 'GraduateSchedule',
-    repository: 'https://github.com/qixiboss/-Graduate-Entrance-Exam-Schedule.git'
-  }
-};
+const portalRoot = path.resolve(__dirname, '..');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -33,26 +18,6 @@ function replaceOnce(source, search, replacement, label) {
     : [...source.matchAll(new RegExp(search.source, search.flags.includes('g') ? search.flags : `${search.flags}g`))].length;
   assert(occurrences === 1, `${label}: expected one integration anchor, found ${occurrences}.`);
   return source.replace(search, replacement);
-}
-
-function read(relativePath) {
-  return fs.readFileSync(path.join(root, relativePath), 'utf8');
-}
-
-function write(relativePath, contents) {
-  const destination = path.join(stagingRoot, relativePath);
-  fs.mkdirSync(path.dirname(destination), { recursive: true });
-  fs.writeFileSync(destination, contents);
-}
-
-function copy(source, relativeDestination) {
-  const destination = path.join(stagingRoot, relativeDestination);
-  fs.mkdirSync(path.dirname(destination), { recursive: true });
-  fs.cpSync(source, destination, { recursive: true });
-}
-
-function commitFor(directory) {
-  return execFileSync('git', ['-C', path.join(upstreamRoot, directory), 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 }
 
 function sharedScripts() {
@@ -67,34 +32,29 @@ function sharedScripts() {
   ].join('\n');
 }
 
-/* 更新记录是门户自有应用，不从上游仓库生成，但同样由同步流程重新生成：
- * 已提交的 changelog/index.html 视为模板，每次重建脚本块，保证共享脚本
- * 始终与 sharedScripts() 一致，且重复执行不会叠加注入。
- * 更新记录是只读的版本历史（条目在 changelog.js 的 SEED 中维护），
- * 只挂载 changelog.js，不生成应用自身的同步适配器。 */
-function buildChangelog() {
-  let html = read('changelog/index.html');
-  const scriptStart = html.indexOf('<script defer src="../shared/vendor/supabase.js">');
-  assert(scriptStart !== -1, 'Changelog page script anchor is missing.');
-  const lineStart = html.lastIndexOf('\n', scriptStart) + 1;
-  const scriptEnd = html.indexOf('</body>', scriptStart);
-  assert(scriptEnd !== -1, 'Changelog page body end is missing.');
-  html = html.slice(0, lineStart) +
-    sharedScripts().split('\n').map((line) => '  ' + line).join('\n') +
-    '\n  <script defer src="changelog.js"></script>\n' +
-    html.slice(scriptEnd);
-  write('changelog/index.html', html);
-  copy(path.join(root, 'changelog/changelog.css'), 'changelog/changelog.css');
-  copy(path.join(root, 'changelog/changelog.js'), 'changelog/changelog.js');
+function copyDir(source, destination) {
+  fs.mkdirSync(destination, { recursive: true });
+  fs.cpSync(source, destination, { recursive: true });
 }
 
-function buildWords() {
-  const source = path.join(upstreamRoot, sources.words.directory, 'vocab-essays');
+/* 读取门户自有文件(integrations/ 适配器等)。 */
+function read(relativePath) {
+  return fs.readFileSync(path.join(portalRoot, relativePath), 'utf8');
+}
+
+function write(destRoot, relativePath, contents) {
+  const destination = path.join(destRoot, relativePath);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.writeFileSync(destination, contents);
+}
+
+function buildWords(appRoot, destRoot) {
+  const source = path.join(appRoot, 'words', 'vocab-essays');
   assert(fs.existsSync(path.join(source, 'vocab-essays.html')), 'WordTales entry page is missing.');
-  copy(source, 'words');
+  copyDir(source, path.join(destRoot, 'words'));
   /* 上游残留的旧 Supabase 浏览器包已无引用（由 shared/vendor/supabase.js
    * 取代），复制后显式移除，保持与已提交目录一致。 */
-  fs.rmSync(path.join(stagingRoot, 'words/vendor/supabase-js'), { recursive: true, force: true });
+  fs.rmSync(path.join(destRoot, 'words', 'vendor', 'supabase-js'), { recursive: true, force: true });
 
   let html = fs.readFileSync(path.join(source, 'vocab-essays.html'), 'utf8');
   html = replaceOnce(html, '<html lang="zh-CN">', '<html lang="zh-CN" data-app="words">', 'WordTales html element');
@@ -124,11 +84,11 @@ function buildWords() {
     'WordTales cloud adapter'
   );
 
-  write('words/index.html', html);
-  fs.rmSync(path.join(stagingRoot, 'words/vocab-essays.html'));
-  write('words/js/auth.js', read('integrations/words/auth.js'));
-  write('words/js/supabase-config.js', read('integrations/words/supabase-config.js'));
-  write('words/js/hub-sync.js', read('integrations/words/hub-sync.js'));
+  write(destRoot, 'words/index.html', html);
+  fs.rmSync(path.join(destRoot, 'words', 'vocab-essays.html'));
+  write(destRoot, 'words/js/auth.js', read('integrations/words/auth.js'));
+  write(destRoot, 'words/js/supabase-config.js', read('integrations/words/supabase-config.js'));
+  write(destRoot, 'words/js/hub-sync.js', read('integrations/words/hub-sync.js'));
 
   let cloudSync = fs.readFileSync(path.join(source, 'js/cloud-sync.js'), 'utf8');
   cloudSync = replaceOnce(
@@ -143,14 +103,16 @@ function buildWords() {
     '}).finally(function() {\n      syncing = false;\n      /* Migrate the resolved legacy profile, not the pre-login browser cache. */\n      if (WordTales.HubProfileSync) { WordTales.HubProfileSync.start(); WordTales.HubProfileSync.queue(); }\n    });\n  }\n  function init()',
     'WordTales legacy profile migration'
   );
-  write('words/js/cloud-sync.js', cloudSync);
+  write(destRoot, 'words/js/cloud-sync.js', cloudSync);
 }
 
-function buildTraining() {
-  const source = path.join(upstreamRoot, sources.training.directory);
+function buildTraining(appRoot, destRoot) {
+  const source = path.join(appRoot, 'training');
+  /* 只复制应用文件,不携带克隆仓库自身的 .git 等元数据。 */
+  fs.mkdirSync(path.join(destRoot, 'training'), { recursive: true });
   ['index.html', 'styles.css', 'app.js'].forEach((file) => {
     assert(fs.existsSync(path.join(source, file)), `Training source is missing ${file}.`);
-    copy(path.join(source, file), `training/${file}`);
+    fs.copyFileSync(path.join(source, file), path.join(destRoot, 'training', file));
   });
 
   let html = fs.readFileSync(path.join(source, 'index.html'), 'utf8');
@@ -174,8 +136,8 @@ function buildTraining() {
     `${sharedScripts()}\n<script defer src="hub-sync.js"></script>\n<script defer src="app.js"></script>`,
     'Training application script'
   );
-  write('training/index.html', html);
-  write('training/hub-sync.js', read('integrations/training/hub-sync.js'));
+  write(destRoot, 'training/index.html', html);
+  write(destRoot, 'training/hub-sync.js', read('integrations/training/hub-sync.js'));
 }
 
 function decodeHtmlAttribute(value) {
@@ -187,8 +149,8 @@ function decodeHtmlAttribute(value) {
     .replace(/&amp;/g, '&');
 }
 
-function buildExamSchedule() {
-  const sourcePath = path.join(upstreamRoot, sources.examSchedule.directory, 'index.html');
+function buildExamSchedule(appRoot, destRoot) {
+  const sourcePath = path.join(appRoot, 'exam-schedule', 'index.html');
   assert(fs.existsSync(sourcePath), 'Exam schedule entry page is missing.');
   const wrapper = fs.readFileSync(sourcePath, 'utf8');
   const srcdoc = wrapper.match(/srcdoc="([\s\S]*?)">\s*<\/iframe>/i);
@@ -213,37 +175,14 @@ function buildExamSchedule() {
     `<body>\n<div id="hub-shell"></div>\n${sharedScripts()}\n<script defer src="hub-sync.js"></script>`,
     'Exam schedule body'
   );
-  write('exam-schedule/index.html', html);
-  write('exam-schedule/hub-sync.js', read('integrations/exam-schedule/hub-sync.js'));
+  write(destRoot, 'exam-schedule/index.html', html);
+  write(destRoot, 'exam-schedule/hub-sync.js', read('integrations/exam-schedule/hub-sync.js'));
 }
 
-function installGeneratedDirectory(name) {
-  const source = path.join(stagingRoot, name);
-  const destination = path.join(root, name);
-  assert(fs.existsSync(source), `Generated ${name} directory is missing.`);
-  fs.rmSync(destination, { recursive: true, force: true });
-  fs.renameSync(source, destination);
+function integrateApps(appRoot, destRoot) {
+  buildWords(appRoot, destRoot);
+  buildTraining(appRoot, destRoot);
+  buildExamSchedule(appRoot, destRoot);
 }
 
-try {
-  Object.values(sources).forEach(({ directory }) => {
-    assert(fs.existsSync(path.join(upstreamRoot, directory, '.git')), `Missing checked-out upstream: ${directory}.`);
-  });
-  buildWords();
-  buildTraining();
-  buildExamSchedule();
-  buildChangelog();
-  ['words', 'training', 'exam-schedule', 'changelog'].forEach(installGeneratedDirectory);
-
-  const manifest = {
-    schemaVersion: 1,
-    sources: Object.fromEntries(Object.entries(sources).map(([name, source]) => [name, {
-      repository: source.repository,
-      commit: commitFor(source.directory)
-    }]))
-  };
-  fs.writeFileSync(path.join(root, 'upstreams.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log('Synced WordTales, Train_record, Graduate Entrance Exam Schedule and portal changelog.');
-} finally {
-  fs.rmSync(stagingRoot, { recursive: true, force: true });
-}
+module.exports = { integrateApps };

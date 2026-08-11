@@ -1,8 +1,12 @@
 name: Deploy unified portal to GitHub Pages
 
+# 推送门户或任一应用仓库通知（repository_dispatch）时构建并部署。
+# 三个应用目录在构建时从各自仓库检出,整合后输出到 _site/。
 on:
   push:
     branches: [master, main]
+  repository_dispatch:
+    types: [upstream-app-updated]
   workflow_dispatch:
 
 permissions:
@@ -19,10 +23,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Check out WordTales (words)
+        uses: actions/checkout@v6
+        with:
+          repository: qixiboss/WordTales
+          path: words
+      - name: Check out training record (training)
+        uses: actions/checkout@v6
+        with:
+          repository: qixiboss/Train_record
+          path: training
+      - name: Check out exam schedule (exam-schedule)
+        uses: actions/checkout@v6
+        with:
+          repository: qixiboss/-Graduate-Entrance-Exam-Schedule
+          path: exam-schedule
       - uses: actions/setup-node@v6
         with: { node-version: 22 }
       - run: npm run verify
-      - run: npm run build
       - uses: actions/configure-pages@v6
         with:
           enablement: true

@@ -179,10 +179,11 @@ function loadScript(context, relativePath) {
 
 function loadLearningApp(options = {}) {
   const context = createBrowserContext(options);
-  loadScript(context, 'words/vendor/ts-fsrs/index.umd.js');
-  loadScript(context, 'words/js/namespace.js');
-  loadScript(context, 'words/js/data.js');
-  loadScript(context, 'words/js/learning-progress-v2.js');
+  /* 应用在构建时从各自仓库克隆整合,测试加载的是 _site/ 的构建产物。 */
+  loadScript(context, '_site/words/vendor/ts-fsrs/index.umd.js');
+  loadScript(context, '_site/words/js/namespace.js');
+  loadScript(context, '_site/words/js/data.js');
+  loadScript(context, '_site/words/js/learning-progress-v2.js');
   return context;
 }
 

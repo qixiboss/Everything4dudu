@@ -13,8 +13,8 @@ const {
 
 function loadData() {
   const context = createBrowserContext();
-  loadScript(context, 'words/js/namespace.js');
-  loadScript(context, 'words/js/data.js');
+  loadScript(context, '_site/words/js/namespace.js');
+  loadScript(context, '_site/words/js/data.js');
   return context.WordTales.Data;
 }
 

@@ -28,7 +28,7 @@ async function readyCloud(remoteProfile, owner) {
     getClient: () => createClient(remote, writes),
     onChange: () => () => {}
   };
-  loadScript(context, 'words/js/cloud-sync.js');
+  loadScript(context, '_site/words/js/cloud-sync.js');
   await context.WordTales.LearningProgress.init();
   await context.WordTales.CloudSync.init();
   return { context, remote, writes, progress: context.WordTales.LearningProgress };
