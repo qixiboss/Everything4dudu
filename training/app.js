@@ -36,8 +36,6 @@
     restSeconds: 60,     // 组间建议休息时长
   };
   var log = {};          // { '2026-08-10': {...} }
-  var hubSync = null;
-  var syncedLogHashes = {};
 
   function load() {
     try {
@@ -55,56 +53,9 @@
   }
   function saveSettings() {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    if (hubSync) hubSync.put('settings', settings);
   }
   function saveLog() {
     localStorage.setItem(LOG_KEY, JSON.stringify(log));
-    if (!hubSync) return;
-    var next = {};
-    Object.keys(log).forEach(function (key) {
-      var encoded = JSON.stringify(log[key]);
-      next[key] = encoded;
-      if (syncedLogHashes[key] !== encoded) hubSync.put('day:' + key, log[key]);
-    });
-    Object.keys(syncedLogHashes).forEach(function (key) {
-      if (!Object.prototype.hasOwnProperty.call(next, key)) hubSync.remove('day:' + key);
-    });
-    syncedLogHashes = next;
-  }
-
-  function trainingSyncItems() {
-    var items = [{ item_key: 'settings', payload: settings }];
-    Object.keys(log).forEach(function (key) { items.push({ item_key: 'day:' + key, payload: log[key] }); });
-    return items;
-  }
-  function applyTrainingRemote(rows) {
-    var changed = false;
-    rows.forEach(function (row) {
-      if (row.item_key === 'settings' && !row.deleted_at) {
-        settings.targets = Object.assign(settings.targets, row.payload.targets || {});
-        if (typeof row.payload.autoAlt === 'boolean') settings.autoAlt = row.payload.autoAlt;
-        if (Number.isInteger(row.payload.restSeconds)) settings.restSeconds = row.payload.restSeconds;
-        changed = true;
-      } else if (row.item_key.indexOf('day:') === 0) {
-        var key = row.item_key.slice(4);
-        if (row.deleted_at) delete log[key];
-        else log[key] = row.payload;
-        changed = true;
-      }
-    });
-    if (!changed) return;
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    localStorage.setItem(LOG_KEY, JSON.stringify(log));
-    syncedLogHashes = Object.keys(log).reduce(function (result, key) { result[key] = JSON.stringify(log[key]); return result; }, {});
-    initToday();
-    renderToday();
-    renderHeat();
-    renderHistory();
-  }
-  function startHubSync() {
-    if (!window.HubSync) return;
-    syncedLogHashes = Object.keys(log).reduce(function (result, key) { result[key] = JSON.stringify(log[key]); return result; }, {});
-    hubSync = window.HubSync.register('training', { getItems: trainingSyncItems, applyRemote: applyTrainingRemote });
   }
 
   /* ---------- 日期工具 ---------- */
@@ -1064,7 +1015,6 @@
     wireGlobal();
     renderToday();
     startTicker();
-    startHubSync();
   }
 
   document.addEventListener('DOMContentLoaded', boot);

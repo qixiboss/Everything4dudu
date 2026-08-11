@@ -1,0 +1,66 @@
+name: Sync upstream applications
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  repository_dispatch:
+    types: [upstream-app-updated]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-applications
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out portal
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check out WordTales
+        uses: actions/checkout@v4
+        with:
+          repository: qixiboss/WordTales
+          path: _upstreams/WordTales
+
+      - name: Check out training record
+        uses: actions/checkout@v4
+        with:
+          repository: qixiboss/Train_record
+          path: _upstreams/Train_record
+
+      - name: Check out exam schedule
+        uses: actions/checkout@v4
+        with:
+          repository: qixiboss/-Graduate-Entrance-Exam-Schedule
+          path: _upstreams/GraduateSchedule
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate integrated applications
+        run: npm run sync:upstreams
+
+      - name: Verify generated portal
+        run: npm run verify
+
+      - name: Commit upstream changes
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- words training exam-schedule upstreams.json)" ]; then
+            echo "All applications already match their upstream repositories."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add words training exam-schedule upstreams.json
+          git commit -m "sync upstream applications"
+          git push

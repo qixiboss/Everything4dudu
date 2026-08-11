@@ -10,6 +10,20 @@ python3 -m http.server 8000
 
 访问 `/`、`/words/`、`/training/` 或 `/exam-schedule/`。
 
+## 自动跟随三个应用仓库
+
+门户每 15 分钟检查一次以下仓库：
+
+- `qixiboss/WordTales` → `/words/`
+- `qixiboss/Train_record` → `/training/`
+- `qixiboss/-Graduate-Entrance-Exam-Schedule` → `/exam-schedule/`
+
+发现新提交后，GitHub Actions 会重新生成三个应用目录、注入统一导航、Supabase 登录和同步适配器，运行完整验证，然后把结果提交回本仓库。该提交会自动触发 GitHub Pages 发布。实际部署通常会比上游提交晚 15 分钟左右，再加一次 Pages 构建时间。
+
+可以在 Actions 中手动运行 **Sync upstream applications**。如果需要近乎即时同步，也可以从三个源仓库发送 `repository_dispatch` 事件，事件类型为 `upstream-app-updated`；轮询仍作为兜底。
+
+`words/`、`training/`、`exam-schedule/` 是自动生成目录，不应直接维护。门户接入代码位于 `integrations/`，生成规则位于 `scripts/sync-upstreams.js`，每次同步采用的源提交记录在 `upstreams.json`。如果上游页面结构变化导致无法安全注入，任务会验证失败且不会提交损坏版本。
+
 ## Supabase 部署
 
 1. 在已使用的 WordTales Supabase 项目应用 `supabase/migrations/` 中尚未执行的迁移。

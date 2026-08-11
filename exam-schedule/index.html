@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <link rel="preconnect" href="https://unpkg.com" crossorigin="anonymous">
 <title>考研一轮学习日程</title>
 <link rel="stylesheet" href="../shared/hub.css">
@@ -538,11 +538,12 @@ html>body{padding:0}</style>
 </head>
 <body>
 <div id="hub-shell"></div>
-<script src="../shared/vendor/supabase.js"></script>
-<script src="../shared/config.js"></script>
-<script src="../shared/hub-auth.js"></script>
-<script src="../shared/sync-store.js"></script>
-<script src="../shared/hub-shell.js"></script>
+<script defer src="../shared/vendor/supabase.js"></script>
+<script defer src="../shared/config.js"></script>
+<script defer src="../shared/hub-auth.js"></script>
+<script defer src="../shared/sync-store.js"></script>
+<script defer src="../shared/hub-shell.js"></script>
+<script defer src="hub-sync.js"></script>
 <div id="kaoyan-plan">
   <div class="app-shell">
     <aside class="sidebar" aria-label="应用导航">
@@ -744,20 +745,6 @@ const storageKey='kaoyan-first-round-state-v4';
 let state={completed:{},rested:{}};
 try{const stored=JSON.parse(localStorage.getItem(storageKey)||'{}');if(stored&&typeof stored==='object'){state.completed=stored.completed&&typeof stored.completed==='object'?stored.completed:{};state.rested=stored.rested&&typeof stored.rested==='object'?stored.rested:{}}}catch(e){console.warn('State load failed:',e)}
 const save=()=>{try{localStorage.setItem(storageKey,JSON.stringify(state))}catch(e){console.warn('State save failed:',e)}};
-let scheduleSync=null;
-const scheduleSyncItems=()=>[
-  ...Object.keys(state.completed).map(id=>({item_key:`task:${id}`,payload:{completedAt:Number(state.completed[id])||Date.now()}})),
-  ...Object.keys(state.rested).filter(day=>state.rested[day]).map(day=>({item_key:`rest:${day}`,payload:{rested:true}}))
-];
-const applyScheduleRemote=rows=>{
-  let changed=false;
-  rows.forEach(row=>{
-    if(row.item_key.startsWith('task:')){const id=row.item_key.slice(5);if(row.deleted_at)delete state.completed[id];else state.completed[id]=Number(row.payload.completedAt)||Date.now();changed=true}
-    if(row.item_key.startsWith('rest:')){const day=row.item_key.slice(5);if(row.deleted_at)delete state.rested[day];else state.rested[day]=true;changed=true}
-  });
-  if(changed){save();renderAll()}
-};
-const startScheduleSync=()=>{if(window.HubSync)scheduleSync=window.HubSync.register('exam-schedule',{getItems:scheduleSyncItems,applyRemote:applyScheduleRemote})};
 const dateOnly=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
 const startDay=dateOnly(start);
 const prefersReducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -832,8 +819,8 @@ function animateTaskQueue(previous,movedId){
   if(prefersReducedMotion)return;
   requestAnimationFrame(()=>elements['today-tasks'].querySelectorAll('[data-task-row-id]').forEach(el=>{el.getAnimations().forEach(a=>a.finish());const before=previous.get(el.dataset.taskRowId);if(!before)return;const after=el.getBoundingClientRect(),dx=before.left-after.left,dy=before.top-after.top;if(Math.abs(dx)<1&&Math.abs(dy)<1)return;const moved=el.dataset.taskRowId===movedId;el.style.zIndex=moved?'2':'1';const animation=el.animate([{transform:`translate(${dx}px, ${dy}px) scale(${moved?0.985:1})`,opacity:moved?0.76:1},{transform:'translate(0, 0) scale(1)',opacity:1}],{duration:moved?480:380,easing:'cubic-bezier(.22, 1, .36, 1)'});animation.onfinish=()=>{el.style.zIndex=''}}));
 }
-elements['today-tasks'].addEventListener('change',e=>{const id=e.target.dataset.taskId;if(!id)return;const previous=taskPositions();if(e.target.checked){state.completed[id]=Date.now();scheduleSync?.put(`task:${id}`,{completedAt:state.completed[id]})}else{delete state.completed[id];scheduleSync?.remove(`task:${id}`)}save();renderAll();animateTaskQueue(previous,id)});
-elements['actual-rest'].addEventListener('change',e=>{const d=days[selected];if(e.target.checked){state.rested[d.i]=true;scheduleSync?.put(`rest:${d.i}`,{rested:true})}else{delete state.rested[d.i];scheduleSync?.remove(`rest:${d.i}`)}save();renderAll()});
+elements['today-tasks'].addEventListener('change',e=>{const id=e.target.dataset.taskId;if(!id)return;const previous=taskPositions();if(e.target.checked)state.completed[id]=Date.now();else delete state.completed[id];save();renderAll();animateTaskQueue(previous,id)});
+elements['actual-rest'].addEventListener('change',e=>{const d=days[selected];state.rested[d.i]=e.target.checked;if(!e.target.checked)delete state.rested[d.i];save();renderAll()});
 elements['prev-day'].addEventListener('click',()=>{selected=Math.max(0,selected-1);renderToday(nextPending())});
 elements['next-day'].addEventListener('click',()=>{selected=Math.min(lastDayIndex,selected+1);renderToday(nextPending())});
 elements['go-today'].addEventListener('click',()=>{selected=todayIndex();renderToday(nextPending())});
@@ -841,7 +828,6 @@ elements['go-today'].addEventListener('click',()=>{selected=todayIndex();renderT
 const viewMeta={today:['TODAY','今日执行'],plan:['ROADMAP','完整日程'],progress:['PROGRESS','学习进度']};
 navButtons.forEach(btn=>btn.addEventListener('click',()=>{const view=btn.dataset.view;navButtons.forEach(x=>{const active=x===btn;x.classList.toggle('is-active',active);x.setAttribute('aria-pressed',String(active));active?x.setAttribute('aria-current','page'):x.removeAttribute('aria-current')});appViews.forEach(x=>x.classList.toggle('hidden',x.id!==`view-${view}`));elements['workspace-kicker'].textContent=viewMeta[view][0];elements['workspace-title'].textContent=viewMeta[view][1];if(view==='plan')renderTimeline();if(view==='progress')renderStats(nextPending())}));
 renderAll();
-startScheduleSync();
 })();
 </script>
 

@@ -23,6 +23,24 @@ test('门户包含三个独立入口，考研页不再使用 iframe srcdoc', () 
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
 });
 
+test('上游同步工作流定时拉取三个仓库并只提交验证后的生成目录', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/sync-upstreams.yml'), 'utf8');
+  assert.match(workflow, /schedule:/);
+  assert.match(workflow, /repository: qixiboss\/WordTales/);
+  assert.match(workflow, /repository: qixiboss\/Train_record/);
+  assert.match(workflow, /repository: qixiboss\/-Graduate-Entrance-Exam-Schedule/);
+  assert.ok(workflow.indexOf('npm run verify') < workflow.indexOf('git commit'));
+
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'upstreams.json'), 'utf8'));
+  assert.equal(Object.keys(manifest.sources).length, 3);
+  Object.values(manifest.sources).forEach((source) => assert.match(source.commit, /^[0-9a-f]{40}$/));
+  ['words', 'training', 'exam-schedule'].forEach((app) => {
+    const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
+    assert.match(html, /\.\.\/shared\/hub-auth\.js/);
+    assert.match(html, /hub-sync\.js/);
+  });
+});
+
 test('同步迁移启用 RLS、按用户隔离并发布 Realtime', () => {
   const sql = fs.readFileSync(path.join(root, 'supabase/migrations/20260811032047_create_sync_items.sql'), 'utf8');
   assert.match(sql, /enable row level security/i);
