@@ -28,39 +28,50 @@
       <p class="home-subtitle">今天也向目标靠近一点。</p>
     </header>
 
-    <section class="app-grid" aria-label="应用">
-      <a class="app" href="words/" data-protected-app="words">
-        <span class="app-icon app-icon-words" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-        </span>
-        <span class="app-name">词汇学习</span>
-        <span class="app-caption">Words</span>
-      </a>
-      <a class="app" href="training/" data-protected-app="training">
-        <span class="app-icon app-icon-training" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
-        </span>
-        <span class="app-name">训练记录</span>
-        <span class="app-caption">Training</span>
-      </a>
-      <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
-        <span class="app-icon app-icon-schedule" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span class="app-name">考研日程</span>
-        <span class="app-caption">Schedule</span>
-      </a>
-      <button class="app app-login" type="button" data-login-open aria-haspopup="dialog">
-        <span class="app-icon app-icon-login" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><circle cx="32" cy="25" r="11" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 52c2-10 9-15 18-15s16 5 18 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
-          <span class="login-dot" data-login-dot></span>
-        </span>
-        <span class="app-name" data-login-label>用户登录</span>
-        <span class="app-caption" data-login-caption>跨设备同步</span>
-      </button>
-    </section>
+    <div class="pages" data-pages aria-label="应用页面">
+      <div class="app-grid" data-page="0" aria-label="应用">
+        <a class="app" href="words/" data-protected-app="words">
+          <span class="app-icon app-icon-words" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
+          <span class="app-name">词汇学习</span>
+          <span class="app-caption">Words</span>
+        </a>
+        <a class="app" href="training/" data-protected-app="training">
+          <span class="app-icon app-icon-training" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+          </span>
+          <span class="app-name">训练记录</span>
+          <span class="app-caption">Training</span>
+        </a>
+        <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
+          <span class="app-icon app-icon-schedule" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="app-name">考研日程</span>
+          <span class="app-caption">Schedule</span>
+        </a>
+        <button class="app app-login" type="button" data-login-open aria-haspopup="dialog">
+          <span class="app-icon app-icon-login" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><circle cx="32" cy="25" r="11" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 52c2-10 9-15 18-15s16 5 18 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+            <span class="login-dot" data-login-dot></span>
+          </span>
+          <span class="app-name" data-login-label>用户登录</span>
+          <span class="app-caption" data-login-caption>跨设备同步</span>
+        </button>
+      </div>
+      <div class="app-grid" data-page="1" aria-label="应用">
+        <a class="app" href="changelog/" data-protected-app="changelog">
+          <span class="app-icon app-icon-changelog" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
+          <span class="app-name">更新记录</span>
+          <span class="app-caption">Changelog</span>
+        </a>
+      </div>
+    </div>
 
-    <div class="page-dots" aria-hidden="true"><span></span><span></span></div>
+    <div class="page-dots" data-page-dots aria-hidden="true"></div>
 
     <footer class="home-dock">
       <div>

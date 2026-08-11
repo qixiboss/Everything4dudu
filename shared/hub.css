@@ -80,6 +80,18 @@ html[data-app="exam-schedule"] .hub-home-link {
   color: var(--muted-foreground, #737373);
 }
 
+/* Changelog: sit in the app header above the title. */
+html[data-app="changelog"] .hub-home-link {
+  margin: 0 0 14px;
+  color: rgba(43, 36, 24, .62);
+}
+
+html[data-app="changelog"] .hub-home-link:hover,
+html[data-app="changelog"] .hub-home-link:focus-visible {
+  background: rgba(185, 127, 61, .14);
+  color: rgba(43, 36, 24, .82);
+}
+
 .hub-home-fallback {
   position: fixed;
   z-index: 100;

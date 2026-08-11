@@ -4,7 +4,8 @@
   var placements = {
     words: '.cover-inner',
     training: '.topbar-inner',
-    'exam-schedule': '#kaoyan-plan .brand'
+    'exam-schedule': '#kaoyan-plan .brand',
+    changelog: '.app-header'
   };
 
   function render() {

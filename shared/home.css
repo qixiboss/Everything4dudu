@@ -71,12 +71,22 @@ button { -webkit-tap-highlight-color: transparent; }
 .home-subtitle { margin: 11px 0 0; color: rgba(43,52,83,.68); font-size: 15px; }
 
 .app-grid {
+  width: 100%;
+  flex: 0 0 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 34px;
   row-gap: 32px;
   margin-top: 53px;
   padding: 0 9px;
+}
+
+.pages {
+  display: flex;
+  overflow-x: hidden;
+  transform: translateX(0);
+  transition: transform .3s cubic-bezier(.22,.8,.31,1);
+  will-change: transform;
 }
 
 .app {
@@ -112,6 +122,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-icon-words { background: linear-gradient(145deg, #7a8cef, #586bcf); }
 .app-icon-training { background: linear-gradient(145deg, #fd9b7c, #ed6e76); }
 .app-icon-schedule { background: linear-gradient(145deg, #68cdb9, #3cae9c); }
+.app-icon-changelog { background: linear-gradient(145deg, #e3b071, #c4843f); }
 .app-icon-login { background: linear-gradient(145deg, #a786db, #8161b8); }
 .app-name { margin-top: 11px; font-size: 15px; font-weight: 720; letter-spacing: -.01em; }
 .app-caption { margin-top: 2px; color: rgba(43,52,83,.57); font-size: 11px; font-weight: 560; }
@@ -119,8 +130,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .login-dot { position: absolute; top: 7px; right: 7px; width: 10px; height: 10px; border: 2px solid #8b6ac2; border-radius: 50%; background: #f8cadb; }
 .login-dot.is-online { background: #83e2b5; }
 .page-dots { display: flex; justify-content: center; gap: 6px; margin-top: 42px; }
-.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(38,48,80,.2); }
-.page-dots span:first-child { width: 18px; border-radius: 5px; background: rgba(38,48,80,.48); }
+.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(38,48,80,.2); transition: width .22s ease, background-color .22s ease; }
+.page-dots span.is-active { width: 18px; border-radius: 5px; background: rgba(38,48,80,.48); }
 
 .home-dock {
   position: absolute;
@@ -202,6 +213,8 @@ button { -webkit-tap-highlight-color: transparent; }
   .phone-home { min-height: 100dvh; }
   .home-header { padding-top: 22px; }
   .app-grid { margin-top: 34px; row-gap: 23px; }
+  .pages { margin-top: 34px; }
+  .pages .app-grid { margin-top: 0; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
   .page-dots { margin-top: 22px; }
@@ -238,6 +251,8 @@ button { -webkit-tap-highlight-color: transparent; }
   .status-bar { display: none; }
   .home-header { padding-top: clamp(18px, 4.6vh, 38px); }
   .app-grid { margin-top: clamp(36px, 6vh, 53px); }
+  .pages { margin-top: clamp(36px, 6vh, 53px); }
+  .pages .app-grid { margin-top: 0; }
   .page-dots { margin-top: clamp(26px, 5vh, 42px); margin-bottom: 30px; }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
@@ -245,4 +260,5 @@ button { -webkit-tap-highlight-color: transparent; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  .pages { transition: none; }
 }

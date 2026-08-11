@@ -4,6 +4,12 @@
   var layer;
   var lastFocus;
   var pendingHref = '';
+  var pageIndex = 0;
+  var pages;
+  var dots;
+  var touchStartX = 0;
+  var touchStartY = 0;
+  var swiping = false;
 
   function text(selector, value) {
     var node = document.querySelector(selector);
@@ -136,8 +142,101 @@
 
   function requestedApp() {
     var params = new URLSearchParams(window.location.search || '');
-    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/' };
+    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/', changelog: 'changelog/' };
     return { href: routes[params.get('next')] || '', login: params.get('login') === '1' };
+  }
+
+  function renderDots() {
+    if (!dots) return;
+    dots.innerHTML = '';
+    var count = pages ? pages.children.length : 0;
+    for (var index = 0; index < count; index += 1) {
+      var dot = document.createElement('span');
+      if (index === pageIndex) dot.classList.add('is-active');
+      dots.appendChild(dot);
+    }
+  }
+
+  function setPageFocusable(page, focusable) {
+    if (!pages) return;
+    var grid = pages.children[page];
+    if (!grid) return;
+    Array.prototype.forEach.call(grid.querySelectorAll('a,button'), function (node) {
+      node.setAttribute('tabindex', focusable ? '0' : '-1');
+    });
+  }
+
+  function goToPage(index) {
+    if (!pages) return;
+    var count = pages.children.length;
+    pageIndex = Math.max(0, Math.min(index, count - 1));
+    pages.style.transform = 'translateX(' + (-pageIndex * 100) + '%)';
+    for (var page = 0; page < count; page += 1) setPageFocusable(page, page === pageIndex);
+    renderDots();
+  }
+
+  function bindPages() {
+    pages = document.querySelector('[data-pages]');
+    dots = document.querySelector('[data-page-dots]');
+    if (!pages) return;
+
+    pages.addEventListener('touchstart', function (event) {
+      swiping = true;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    pages.addEventListener('touchend', function (event) {
+      if (!swiping) return;
+      swiping = false;
+      var dx = (event.changedTouches[0].clientX || touchStartX) - touchStartX;
+      var width = pages.clientWidth || 1;
+      if (Math.abs(dx) < width * .22) return;
+      goToPage(dx < 0 ? pageIndex + 1 : pageIndex - 1);
+    });
+
+    /* Touch events cover the touch surfaces; pointer events only run when
+     * the browser does not dispatch touch events (e.g. a touch laptop). */
+    if (window.navigator && navigator.maxTouchPoints && !('ontouchstart' in window)) {
+      pages.addEventListener('pointerdown', function (event) {
+        if (event.pointerType !== 'touch') return;
+        swiping = true;
+        touchStartX = event.clientX;
+        touchStartY = event.clientY;
+      });
+      pages.addEventListener('pointermove', function (event) {
+        if (!swiping || event.pointerType !== 'touch') return;
+        var dx = event.clientX - touchStartX;
+        var dy = event.clientY - touchStartY;
+        if (Math.abs(dx) < 14 || Math.abs(dx) < Math.abs(dy)) return;
+        event.preventDefault();
+      });
+      pages.addEventListener('pointerup', function (event) {
+        if (!swiping || event.pointerType !== 'touch') return;
+        swiping = false;
+        var dx = event.clientX - touchStartX;
+        var width = pages.clientWidth || 1;
+        if (Math.abs(dx) < width * .22) return;
+        goToPage(dx < 0 ? pageIndex + 1 : pageIndex - 1);
+      });
+    }
+
+    if (window.matchMedia && matchMedia('(max-width: 519px)').addEventListener) {
+      matchMedia('(max-width: 519px)').addEventListener('change', function (media) {
+        if (!media.matches) goToPage(0);
+      });
+    }
+
+    if (pages.setAttribute) {
+      pages.setAttribute('tabindex', '0');
+      pages.setAttribute('aria-label', '应用页面，可左右滑动切换');
+      pages.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight' && pageIndex < pages.children.length - 1) { event.preventDefault(); goToPage(pageIndex + 1); }
+        else if (event.key === 'ArrowLeft' && pageIndex > 0) { event.preventDefault(); goToPage(pageIndex - 1); }
+      });
+    }
+
+    renderDots();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -147,6 +246,7 @@
     document.querySelector('[data-login-open]').addEventListener('click', openLogin);
     Array.prototype.forEach.call(document.querySelectorAll('[data-login-close]'), function (button) { button.addEventListener('click', closeLogin); });
     document.addEventListener('keydown', handleKeydown);
+    bindPages();
     bindLogin();
     bindProtectedApps();
     var requested = requestedApp();

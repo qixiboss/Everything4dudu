@@ -9,7 +9,7 @@ fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
 ['index.html', 'README.md'].forEach((file) => fs.copyFileSync(path.join(root, file), path.join(output, file)));
-['shared', 'words', 'training', 'exam-schedule'].forEach((directory) => {
+['shared', 'words', 'training', 'exam-schedule', 'changelog'].forEach((directory) => {
   fs.cpSync(path.join(root, directory), path.join(output, directory), { recursive: true });
 });
 

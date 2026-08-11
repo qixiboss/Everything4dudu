@@ -62,14 +62,16 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
   return { context, state, localStorage, writes, authListeners };
 }
 
-test('主页把三个应用标记为登录后访问且不暴露公开注册入口', () => {
-  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html'].forEach((file) => {
+test('主页把应用标记为登录后访问且不暴露公开注册入口', () => {
+  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html', 'changelog/index.html'].forEach((file) => {
     assert.equal(fs.existsSync(path.join(root, file)), true, file);
   });
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   assert.match(home, /href="words\/" data-protected-app="words"/);
   assert.match(home, /href="training\/" data-protected-app="training"/);
   assert.match(home, /href="exam-schedule\/" data-protected-app="exam-schedule"/);
+  assert.match(home, /href="changelog\/" data-protected-app="changelog"/);
+  assert.match(home, /data-pages/);
   assert.match(home, /data-login-open/);
   assert.match(home, /role="dialog"/);
   assert.match(home, /autocomplete="current-password"/);
@@ -123,7 +125,7 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.match(css, /data-app.*not\(\[data-auth-ready\]\).*visibility: hidden/);
   assert.match(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
-  ['words', 'training', 'exam-schedule'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
     const auth = html.indexOf('../shared/hub-auth.js');
     const gateIndex = html.indexOf('../shared/auth-gate.js');
@@ -147,7 +149,7 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   assert.match(shell, /class="hub-home-link"/);
   assert.match(shell, /href="\.\.\/"/);
   assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
-  ['words', 'training', 'exam-schedule'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
     assert.match(html, /<div id="hub-shell"><\/div>/);
   });

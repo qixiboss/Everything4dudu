@@ -67,6 +67,26 @@ function sharedScripts() {
   ].join('\n');
 }
 
+/* 更新记录是门户自有应用，不从上游仓库生成，但同样由同步流程重新生成：
+ * 已提交的 changelog/index.html 视为模板，每次重建脚本块，保证共享脚本
+ * 始终与 sharedScripts() 一致，且重复执行不会叠加注入。 */
+function buildChangelog() {
+  let html = read('changelog/index.html');
+  const scriptStart = html.indexOf('<script defer src="../shared/vendor/supabase.js">');
+  assert(scriptStart !== -1, 'Changelog page script anchor is missing.');
+  const lineStart = html.lastIndexOf('\n', scriptStart) + 1;
+  const scriptEnd = html.indexOf('</body>', scriptStart);
+  assert(scriptEnd !== -1, 'Changelog page body end is missing.');
+  html = html.slice(0, lineStart) +
+    sharedScripts().split('\n').map((line) => '  ' + line).join('\n') +
+    '\n  <script defer src="changelog.js"></script>\n  <script defer src="hub-sync.js"></script>\n' +
+    html.slice(scriptEnd);
+  write('changelog/index.html', html);
+  copy(path.join(root, 'changelog/changelog.css'), 'changelog/changelog.css');
+  copy(path.join(root, 'changelog/changelog.js'), 'changelog/changelog.js');
+  copy(path.join(root, 'changelog/hub-sync.js'), 'changelog/hub-sync.js');
+}
+
 function buildWords() {
   const source = path.join(upstreamRoot, sources.words.directory, 'vocab-essays');
   assert(fs.existsSync(path.join(source, 'vocab-essays.html')), 'WordTales entry page is missing.');
@@ -208,7 +228,8 @@ try {
   buildWords();
   buildTraining();
   buildExamSchedule();
-  ['words', 'training', 'exam-schedule'].forEach(installGeneratedDirectory);
+  buildChangelog();
+  ['words', 'training', 'exam-schedule', 'changelog'].forEach(installGeneratedDirectory);
 
   const manifest = {
     schemaVersion: 1,
@@ -218,7 +239,7 @@ try {
     }]))
   };
   fs.writeFileSync(path.join(root, 'upstreams.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log('Synced WordTales, Train_record and Graduate Entrance Exam Schedule.');
+  console.log('Synced WordTales, Train_record, Graduate Entrance Exam Schedule and portal changelog.');
 } finally {
   fs.rmSync(stagingRoot, { recursive: true, force: true });
 }
