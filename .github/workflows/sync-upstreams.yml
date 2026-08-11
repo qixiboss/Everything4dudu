@@ -19,30 +19,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out portal
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Check out WordTales
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: qixiboss/WordTales
           path: _upstreams/WordTales
 
       - name: Check out training record
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: qixiboss/Train_record
           path: _upstreams/Train_record
 
       - name: Check out exam schedule
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: qixiboss/-Graduate-Entrance-Exam-Schedule
           path: _upstreams/GraduateSchedule
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
