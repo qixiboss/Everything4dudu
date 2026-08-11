@@ -16,8 +16,9 @@ function createClient(remote, writes) {
   };
 }
 
-async function readyCloud(remoteProfile) {
+async function readyCloud(remoteProfile, owner) {
   const localStorage = createStorage();
+  if (owner) localStorage.setItem('wordtales.cloud-sync.owner.v1', owner);
   const context = loadLearningApp({ localStorage });
   const remote = { value: remoteProfile || null };
   const writes = [];
@@ -33,15 +34,19 @@ async function readyCloud(remoteProfile) {
   return { context, remote, writes, progress: context.WordTales.LearningProgress };
 }
 
-test('首次登录不再写旧整档表，后续交给分条同步', async () => {
+test('首次登录自动上传整档表以建立云端档案，后续交回分条同步', async () => {
   const { progress, writes, context } = await readyCloud();
   const entry = context.WordTales.Data.getAllEntries()[0];
   await progress.rateWord(entry.id, 'Good', {}, 'cloud-first-login');
 
   await context.WordTales.CloudSync.connectProfile();
 
+  // 新上游：首次登录写入 learning_profiles 作为整档档案底座，
+  // 之后的每次变化由 HubProfileSync 分条上传 sync_items。
   assert.equal(progress.getData().words[entry.id].reviewCount, 1);
-  assert.equal(writes.length, 0);
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0].user_id, '8f45f983-fdd6-49f6-9d8e-7d6eb1e59892');
+  assert.equal(writes[0].profile.words[entry.id].reviewCount, 1);
 });
 
 test('已有更新云端档案时优先下载且不会反向覆盖', async () => {
@@ -52,7 +57,7 @@ test('已有更新云端档案时优先下载且不会反向覆盖', async () =>
     words: {}, articles: {}, analyses: {}, days: {}, columnCompletions: { '2026-08-09': { s1col1: true } },
     reminders: { lastShown: '', notifications: false }, processedSubmissions: [], events: []
   };
-  const { progress, writes, context } = await readyCloud({ profile: remoteProfile, updated_at: '2099-01-01T00:00:00.000Z' });
+  const { progress, writes, context } = await readyCloud({ profile: remoteProfile, updated_at: '2099-01-01T00:00:00.000Z' }, '8f45f983-fdd6-49f6-9d8e-7d6eb1e59892');
 
   await context.WordTales.CloudSync.connectProfile();
 

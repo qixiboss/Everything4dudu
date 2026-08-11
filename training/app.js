@@ -35,9 +35,6 @@
     autoAlt: false,      // 有氧自动轮换（默认建议上次的反向）
     restSeconds: 60,     // 组间建议休息时长
   };
-  /* 让 hub-sync 适配器能看到弹窗写入的内存设置；合并远端设置时不能
-   * 直接覆盖整个对象，否则弹窗里未保存的目标会被旧云数据清掉。 */
-  window.TrainingSettings = settings;
   var log = {};          // { '2026-08-10': {...} }
 
   function load() {

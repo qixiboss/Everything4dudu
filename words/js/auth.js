@@ -4,7 +4,6 @@ WordTales.Auth = (function () {
   var listeners = [];
   var mount = null;
   var initialized = false;
-  var sessionFingerprint = '';
 
   function configured() { return !!(window.HubAuth && window.HubAuth.isConfigured()); }
   function notify() { listeners.slice().forEach(function (listener) { listener(session); }); }
@@ -24,15 +23,7 @@ WordTales.Auth = (function () {
     else status.textContent = configured() ? '请使用页面顶部邮箱登录以同步进度' : '本地进度模式';
     mount.appendChild(status);
   }
-  function setSession(next) {
-    var normalized = next || null;
-    var nextFingerprint = normalized && normalized.user ? String(normalized.user.id || '') : '';
-    if (nextFingerprint === sessionFingerprint && (!!normalized === !!session)) return;
-    session = normalized;
-    sessionFingerprint = nextFingerprint;
-    render();
-    notify();
-  }
+  function setSession(next) { session = next || null; render(); notify(); }
   function init() {
     if (initialized) return Promise.resolve(api);
     initialized = true;

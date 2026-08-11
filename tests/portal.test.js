@@ -136,10 +136,11 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   });
 });
 
-test('词汇学习先恢复本地档案，远端更新不再触发整页刷新', () => {
+test('词汇学习先建立登录会话与云端同步，再恢复本地档案', () => {
   const features = fs.readFileSync(path.join(root, 'words/js/features.js'), 'utf8');
   const wordSync = fs.readFileSync(path.join(root, 'words/js/hub-sync.js'), 'utf8');
-  assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.Auth.init()'));
+  assert.ok(features.indexOf('WordTales.Auth.init()') < features.indexOf('WordTales.LearningProgress.init()'));
+  assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.CloudSync.connectProfile()'));
   assert.match(wordSync, /HubAppSync\.start/);
   assert.doesNotMatch(wordSync, /location\.reload/);
 });

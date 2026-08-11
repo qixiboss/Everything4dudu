@@ -91,6 +91,9 @@ function buildWords() {
   const source = path.join(upstreamRoot, sources.words.directory, 'vocab-essays');
   assert(fs.existsSync(path.join(source, 'vocab-essays.html')), 'WordTales entry page is missing.');
   copy(source, 'words');
+  /* 上游残留的旧 Supabase 浏览器包已无引用（由 shared/vendor/supabase.js
+   * 取代），复制后显式移除，保持与已提交目录一致。 */
+  fs.rmSync(path.join(stagingRoot, 'words/vendor/supabase-js'), { recursive: true, force: true });
 
   let html = fs.readFileSync(path.join(source, 'vocab-essays.html'), 'utf8');
   html = replaceOnce(html, '<html lang="zh-CN">', '<html lang="zh-CN" data-app="words">', 'WordTales html element');

@@ -22,18 +22,18 @@ const expectedScripts = [
   '../shared/hub-auth.js',
   '../shared/auth-gate.js',
   '../shared/sync-store.js',
-  '../shared/hub-shell.js',
-  'js/namespace.js?v=3.0.0',
-  'js/supabase-config.js?v=1.0.0',
-  'js/auth.js?v=1.0.1',
-  'js/data.js?v=3.0.0',
-  'js/renderer.js?v=3.0.0',
-  'js/learning-progress-v2.js?v=3.0.8',
-  'js/cloud-sync.js?v=1.1.0',
-  'js/hub-sync.js?v=1.1.0',
   '../shared/hub-sync.js',
-  'js/study-record.js?v=1.0.0',
-  'js/features.js?v=3.0.5'
+  '../shared/hub-shell.js',
+  'js/namespace.js',
+  'js/supabase-config.js',
+  'js/auth.js',
+  'js/data.js',
+  'js/renderer.js',
+  'js/learning-progress-v2.js',
+  'js/cloud-sync.js',
+  'js/hub-sync.js',
+  'js/study-record.js',
+  'js/features.js'
 ];
 const scriptTags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 const scripts = scriptTags.map((match) => {
@@ -44,7 +44,10 @@ const scripts = scriptTags.map((match) => {
 if (scripts.some((script) => !script.source)) {
   errors.push('All application scripts must be external static files.');
 }
-if (scripts.map((script) => script.source).join('\n') !== expectedScripts.join('\n')) {
+/* 上游应用自行管理脚本版本号（?v= 查询串），比较顺序时忽略版本号，
+ * 只校验脚本文件本身及其相对顺序。 */
+function stripVersion(reference) { return reference.replace(/\?v=[^"']*$/, ''); }
+if (scripts.map((script) => stripVersion(script.source)).join('\n') !== expectedScripts.map(stripVersion).join('\n')) {
   errors.push(`Unexpected script order: ${scripts.map((script) => script.source || '[inline]').join(', ')}.`);
 }
 
