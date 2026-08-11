@@ -35,16 +35,15 @@
     if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('请输入有效的邮箱地址。');
     return email;
   }
-  function normalizePassword(password, isRegistration) {
+  function normalizePassword(password) {
     password = String(password || '');
     if (!password) throw new Error('请输入密码。');
-    if (isRegistration && password.length < 8) throw new Error('密码至少需要 8 位。');
     return password;
   }
   function signInWithPassword(email, password) {
     try { email = normalizeEmail(email); }
     catch (error) { return Promise.reject(error); }
-    try { password = normalizePassword(password, false); }
+    try { password = normalizePassword(password); }
     catch (error) { return Promise.reject(error); }
     if (!client) return Promise.reject(new Error('登录服务尚未配置。'));
     return client.auth.signInWithPassword({ email: email, password: password })
@@ -55,25 +54,12 @@
         return result.data.session;
       });
   }
-  function signUpWithPassword(email, password) {
-    try { email = normalizeEmail(email); }
-    catch (error) { return Promise.reject(error); }
-    try { password = normalizePassword(password, true); }
-    catch (error) { return Promise.reject(error); }
-    if (!client) return Promise.reject(new Error('登录服务尚未配置。'));
-    return client.auth.signUp({ email: email, password: password })
-      .then(function (result) {
-        if (result.error) throw result.error;
-        if (result.data && result.data.session) setSession(result.data.session);
-        return {
-          session: result.data && result.data.session ? result.data.session : null,
-          requiresEmailConfirmation: !(result.data && result.data.session)
-        };
-      });
-  }
   function signOut() {
     if (!client) return Promise.resolve();
-    return client.auth.signOut().then(function (result) { if (result.error) throw result.error; });
+    return client.auth.signOut().then(function (result) {
+      if (result.error) throw result.error;
+      setSession(null);
+    });
   }
   window.HubAuth = {
     init: init,
@@ -85,7 +71,6 @@
       return function () { listeners = listeners.filter(function (value) { return value !== listener; }); };
     },
     signInWithPassword: signInWithPassword,
-    signUpWithPassword: signUpWithPassword,
     signOut: signOut
   };
 })();

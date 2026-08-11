@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F5F4F0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
 <title>训练记录</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23191B21'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='%23E03B27' font-family='ui-monospace,monospace' font-weight='bold'>T</text></svg>">
 <link rel="stylesheet" href="styles.css">
@@ -111,6 +112,7 @@
 <script defer src="../shared/vendor/supabase.js"></script>
 <script defer src="../shared/config.js"></script>
 <script defer src="../shared/hub-auth.js"></script>
+<script defer src="../shared/auth-gate.js"></script>
 <script defer src="../shared/sync-store.js"></script>
 <script defer src="../shared/hub-shell.js"></script>
 <script defer src="hub-sync.js"></script>

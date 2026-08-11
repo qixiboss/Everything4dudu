@@ -43,12 +43,22 @@ WordTales.HubProfileSync = (function () {
       }
     });
     profile.updatedAt = new Date().toISOString();
-    progress.replaceData(profile);
+    progress.replaceData(profile).then(function () {
+      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    });
+  }
+  function resetLocal() {
+    var progress = WordTales.LearningProgress;
+    if (!progress || !progress.isReady()) return;
+    previous = {};
+    progress.replaceData(null).then(function () {
+      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    });
   }
   function start() {
     if (controller) return true;
     if (!window.HubSync || !WordTales.LearningProgress || !WordTales.LearningProgress.isReady()) return false;
-    controller = window.HubSync.register('words', { getItems: function () { return itemsFor(WordTales.LearningProgress.getData()); }, applyRemote: applyRemote });
+    controller = window.HubSync.register('words', { getItems: function () { return itemsFor(WordTales.LearningProgress.getData()); }, applyRemote: applyRemote, resetLocal: resetLocal });
     previous = itemsFor(WordTales.LearningProgress.getData()).reduce(function (map, item) { map[item.item_key] = JSON.stringify(item.payload); return map; }, {});
     if (!pollTimer) pollTimer = window.setInterval(queue, 1200);
     return true;

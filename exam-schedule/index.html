@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <link rel="preconnect" href="https://unpkg.com" crossorigin="anonymous">
 <title>考研一轮学习日程</title>
 <link rel="stylesheet" href="../shared/hub.css">
@@ -541,6 +541,7 @@ html>body{padding:0}</style>
 <script defer src="../shared/vendor/supabase.js"></script>
 <script defer src="../shared/config.js"></script>
 <script defer src="../shared/hub-auth.js"></script>
+<script defer src="../shared/auth-gate.js"></script>
 <script defer src="../shared/sync-store.js"></script>
 <script defer src="../shared/hub-shell.js"></script>
 <script defer src="hub-sync.js"></script>

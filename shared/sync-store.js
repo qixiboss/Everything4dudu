@@ -1,30 +1,40 @@
-/* Per-item, local-first Supabase synchronisation for the three static apps. */
+/* Per-item, authenticated, local-first Supabase synchronisation. */
 (function () {
   'use strict';
   var TABLE = 'sync_items';
+  var VERSIONS_KEY = 'hub.sync.versions.v2';
+  var OUTBOX_KEY = 'hub.sync.outbox.v2';
   var registrations = {};
-  var versions = readJson('hub.sync.versions.v1', {});
-  var queues = {};
+  var versions = readJson(VERSIONS_KEY, {});
+  var queues = readJson(OUTBOX_KEY, {});
 
   function readJson(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; } }
   function writeJson(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {} }
-  function versionKey(app, key) { return app + ':' + key; }
-  function saveVersions() { writeJson('hub.sync.versions.v1', versions); }
+  function saveVersions() { writeJson(VERSIONS_KEY, versions); }
+  function saveQueues() { writeJson(OUTBOX_KEY, queues); }
+  function versionKey(userId, app, key) { return userId + ':' + app + ':' + key; }
   function timestamp(value) { var n = new Date(value || 0).getTime(); return isFinite(n) ? n : 0; }
+  function now() { return new Date().toISOString(); }
+  function ownerKey(app) { return 'hub.sync.owner.' + app; }
+  function sessionUserId() {
+    var session = window.HubAuth && window.HubAuth.getSession();
+    return session && session.user ? session.user.id : '';
+  }
   function emit(app, state, message) {
     window.dispatchEvent(new CustomEvent('hub:sync-status', { detail: { app: app, state: state, message: message || '' } }));
   }
-  function ownerKey(app) { return 'hub.sync.owner.' + app; }
-  function now() { return new Date().toISOString(); }
   function localItems(registration) {
     var values = registration.getItems ? registration.getItems() : [];
     return Array.isArray(values) ? values : [];
   }
-  function applyRows(registration, rows) {
+  function currentVersion(userId, app, itemKey) {
+    return versions[versionKey(userId, app, itemKey)] || null;
+  }
+  function applyRows(registration, rows, userId) {
     var accepted = rows.filter(function (row) {
-      var key = versionKey(registration.app, row.item_key);
+      var key = versionKey(userId, registration.app, row.item_key);
       var current = versions[key];
-      if (current && timestamp(current.updated_at) > timestamp(row.updated_at)) return false;
+      if (current && timestamp(current.updated_at) >= timestamp(row.updated_at)) return false;
       versions[key] = { updated_at: row.updated_at, deleted_at: row.deleted_at || null };
       return true;
     });
@@ -32,99 +42,184 @@
     saveVersions();
     if (registration.applyRemote) registration.applyRemote(accepted);
   }
+  function scheduleFlush(registration, delay) {
+    window.clearTimeout(registration.timer);
+    registration.timer = window.setTimeout(function () { flush(registration.app); }, delay || 700);
+  }
   function queueRow(app, row) {
+    var registration = registrations[app];
+    if (!registration) return;
     queues[app] = queues[app] || {};
-    queues[app][row.item_key] = row;
-    window.clearTimeout(registrations[app].timer);
-    registrations[app].timer = window.setTimeout(function () { flush(app); }, 700);
+    queues[app][row.user_id + ':' + row.item_key] = row;
+    saveQueues();
+    scheduleFlush(registration, 700);
   }
-  function put(app, itemKey, payload) {
+  function queueLocal(app, itemKey, payload, deleted) {
     var registration = registrations[app];
-    if (!registration) return;
+    if (!registration) return false;
+    var userId = sessionUserId() || registration.activeUserId;
+    if (!userId) {
+      emit(app, 'waiting', '请登录后同步');
+      return false;
+    }
     var updatedAt = now();
-    var row = { item_key: itemKey, payload: payload || {}, updated_at: updatedAt, deleted_at: null };
-    versions[versionKey(app, itemKey)] = { updated_at: updatedAt, deleted_at: null };
+    var row = {
+      user_id: userId,
+      item_key: itemKey,
+      payload: deleted ? {} : (payload || {}),
+      updated_at: updatedAt,
+      deleted_at: deleted ? updatedAt : null
+    };
+    versions[versionKey(userId, app, itemKey)] = { updated_at: updatedAt, deleted_at: row.deleted_at };
     saveVersions();
     queueRow(app, row);
+    return true;
   }
-  function remove(app, itemKey) {
-    var registration = registrations[app];
-    if (!registration) return;
-    var updatedAt = now();
-    var row = { item_key: itemKey, payload: {}, updated_at: updatedAt, deleted_at: updatedAt };
-    versions[versionKey(app, itemKey)] = { updated_at: updatedAt, deleted_at: updatedAt };
-    saveVersions();
-    queueRow(app, row);
+  function removeDelivered(app, delivered) {
+    var appQueue = queues[app] || {};
+    delivered.forEach(function (row) {
+      var key = row.user_id + ':' + row.item_key;
+      var current = appQueue[key];
+      if (current && current.updated_at === row.updated_at) delete appQueue[key];
+    });
+    if (!Object.keys(appQueue).length) delete queues[app];
+    saveQueues();
   }
   function flush(app) {
     var registration = registrations[app];
-    var session = window.HubAuth && window.HubAuth.getSession();
-    var rows = queues[app] ? Object.keys(queues[app]).map(function (key) { return queues[app][key]; }) : [];
-    queues[app] = {};
-    if (!rows.length || !registration || !session || !window.HubAuth.getClient()) return;
+    var userId = sessionUserId();
+    var client = window.HubAuth && window.HubAuth.getClient();
+    if (!registration || !userId || !client) {
+      if (registration && queues[app] && Object.keys(queues[app]).length) emit(app, 'waiting', '等待登录后同步');
+      return Promise.resolve(false);
+    }
+    var rows = Object.keys(queues[app] || {}).map(function (key) { return queues[app][key]; })
+      .filter(function (row) { return row.user_id === userId; });
+    if (!rows.length) return Promise.resolve(true);
     emit(app, 'syncing', '正在同步');
-    var payload = rows.map(function (row) { return Object.assign({ user_id: session.user.id, app_id: app }, row); });
-    window.HubAuth.getClient().from(TABLE).upsert(payload, { onConflict: 'user_id,app_id,item_key' }).then(function (result) {
-      if (result.error) throw result.error;
-      writeJson(ownerKey(app), session.user.id);
+    var payload = rows.map(function (row) {
+      return {
+        user_id: row.user_id,
+        app_id: app,
+        item_key: row.item_key,
+        payload: row.payload,
+        updated_at: row.updated_at,
+        deleted_at: row.deleted_at
+      };
+    });
+    var request = client.from(TABLE).upsert(payload, { onConflict: 'user_id,app_id,item_key' });
+    if (request && typeof request.select === 'function') request = request.select('item_key,payload,updated_at,deleted_at');
+    return Promise.resolve(request).then(function (result) {
+      if (result && result.error) throw result.error;
+      removeDelivered(app, rows);
+      if (result && Array.isArray(result.data)) applyRows(registration, result.data, userId);
+      writeJson(ownerKey(app), userId);
       emit(app, 'synced', '已同步');
+      return true;
     }).catch(function (error) {
-      rows.forEach(function (row) { queueRow(app, row); });
       emit(app, 'error', '同步失败，本地数据已保留');
       console.warn('Hub sync failed:', error.message);
+      scheduleFlush(registration, 2000);
+      return false;
     });
   }
-  function enqueueInitial(registration, items) {
-    items.forEach(function (item) { put(registration.app, item.item_key, item.payload); });
+  function enqueueInitial(registration, items, userId) {
+    registration.activeUserId = userId;
+    items.forEach(function (item) { queueLocal(registration.app, item.item_key, item.payload, false); });
+  }
+  function backupLocal(registration, owner) {
+    var items = localItems(registration);
+    if (items.length) writeJson('hub.sync.backup.' + registration.app + '.' + (owner || 'unowned') + '.' + Date.now(), items);
+  }
+  function resetLocal(registration) {
+    if (registration.resetLocal) registration.resetLocal();
   }
   function subscribe(registration, userId) {
-    if (registration.channel) window.HubAuth.getClient().removeChannel(registration.channel);
-    registration.channel = window.HubAuth.getClient().channel('hub-sync-' + registration.app + '-' + userId)
+    var client = window.HubAuth.getClient();
+    if (registration.channel) client.removeChannel(registration.channel);
+    registration.channel = client.channel('hub-sync-' + registration.app + '-' + userId)
       .on('postgres_changes', { event: '*', schema: 'public', table: TABLE, filter: 'user_id=eq.' + userId }, function (event) {
         var row = event.new;
-        if (row && row.app_id === registration.app) applyRows(registration, [row]);
+        if (row && row.app_id === registration.app) applyRows(registration, [row], userId);
       }).subscribe();
+  }
+  function deactivate(registration) {
+    var client = window.HubAuth && window.HubAuth.getClient();
+    registration.activationId += 1;
+    registration.activeUserId = '';
+    if (registration.channel && client) client.removeChannel(registration.channel);
+    registration.channel = null;
+    emit(registration.app, 'locked', '登录后才能同步');
   }
   function activate(registration) {
     var session = window.HubAuth && window.HubAuth.getSession();
-    if (!session || !window.HubAuth.getClient()) return;
+    var client = window.HubAuth && window.HubAuth.getClient();
+    if (!session || !session.user || !client) { deactivate(registration); return Promise.resolve(false); }
     var userId = session.user.id;
+    var activationId = ++registration.activationId;
+    registration.activeUserId = userId;
     emit(registration.app, 'syncing', '正在读取云端数据');
-    window.HubAuth.getClient().from(TABLE).select('item_key,payload,updated_at,deleted_at').eq('app_id', registration.app).then(function (result) {
+    return client.from(TABLE).select('item_key,payload,updated_at,deleted_at').eq('app_id', registration.app).then(function (result) {
       if (result.error) throw result.error;
+      if (activationId !== registration.activationId || sessionUserId() !== userId) return false;
       var remote = result.data || [];
       var local = localItems(registration);
       var owner = readJson(ownerKey(registration.app), '');
+
       if (owner && owner !== userId) {
-        if (remote.length) applyRows(registration, remote);
-        else if (registration.resetLocal) registration.resetLocal();
+        backupLocal(registration, owner);
+        resetLocal(registration);
+        local = [];
+        if (remote.length) applyRows(registration, remote, userId);
       } else if (!owner && remote.length && local.length) {
-        writeJson('hub.sync.backup.' + registration.app + '.' + Date.now(), local);
+        backupLocal(registration, 'unowned');
         var useLocal = window.confirm('检测到此设备的旧数据和云端数据。点击“确定”导入本机数据并合并；点击“取消”使用云端数据。');
-        if (useLocal) { applyRows(registration, remote); enqueueInitial(registration, local); }
-        else applyRows(registration, remote);
+        if (useLocal) {
+          applyRows(registration, remote, userId);
+          enqueueInitial(registration, local, userId);
+        } else {
+          resetLocal(registration);
+          applyRows(registration, remote, userId);
+        }
       } else if (remote.length) {
-        applyRows(registration, remote);
-        var missing = local.filter(function (item) { return !remote.some(function (row) { return row.item_key === item.item_key; }); });
-        enqueueInitial(registration, missing);
+        applyRows(registration, remote, userId);
+        local.forEach(function (item) {
+          var remoteRow = remote.find(function (row) { return row.item_key === item.item_key; });
+          var localVersion = currentVersion(userId, registration.app, item.item_key);
+          if (!remoteRow || (localVersion && timestamp(localVersion.updated_at) > timestamp(remoteRow.updated_at))) {
+            queueLocal(registration.app, item.item_key, item.payload, false);
+          }
+        });
       } else {
-        enqueueInitial(registration, local);
+        enqueueInitial(registration, local, userId);
       }
+
       writeJson(ownerKey(registration.app), userId);
       subscribe(registration, userId);
       emit(registration.app, 'synced', '已同步');
+      return flush(registration.app).then(function () { return true; });
     }).catch(function (error) {
-      emit(registration.app, 'error', '无法连接云端，本地数据已保留');
-      console.warn('Hub sync initialisation failed:', error.message);
+      if (activationId === registration.activationId) {
+        emit(registration.app, 'error', '无法连接云端，本地数据已保留');
+        console.warn('Hub sync initialisation failed:', error.message);
+      }
+      return false;
     });
   }
   function register(app, options) {
     if (registrations[app]) return registrations[app].api;
-    var registration = Object.assign({ app: app, timer: null, channel: null }, options || {});
-    registration.api = { put: function (key, payload) { put(app, key, payload); }, remove: function (key) { remove(app, key); }, flush: function () { flush(app); } };
+    var registration = Object.assign({ app: app, timer: null, channel: null, activeUserId: '', activationId: 0 }, options || {});
+    registration.api = {
+      put: function (key, payload) { return queueLocal(app, key, payload, false); },
+      remove: function (key) { return queueLocal(app, key, {}, true); },
+      flush: function () { return flush(app); }
+    };
     registrations[app] = registration;
-    window.HubAuth.init().then(function () { activate(registration); });
-    window.HubAuth.onChange(function (session) { if (session) activate(registration); });
+    window.HubAuth.init().then(function (session) {
+      if (!session) deactivate(registration);
+      else if (registration.activeUserId !== session.user.id) activate(registration);
+    });
+    window.HubAuth.onChange(function (session) { if (session) activate(registration); else deactivate(registration); });
     return registration.api;
   }
   window.HubSync = { register: register, flush: flush };

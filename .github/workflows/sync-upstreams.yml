@@ -8,7 +8,7 @@ on:
     types: [upstream-app-updated]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: sync-upstream-applications
@@ -17,6 +17,10 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - name: Check out portal
         uses: actions/checkout@v6
@@ -53,10 +57,12 @@ jobs:
         run: npm run verify
 
       - name: Commit upstream changes
+        id: commit
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- words training exam-schedule upstreams.json)" ]; then
             echo "All applications already match their upstream repositories."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -64,3 +70,37 @@ jobs:
           git add words training exam-schedule upstreams.json
           git commit -m "sync upstream applications"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the synced default branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: npm run verify
+      - run: npm run build
+      - uses: actions/configure-pages@v6
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v5
