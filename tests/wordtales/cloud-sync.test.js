@@ -33,16 +33,15 @@ async function readyCloud(remoteProfile) {
   return { context, remote, writes, progress: context.WordTales.LearningProgress };
 }
 
-test('首次登录会上传本机已有学习档案', async () => {
+test('首次登录不再写旧整档表，后续交给分条同步', async () => {
   const { progress, writes, context } = await readyCloud();
   const entry = context.WordTales.Data.getAllEntries()[0];
   await progress.rateWord(entry.id, 'Good', {}, 'cloud-first-login');
 
   await context.WordTales.CloudSync.connectProfile();
 
-  assert.equal(writes.length, 1);
-  assert.equal(writes[0].user_id, '8f45f983-fdd6-49f6-9d8e-7d6eb1e59892');
-  assert.equal(writes[0].profile.words[entry.id].reviewCount, 1);
+  assert.equal(progress.getData().words[entry.id].reviewCount, 1);
+  assert.equal(writes.length, 0);
 });
 
 test('已有更新云端档案时优先下载且不会反向覆盖', async () => {

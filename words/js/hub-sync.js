@@ -3,6 +3,7 @@ WordTales.HubProfileSync = (function () {
   var controller = null;
   var previous = null;
   var pollTimer = null;
+  var applyChain = Promise.resolve();
 
   function eventKey(event, index) {
     var submission = event && event.meta && event.meta.submissionId;
@@ -21,38 +22,44 @@ WordTales.HubProfileSync = (function () {
   }
   function applyRemote(rows) {
     var progress = WordTales.LearningProgress;
-    if (!progress || !progress.isReady()) return;
-    var profile = progress.getData();
-    rows.forEach(function (row) {
-      var key = row.item_key, value = row.payload || {};
-      function assign(group, id) { if (row.deleted_at) delete profile[group][id]; else profile[group][id] = value; }
-      if (key.indexOf('word:') === 0) assign('words', key.slice(5));
-      else if (key.indexOf('article:') === 0) assign('articles', key.slice(8));
-      else if (key.indexOf('analysis:') === 0) assign('analyses', key.slice(9));
-      else if (key.indexOf('day:') === 0) assign('days', key.slice(4));
-      else if (key.indexOf('column:') === 0) {
-        var parts = key.split(':'); var date = parts[1], column = parts.slice(2).join(':');
-        if (!profile.columnCompletions[date]) profile.columnCompletions[date] = {};
-        if (row.deleted_at) delete profile.columnCompletions[date][column]; else profile.columnCompletions[date][column] = true;
-      } else if (key.indexOf('event:') === 0 && !row.deleted_at) {
-        var seen = (profile.events || []).some(function (event, index) { return eventKey(event, index) === key.slice(6); });
-        if (!seen) profile.events.push(value);
-      } else if (key === 'meta' && !row.deleted_at) {
-        profile.reminders = value.reminders || profile.reminders;
-        profile.starMigrationV2 = !!value.starMigrationV2;
-      }
+    if (!progress || !progress.isReady()) return Promise.resolve(false);
+    applyChain = applyChain.then(function () {
+      var profile = JSON.parse(JSON.stringify(progress.getData()));
+      rows.forEach(function (row) {
+        var key = row.item_key, value = row.payload || {};
+        function assign(group, id) { if (row.deleted_at) delete profile[group][id]; else profile[group][id] = value; }
+        if (key.indexOf('word:') === 0) assign('words', key.slice(5));
+        else if (key.indexOf('article:') === 0) assign('articles', key.slice(8));
+        else if (key.indexOf('analysis:') === 0) assign('analyses', key.slice(9));
+        else if (key.indexOf('day:') === 0) assign('days', key.slice(4));
+        else if (key.indexOf('column:') === 0) {
+          var parts = key.split(':'); var date = parts[1], column = parts.slice(2).join(':');
+          if (!profile.columnCompletions[date]) profile.columnCompletions[date] = {};
+          if (row.deleted_at) delete profile.columnCompletions[date][column]; else profile.columnCompletions[date][column] = true;
+        } else if (key.indexOf('event:') === 0 && !row.deleted_at) {
+          var seen = (profile.events || []).some(function (event, index) { return eventKey(event, index) === key.slice(6); });
+          if (!seen) profile.events.push(value);
+        } else if (key === 'meta' && !row.deleted_at) {
+          profile.reminders = value.reminders || profile.reminders;
+          profile.starMigrationV2 = !!value.starMigrationV2;
+        }
+      });
+      profile.updatedAt = new Date().toISOString();
+      return progress.replaceData(profile).then(function () {
+        previous = itemsFor(progress.getData()).reduce(function (map, item) { map[item.item_key] = JSON.stringify(item.payload); return map; }, {});
+        if (WordTales.Progress && WordTales.Progress.refresh) WordTales.Progress.refresh();
+        return true;
+      });
     });
-    profile.updatedAt = new Date().toISOString();
-    progress.replaceData(profile).then(function () {
-      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
-    });
+    return applyChain;
   }
   function resetLocal() {
     var progress = WordTales.LearningProgress;
-    if (!progress || !progress.isReady()) return;
+    if (!progress || !progress.isReady()) return Promise.resolve(false);
     previous = {};
-    progress.replaceData(null).then(function () {
-      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    return progress.replaceData(null).then(function () {
+      if (WordTales.Progress && WordTales.Progress.refresh) WordTales.Progress.refresh();
+      return true;
     });
   }
   function start() {

@@ -5,6 +5,7 @@
   var session = null;
   var ready = null;
   var listeners = [];
+  var sessionFingerprint = '';
 
   function config() { return window.HubConfig || {}; }
   function isConfigured() { return !!(config().supabaseUrl && config().publishableKey && window.supabase); }
@@ -12,12 +13,30 @@
     listeners.slice().forEach(function (listener) { listener(session); });
     window.dispatchEvent(new CustomEvent('hub:auth-change', { detail: session }));
   }
-  function setSession(next) { session = next || null; notify(); }
+  function fingerprint(value) {
+    if (!value || !value.user) return '';
+    return [value.user.id || '', value.access_token || '', value.expires_at || ''].join('|');
+  }
+  function setSession(next) {
+    var normalized = next || null;
+    var nextFingerprint = fingerprint(normalized);
+    if (nextFingerprint === sessionFingerprint && (!!normalized === !!session)) return false;
+    session = normalized;
+    sessionFingerprint = nextFingerprint;
+    notify();
+    return true;
+  }
   function init() {
     if (ready) return ready;
     if (!isConfigured()) return ready = Promise.resolve(null);
     client = window.supabase.createClient(config().supabaseUrl, config().publishableKey, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        /* Do not leave route entry hanging forever on a stale cross-tab Web Lock. */
+        lockAcquireTimeout: 2500
+      }
     });
     client.auth.onAuthStateChange(function (_event, next) { setSession(next); });
     ready = client.auth.getSession().then(function (result) {

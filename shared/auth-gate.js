@@ -8,6 +8,8 @@
   function authenticate(session) {
     if (!session || !session.user) return false;
     document.documentElement.setAttribute('data-authenticated', '');
+    /* Authentication protects the route; cloud sync is local-first background work. */
+    document.documentElement.setAttribute('data-auth-ready', '');
     return true;
   }
 
@@ -30,12 +32,8 @@
     if (detail.app !== app) return;
     if (detail.state === 'synced') {
       document.documentElement.removeAttribute('data-auth-error');
-      document.documentElement.setAttribute('data-auth-ready', '');
     } else if (detail.state === 'error') {
       document.documentElement.setAttribute('data-auth-error', '');
-      document.documentElement.removeAttribute('data-auth-ready');
-    } else if (detail.state === 'locked') {
-      document.documentElement.removeAttribute('data-auth-ready');
     }
   });
 })();

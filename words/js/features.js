@@ -2606,16 +2606,18 @@ document.getElementById(targetId).scrollIntoView({ block: 'start' });
 });
 }
 }
-WordTales.Auth.init().then(function(){
-return WordTales.CloudSync.init();
-}).then(function(){
-return WordTales.LearningProgress.init();
-}).then(function(){
+/* Local data and controls become usable without waiting for network authentication or sync. */
+WordTales.LearningProgress.init().then(function(){
 WordTales.StudyRecord.init();
 WordTales.Progress.refresh();
 window.addEventListener('hashchange', switchToHash);
 switchToHash();
-return WordTales.CloudSync.connectProfile();
+return WordTales.Auth.init().then(function(){
+return WordTales.CloudSync.init();
+}).then(function(){
+/* Legacy profile migration runs once in the background; HubSync owns ongoing writes. */
+WordTales.CloudSync.connectProfile();
+});
 });
 }
 

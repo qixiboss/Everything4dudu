@@ -4,14 +4,18 @@
  * ============================================================ */
 WordTales.CloudSync = (function() {
   var OWNER_KEY = 'wordtales.cloud-sync.owner.v1';
+  var MIGRATED_KEY = 'wordtales.cloud-sync.migrated.v2';
   var TABLE = 'learning_profiles';
   var timer = null;
   var initialized = false;
   var syncing = false;
+  var connecting = null;
   var status = 'local';
 
   function readOwner() { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (e) { return ''; } }
   function writeOwner(userId) { try { localStorage.setItem(OWNER_KEY, userId); } catch (e) {} }
+  function migratedUser() { try { return localStorage.getItem(MIGRATED_KEY) || ''; } catch (e) { return ''; } }
+  function markMigrated(userId) { try { localStorage.setItem(MIGRATED_KEY, userId); } catch (e) {} }
   function user() { var session = WordTales.Auth && WordTales.Auth.getSession(); return session && session.user ? session.user : null; }
   function client() { return WordTales.Auth && WordTales.Auth.getClient(); }
   function updateStatus(next, message) {
@@ -24,7 +28,7 @@ WordTales.CloudSync = (function() {
     if (timer) clearTimeout(timer);
     timer = setTimeout(function() {
       timer = null;
-      upload().then(function() { if (WordTales.HubProfileSync) WordTales.HubProfileSync.queue(); });
+      if (WordTales.HubProfileSync) WordTales.HubProfileSync.queue();
     }, 1400);
   }
   function fetchRemote(currentUser) {
@@ -51,28 +55,40 @@ WordTales.CloudSync = (function() {
   function connectProfile() {
     var currentUser = user();
     if (!currentUser || !client() || !WordTales.LearningProgress || !WordTales.LearningProgress.isReady()) { updateStatus('local', '本地进度模式'); return Promise.resolve(false); }
+    if (connecting) return connecting;
+    if (migratedUser() === currentUser.id) {
+      updateStatus('synced', '进度已同步');
+      if (WordTales.HubProfileSync) { WordTales.HubProfileSync.start(); WordTales.HubProfileSync.queue(); }
+      return Promise.resolve(true);
+    }
     syncing = true;
-    updateStatus('syncing', '正在读取云端进度…');
-    return fetchRemote(currentUser).then(function(remote) {
+    updateStatus('syncing', '正在迁移旧版云端进度…');
+    connecting = fetchRemote(currentUser).then(function(remote) {
       var local = WordTales.LearningProgress.getData();
       var owner = readOwner();
       if (owner && owner !== currentUser.id) {
-        if (remote) return WordTales.LearningProgress.replaceData(remote.profile).then(function() { writeOwner(currentUser.id); updateStatus('synced', '已载入你的云端进度'); return true; });
-        return WordTales.LearningProgress.replaceData(null).then(function() { writeOwner(currentUser.id); return upload(true); });
+        if (remote) return WordTales.LearningProgress.replaceData(remote.profile);
+        return WordTales.LearningProgress.replaceData(null);
       }
       if (remote && time(remote.updated_at) > time(local.updatedAt)) {
-        return WordTales.LearningProgress.replaceData(remote.profile).then(function() { writeOwner(currentUser.id); updateStatus('synced', '已载入最新云端进度'); return true; });
+        return WordTales.LearningProgress.replaceData(remote.profile);
       }
+      return true;
+    }).then(function() {
       writeOwner(currentUser.id);
-      return upload(true);
+      markMigrated(currentUser.id);
+      updateStatus('synced', '进度已同步');
+      return true;
     }).catch(function(error) {
       updateStatus('error', '无法读取云端进度，本地进度已保留：' + error.message);
       return false;
     }).finally(function() {
       syncing = false;
+      connecting = null;
       /* Migrate the resolved legacy profile, not the pre-login browser cache. */
       if (WordTales.HubProfileSync) { WordTales.HubProfileSync.start(); WordTales.HubProfileSync.queue(); }
     });
+    return connecting;
   }
   function init() {
     if (initialized) return Promise.resolve(api);

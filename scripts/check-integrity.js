@@ -25,14 +25,14 @@ const expectedScripts = [
   '../shared/hub-shell.js',
   'js/namespace.js?v=3.0.0',
   'js/supabase-config.js?v=1.0.0',
-  'js/auth.js?v=1.0.0',
+  'js/auth.js?v=1.0.1',
   'js/data.js?v=3.0.0',
   'js/renderer.js?v=3.0.0',
   'js/learning-progress-v2.js?v=3.0.8',
-  'js/cloud-sync.js?v=1.0.0',
-  'js/hub-sync.js?v=1.0.0',
+  'js/cloud-sync.js?v=1.1.0',
+  'js/hub-sync.js?v=1.1.0',
   'js/study-record.js?v=1.0.0',
-  'js/features.js?v=3.0.4'
+  'js/features.js?v=3.0.5'
 ];
 const scriptTags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 const scripts = scriptTags.map((match) => {

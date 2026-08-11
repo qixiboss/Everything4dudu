@@ -81,6 +81,7 @@ test('主页把三个应用标记为登录后访问且不暴露公开注册入�
 
 test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除本地会话', async () => {
   const calls = [];
+  let clientOptions;
   const session = { user: { id: 'user-a', email: 'dudu@example.com' } };
   let authListener;
   const client = {
@@ -96,7 +97,7 @@ test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除�
     CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
     dispatchEvent() {},
     HubConfig: { supabaseUrl: 'https://example.supabase.co', publishableKey: 'sb_publishable_test' },
-    supabase: { createClient() { return client; } }
+    supabase: { createClient(_url, _key, options) { clientOptions = options; return client; } }
   });
   context.window = context;
   vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-auth.js'), 'utf8'), context);
@@ -108,15 +109,20 @@ test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除�
   assert.equal(JSON.stringify(calls[0]), JSON.stringify(['login', { email: 'dudu@example.com', password: 'password123' }]));
   assert.equal(typeof context.HubAuth.signUpWithPassword, 'undefined');
   assert.equal(typeof authListener, 'function');
+  assert.equal(clientOptions.auth.lockAcquireTimeout, 2500);
 });
 
-test('每个应用在认证与首次同步成功前保持锁定', () => {
+test('每个应用仅在账户验证前锁定，云端同步在后台进行', () => {
   const gate = fs.readFileSync(path.join(root, 'shared/auth-gate.js'), 'utf8');
   const css = fs.readFileSync(path.join(root, 'shared/hub.css'), 'utf8');
   assert.match(gate, /next=' \+ encodeURIComponent\(app\)/);
   assert.match(gate, /hub:sync-status/);
   assert.match(gate, /data-auth-ready/);
+  assert.match(gate, /setAttribute\('data-auth-ready', ''\)/);
+  assert.doesNotMatch(gate, /detail\.state === 'error'[\s\S]{0,180}removeAttribute\('data-auth-ready'\)/);
   assert.match(css, /data-app.*not\(\[data-auth-ready\]\).*visibility: hidden/);
+  assert.match(css, /正在验证账户…/);
+  assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
   ['words', 'training', 'exam-schedule'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
     const auth = html.indexOf('../shared/hub-auth.js');
@@ -125,6 +131,14 @@ test('每个应用在认证与首次同步成功前保持锁定', () => {
     assert.ok(auth >= 0 && auth < gateIndex && gateIndex < sync, app);
     assert.match(html, /Content-Security-Policy/);
   });
+});
+
+test('词汇学习先恢复本地档案，远端更新不再触发整页刷新', () => {
+  const features = fs.readFileSync(path.join(root, 'words/js/features.js'), 'utf8');
+  const wordSync = fs.readFileSync(path.join(root, 'words/js/hub-sync.js'), 'utf8');
+  assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.Auth.init()'));
+  assert.match(wordSync, /applyChain/);
+  assert.doesNotMatch(wordSync, /location\.reload/);
 });
 
 test('应用页只注入低调的返回主页入口，不渲染门户导航栏', () => {
