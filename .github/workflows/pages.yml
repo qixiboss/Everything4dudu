@@ -1,7 +1,8 @@
 name: Deploy unified portal to GitHub Pages
 
-# 推送门户时构建并部署。三个应用目录在构建时从各自仓库检出最新 main,
-# 整合后输出到 _site/;应用仓库的推送只更新它们自己的 Pages。
+# 推送门户时构建并部署。三个应用以子模块登记在门户仓库里(见 .gitmodules),
+# 检出时按登记的指针拉取,整合后输出到 _site/;应用仓库的推送只更新它们
+# 自己的 Pages,门户要带上新版本需在门户提交中更新对应子模块指针。
 on:
   push:
     branches: [master, main]
@@ -21,21 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Check out WordTales (words)
-        uses: actions/checkout@v6
         with:
-          repository: qixiboss/WordTales
-          path: words
-      - name: Check out training record (training)
-        uses: actions/checkout@v6
-        with:
-          repository: qixiboss/Train_record
-          path: training
-      - name: Check out exam schedule (exam-schedule)
-        uses: actions/checkout@v6
-        with:
-          repository: qixiboss/-Graduate-Entrance-Exam-Schedule
-          path: exam-schedule
+          submodules: recursive
       - uses: actions/setup-node@v6
         with: { node-version: 22 }
       - run: npm run verify

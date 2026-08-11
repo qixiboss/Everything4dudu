@@ -7,7 +7,9 @@
 ## 本地查看
 
 ```sh
-npm run build          # 从 words/、training/、exam-schedule/ 三个克隆整合应用,输出 _site/
+git clone --recurse-submodules ...   # 首次克隆:同时取回三个应用子模块
+git submodule update --init          # 或已克隆后初始化子模块
+npm run build                        # 从三个子模块整合应用,输出 _site/
 cd _site && python3 -m http.server 8000
 ```
 
@@ -21,12 +23,12 @@ cd _site && python3 -m http.server 8000
 - `qixiboss/Train_record` → `/training/`
 - `qixiboss/-Graduate-Entrance-Exam-Schedule` → `/exam-schedule/`
 
-本仓库的 `words/`、`training/`、`exam-schedule/` 是这三个仓库的本地克隆(不入库,已 gitignore),仅作为构建输入:开发时直接在克隆里改代码并 `git push` 到各自仓库即可。门户的整合(共享登录/同步脚本、CSP、返回主页入口)由 `scripts/integrate.js` 在构建 `_site/` 时注入,不修改应用源码。
+本仓库的 `words/`、`training/`、`exam-schedule/` 是这三个仓库的 **git 子模块**(见 `.gitmodules`):每个文件夹都是完整的 git 仓库,直接在里面开发、`git push` 到各自远程即可;门户仓库登记每个应用的确切提交版本。门户的整合(共享登录/同步脚本、CSP、返回主页入口)由 `scripts/integrate.js` 在构建 `_site/` 时注入,不修改应用源码。
 
 **部署时机**:
 
 - 应用仓库各自推送、各自部署它们自己的 GitHub Pages,与门户互不影响;
-- 推送门户仓库 → 构建时检出三个应用的最新 `main`,整合后部署门户。
+- 推送门户仓库 → CI 按门户登记的指针检出应用子模块,整合后部署门户。要让门户带上应用的新改动,在门户提交中 `git add words training exam-schedule`(更新指针)后再推送即可。
 
 `changelog/` 是门户自有应用,只在本仓库维护。
 

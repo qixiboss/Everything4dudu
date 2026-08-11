@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Everything 4 Dudu is a mobile-style home-page portal (GitHub Pages site) that unifies three independently-developed apps — WordTales (vocabulary learning), Train_record (training log), and the Graduate Entrance Exam Schedule — plus a portal-owned changelog app. All apps share a single Supabase email/password login (pre-created accounts only, no public signup) and sync learning data across devices through the same account.
 
-The three apps are developed **in their own repositories** (`qixiboss/WordTales`, `qixiboss/Train_record`, `qixiboss/-Graduate-Entrance-Exam-Schedule`), each with its own GitHub Pages. This repo does not track app content: `words/`, `training/`, `exam-schedule/` are **local clones** of those repos (gitignored) used as build input. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`. The only hand-maintained app in this repo is `changelog/`; the home page (`index.html` + `shared/home.js` + `shared/home.css`) is also hand-maintained.
+The three apps are developed **in their own repositories** (`qixiboss/WordTales`, `qixiboss/Train_record`, `qixiboss/-Graduate-Entrance-Exam-Schedule`), each with its own GitHub Pages. `words/`, `training/`, `exam-schedule/` are **git submodules** of those repos (registered in `.gitmodules`): each folder is a full git repo with its own remote, and the portal records the exact commit (pointer) it deploys. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`. The only hand-maintained app in this repo is `changelog/`; the home page (`index.html` + `shared/home.js` + `shared/home.css`) is also hand-maintained.
 
 ## Commands
 
@@ -17,7 +17,7 @@ npm run build            # scripts/build-site.js: integrate apps from clones + c
 npm run verify           # build + test + check; runs in CI before every deploy
 ```
 
-Prerequisites: Node >= 22, and the three app clones present at `words/`, `training/`, `exam-schedule/` (gitignored; they exist locally and are checked out by CI). Local preview: `npm run build` then `python3 -m http.server 8000` from `_site/` (or serve the repo root — portal files are at root, but app pages only exist in `_site/`).
+Prerequisites: Node >= 22, and the three app submodules initialized (`git submodule update --init` after a fresh clone; clone once with `git clone --recurse-submodules` to get everything). Local preview: `npm run build` then `python3 -m http.server 8000` from `_site/` (or serve the repo root — portal files are at root, but app pages only exist in `_site/`).
 
 ## Architecture
 
@@ -31,7 +31,7 @@ Prerequisites: Node >= 22, and the three app clones present at `words/`, `traini
 - for training: copies only `index.html`, `styles.css`, `app.js`
 - for exam-schedule: extracts the app from an iframe `srcdoc` and replaces its stricter CSP
 
-The committed app content is reproducible from the clones via `npm run build`; nothing app-related is committed to this repo.
+The committed app content is reproducible from the submodules via `npm run build`; the portal repo only records submodule pointers (`.gitmodules` + gitlinks), never app content.
 
 ### Shared runtime
 
@@ -58,9 +58,9 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ### CI / deployment
 
-- `.github/workflows/pages.yml` — on push to master/main: checks out the three app repos (latest `main`) into `words/ training/ exam-schedule/`, runs `npm run verify` (build → test → check), and deploys `_site/` to Pages
-- The app repos deploy their own Pages independently (their own workflows); pushing them does not touch this portal. The portal builds from the apps' latest code whenever the portal is pushed
-- `_site/` is the build output (gitignored); `words/`, `training/`, `exam-schedule/` are gitignored clones
+- `.github/workflows/pages.yml` — on push to master/main: checks out the portal with `submodules: recursive` (materializes the pinned app commits), runs `npm run verify` (build → test → check), and deploys `_site/` to Pages
+- The app repos deploy their own Pages independently (their own workflows); pushing them does not touch this portal. The portal deploys the exact app versions recorded in the portal commit — to include new app changes, `git add <app>` in the portal commit (updates the pointer), then push the portal
+- `_site/` is the build output (gitignored); `words/`, `training/`, `exam-schedule/` are submodules
 
 ## Supabase
 
@@ -70,6 +70,6 @@ Migrations live in `supabase/migrations/` and must be applied to the WordTales S
 
 - All user-facing text is Simplified Chinese; code comments mix Chinese and English
 - Browser scripts are ES5-style IIFEs (no modules, no build step) — keep that style when touching `shared/`, `changelog/`, or `integrations/`
-- Never edit the app clones' content for portal purposes in this repo's commits — `words/` etc. are gitignored build input; app changes belong in their own repos (commit and push there)
-- The portal always builds the apps' latest `main`; there is no version pinning
+- App changes happen inside the submodules: commit and push from `words/`, `training/`, or `exam-schedule/` (each goes to its own remote); the portal commit then records the new pointer via `git add <app>` — never commit app files directly into the portal tree
+- The portal deploys the app versions pinned in the portal commit; there is no "always latest" behavior
 - Any change to the shared script block or its order must keep `tests/portal.test.js` and `check-integrity.js` expectations in sync

@@ -1,6 +1,3 @@
 .DS_Store
 node_modules/
 _site/
-words/
-training/
-exam-schedule/

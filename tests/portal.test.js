@@ -170,15 +170,15 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   });
 });
 
-test('门户构建时从应用仓库检出最新 main,推送门户才触发部署', () => {
+test('三个应用以子模块登记,门户构建时按指针检出', () => {
+  const modules = fs.readFileSync(path.join(root, '.gitmodules'), 'utf8');
+  assert.match(modules, /path = words\n\s*url = https:\/\/github\.com\/qixiboss\/WordTales\.git/);
+  assert.match(modules, /path = training\n\s*url = https:\/\/github\.com\/qixiboss\/Train_record\.git/);
+  assert.match(modules, /path = exam-schedule\n\s*url = https:\/\/github\.com\/qixiboss\/-Graduate-Entrance-Exam-Schedule\.git/);
+
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
   assert.doesNotMatch(workflow, /repository_dispatch/);
-  assert.match(workflow, /repository: qixiboss\/WordTales/);
-  assert.match(workflow, /repository: qixiboss\/Train_record/);
-  assert.match(workflow, /repository: qixiboss\/-Graduate-Entrance-Exam-Schedule/);
-  assert.match(workflow, /path: words/);
-  assert.match(workflow, /path: training/);
-  assert.match(workflow, /path: exam-schedule/);
+  assert.match(workflow, /submodules: recursive/);
   assert.match(workflow, /npm run verify/);
   assert.match(workflow, /group: pages/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
