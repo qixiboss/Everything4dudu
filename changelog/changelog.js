@@ -65,13 +65,16 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
   }
 
-  /* 先种子后本地：本地条目（含已保存的编辑）与种子项同版本时以本地为准。 */
+  /* 先种子后本地：本地条目（含已保存的编辑）与种子项同版本时以本地为准；
+   * 种子之外的条目（用户自行添加的版本）也要保留。 */
   function loadEntries() {
     var local = read();
+    var seedVersions = {};
+    SEED.forEach(function (entry) { seedVersions[entry.version] = true; });
     var map = {};
     local.forEach(function (entry) { map[entry.version] = entry; });
     return SEED.map(function (entry) { return map[entry.version] || entry; })
-      .concat(local.filter(function (entry) { return !map[entry.version]; }));
+      .concat(local.filter(function (entry) { return !seedVersions[entry.version]; }));
   }
 
   function escapeHtml(value) {
@@ -99,7 +102,8 @@
         group = text.replace(/^#{1,6}\s+/, '');
         html += '<span class="group">' + escapeHtml(group) + '</span><ul>';
       } else {
-        items.push(escapeHtml(text));
+        /* 去掉行首的「- 」标记，列表圆点由 <ul> 提供。 */
+        items.push(escapeHtml(/^[-*]\s+/.test(text) ? text.slice(2).trim() : text));
       }
     });
     flush();
