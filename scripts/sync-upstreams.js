@@ -60,6 +60,7 @@ function sharedScripts() {
     '<script defer src="../shared/vendor/supabase.js"></script>',
     '<script defer src="../shared/config.js"></script>',
     '<script defer src="../shared/hub-auth.js"></script>',
+    '<script defer src="../shared/auth-gate.js"></script>',
     '<script defer src="../shared/sync-store.js"></script>',
     '<script defer src="../shared/hub-shell.js"></script>'
   ].join('\n');
@@ -72,6 +73,12 @@ function buildWords() {
 
   let html = fs.readFileSync(path.join(source, 'vocab-essays.html'), 'utf8');
   html = replaceOnce(html, '<html lang="zh-CN">', '<html lang="zh-CN" data-app="words">', 'WordTales html element');
+  html = replaceOnce(
+    html,
+    '<meta name="description" content="通过主题短文、双面词卡、语音朗读、练习和学习记录表，在真实语境中学习和记忆英语词汇。">',
+    '<meta name="description" content="通过主题短文、双面词卡、语音朗读、练习和学习记录表，在真实语境中学习和记忆英语词汇。">\n<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\'; style-src \'self\' \'unsafe-inline\'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src \'self\' data:; media-src \'self\' blob:; object-src \'none\'; base-uri \'self\'; form-action \'none\'; frame-src \'none\'">',
+    'WordTales content security policy'
+  );
   html = replaceOnce(
     html,
     '<link rel="stylesheet" href="css/styles.css?v=3.0.6">',
@@ -125,6 +132,12 @@ function buildTraining() {
   html = replaceOnce(html, '<html lang="zh-CN">', '<html lang="zh-CN" data-app="training">', 'Training html element');
   html = replaceOnce(
     html,
+    '<meta name="theme-color" content="#F5F4F0">',
+    '<meta name="theme-color" content="#F5F4F0">\n<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\'; style-src \'self\' \'unsafe-inline\'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src \'self\' data:; media-src \'self\' blob:; object-src \'none\'; base-uri \'self\'; form-action \'none\'; frame-src \'none\'">',
+    'Training content security policy'
+  );
+  html = replaceOnce(
+    html,
     '<link rel="stylesheet" href="styles.css">',
     '<link rel="stylesheet" href="styles.css">\n<link rel="stylesheet" href="../shared/hub.css">',
     'Training stylesheet'
@@ -161,7 +174,7 @@ function buildExamSchedule() {
 
   html = replaceOnce(html, '<html lang="zh-CN">', '<html lang="zh-CN" data-app="exam-schedule">', 'Exam schedule html element');
   const currentCsp = "default-src 'none'; script-src 'unsafe-inline' https://unpkg.com; style-src 'unsafe-inline'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
-  const portalCsp = "default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
+  const portalCsp = "default-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
   html = replaceOnce(html, currentCsp, portalCsp, 'Exam schedule content security policy');
   html = replaceOnce(
     html,

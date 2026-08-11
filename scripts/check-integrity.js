@@ -20,6 +20,7 @@ const expectedScripts = [
   '../shared/vendor/supabase.js',
   '../shared/config.js',
   '../shared/hub-auth.js',
+  '../shared/auth-gate.js',
   '../shared/sync-store.js',
   '../shared/hub-shell.js',
   'js/namespace.js?v=3.0.0',

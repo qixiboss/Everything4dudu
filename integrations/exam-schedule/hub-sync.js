@@ -12,6 +12,11 @@
       .concat(Object.keys(value.rested).filter(function (day) { return value.rested[day]; }).map(function (day) { return { item_key: 'rest:' + day, payload: { rested: true } }; }));
   }
   function encodedItems() { return items().reduce(function (map, item) { map[item.item_key] = JSON.stringify(item.payload); return map; }, {}); }
+  function resetLocal() {
+    localStorage.removeItem(STORAGE_KEY);
+    previous = {};
+    if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+  }
   function applyRemote(rows) {
     var value = state(), changed = false;
     rows.forEach(function (row) {
@@ -43,7 +48,7 @@
   function start() {
     if (!window.HubSync) return;
     previous = encodedItems();
-    controller = window.HubSync.register('exam-schedule', { getItems: items, applyRemote: applyRemote });
+    controller = window.HubSync.register('exam-schedule', { getItems: items, applyRemote: applyRemote, resetLocal: resetLocal });
     window.setInterval(scan, 800);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
