@@ -26,6 +26,18 @@ test('手机主页包含三个应用入口和独立用户登录入口，考研�
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
 });
 
+test('应用页只注入低调的返回主页入口，不渲染门户导航栏', () => {
+  const shell = fs.readFileSync(path.join(root, 'shared/hub-shell.js'), 'utf8');
+  assert.match(shell, /class="hub-home-link"/);
+  assert.match(shell, /href="\.\.\/"/);
+  assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
+
+  ['words', 'training', 'exam-schedule'].forEach((app) => {
+    const html = fs.readFileSync(path.join(root, app, 'index.html'), 'utf8');
+    assert.match(html, /<div id="hub-shell"><\/div>/);
+  });
+});
+
 test('上游同步工作流定时拉取三个仓库并只提交验证后的生成目录', () => {
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/sync-upstreams.yml'), 'utf8');
   assert.match(workflow, /schedule:/);
