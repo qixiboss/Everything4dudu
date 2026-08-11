@@ -30,12 +30,46 @@
     });
     return ready;
   }
-  function signInWithMagicLink(email) {
+  function normalizeEmail(email) {
     email = String(email || '').trim();
-    if (!/^\S+@\S+\.\S+$/.test(email)) return Promise.reject(new Error('请输入有效的邮箱地址。'));
+    if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('请输入有效的邮箱地址。');
+    return email;
+  }
+  function normalizePassword(password, isRegistration) {
+    password = String(password || '');
+    if (!password) throw new Error('请输入密码。');
+    if (isRegistration && password.length < 8) throw new Error('密码至少需要 8 位。');
+    return password;
+  }
+  function signInWithPassword(email, password) {
+    try { email = normalizeEmail(email); }
+    catch (error) { return Promise.reject(error); }
+    try { password = normalizePassword(password, false); }
+    catch (error) { return Promise.reject(error); }
     if (!client) return Promise.reject(new Error('登录服务尚未配置。'));
-    return client.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.href.split('#')[0] } })
-      .then(function (result) { if (result.error) throw result.error; return true; });
+    return client.auth.signInWithPassword({ email: email, password: password })
+      .then(function (result) {
+        if (result.error) throw result.error;
+        if (!result.data || !result.data.session) throw new Error('登录失败，请重试。');
+        setSession(result.data.session);
+        return result.data.session;
+      });
+  }
+  function signUpWithPassword(email, password) {
+    try { email = normalizeEmail(email); }
+    catch (error) { return Promise.reject(error); }
+    try { password = normalizePassword(password, true); }
+    catch (error) { return Promise.reject(error); }
+    if (!client) return Promise.reject(new Error('登录服务尚未配置。'));
+    return client.auth.signUp({ email: email, password: password })
+      .then(function (result) {
+        if (result.error) throw result.error;
+        if (result.data && result.data.session) setSession(result.data.session);
+        return {
+          session: result.data && result.data.session ? result.data.session : null,
+          requiresEmailConfirmation: !(result.data && result.data.session)
+        };
+      });
   }
   function signOut() {
     if (!client) return Promise.resolve();
@@ -50,7 +84,8 @@
       listeners.push(listener);
       return function () { listeners = listeners.filter(function (value) { return value !== listener; }); };
     },
-    signInWithMagicLink: signInWithMagicLink,
+    signInWithPassword: signInWithPassword,
+    signUpWithPassword: signUpWithPassword,
     signOut: signOut
   };
 })();

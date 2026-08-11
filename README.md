@@ -1,6 +1,6 @@
 # Everything 4 Dudu
 
-统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程和用户登录四个应用图标。三个学习应用保持独立页面，但使用同一个 Supabase Magic Link 账号同步数据。
+统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程和用户登录四个应用图标。三个学习应用保持独立页面，但使用同一个 Supabase 邮箱密码账号同步数据。
 
 生产站点：<https://qixiboss.github.io/Everything4dudu/>
 
@@ -35,7 +35,9 @@ python3 -m http.server 8000
    - `https://qixiboss.github.io/Everything4dudu/words/`
    - `https://qixiboss.github.io/Everything4dudu/training/`
    - `https://qixiboss.github.io/Everything4dudu/exam-schedule/`
-4. 浏览器只使用 `shared/config.js` 内的 publishable key；不要填写 service-role 或 secret key。
+4. 在 **Authentication → Sign In / Providers → Email** 中启用 Email Provider 和新用户注册。当前产品不验证邮箱所有权，因此需关闭 Confirm email，注册后才会立即建立会话。
+5. 密码只提交给 Supabase Auth 并由其加盐哈希保存；不要在业务表、日志或前端存储密码。
+6. 浏览器只使用 `shared/config.js` 内的 publishable key；不要填写 service-role 或 secret key。
 
 首次使用统一门户登录时，会保留本机数据备份。若同一应用既有旧本机数据又有云端数据，会询问应导入本机数据还是使用云端数据。
 

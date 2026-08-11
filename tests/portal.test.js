@@ -21,9 +21,42 @@ test('手机主页包含三个应用入口和独立用户登录入口，考研�
   assert.match(home, /href="exam-schedule\/"/);
   assert.match(home, /data-login-open/);
   assert.match(home, /role="dialog"/);
+  assert.match(home, /autocomplete="current-password"/);
+  assert.match(home, /data-auth-mode="register"/);
   assert.match(home, /shared\/home\.js/);
   const schedule = fs.readFileSync(path.join(root, 'exam-schedule/index.html'), 'utf8');
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
+});
+
+test('邮箱密码登录和注册都由 Supabase Auth 建立会话', async () => {
+  const calls = [];
+  const session = { user: { id: 'user-a', email: 'dudu@example.com' } };
+  let authListener;
+  const client = {
+    auth: {
+      onAuthStateChange(listener) { authListener = listener; },
+      getSession() { return Promise.resolve({ data: { session: null }, error: null }); },
+      signInWithPassword(payload) { calls.push(['login', payload]); return Promise.resolve({ data: { session }, error: null }); },
+      signUp(payload) { calls.push(['register', payload]); return Promise.resolve({ data: { session }, error: null }); },
+      signOut() { return Promise.resolve({ error: null }); }
+    }
+  };
+  const context = vm.createContext({
+    console,
+    CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+    dispatchEvent() {},
+    HubConfig: { supabaseUrl: 'https://example.supabase.co', publishableKey: 'sb_publishable_test' },
+    supabase: { createClient() { return client; } }
+  });
+  context.window = context;
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-auth.js'), 'utf8'), context);
+  await context.HubAuth.init();
+  await context.HubAuth.signInWithPassword('dudu@example.com', 'password123');
+  await context.HubAuth.signUpWithPassword('new@example.com', 'password456');
+  assert.equal(JSON.stringify(calls[0]), JSON.stringify(['login', { email: 'dudu@example.com', password: 'password123' }]));
+  assert.equal(JSON.stringify(calls[1]), JSON.stringify(['register', { email: 'new@example.com', password: 'password456' }]));
+  assert.equal(context.HubAuth.getSession().user.email, 'dudu@example.com');
+  assert.equal(typeof authListener, 'function');
 });
 
 test('应用页只注入低调的返回主页入口，不渲染门户导航栏', () => {

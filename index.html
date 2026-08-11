@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#8ea0d8">
+  <meta name="theme-color" content="#dbe3f4">
   <meta name="description" content="Dudu 的个人学习与成长空间">
   <title>Everything 4 Dudu</title>
   <link rel="stylesheet" href="shared/home.css">
@@ -79,15 +79,32 @@
       </div>
       <div data-login-guest>
         <p class="sheet-kicker">DUDU ACCOUNT</p>
-        <h2 id="login-title">登录你的空间</h2>
-        <p class="sheet-copy">输入邮箱，我们会发送一次性登录链接。登录后，三个应用的数据会安全地跨设备同步。</p>
-        <form class="login-form" data-home-login>
+        <h2 id="login-title" data-auth-title>登录你的空间</h2>
+        <p class="sheet-copy" data-auth-copy>使用邮箱和密码登录，继续同步你的学习数据。</p>
+        <div class="auth-tabs" role="tablist" aria-label="账户操作">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-auth-mode="login">登录</button>
+          <button type="button" role="tab" aria-selected="false" data-auth-mode="register">注册</button>
+        </div>
+        <form class="login-form" data-home-login novalidate>
           <label for="login-email">邮箱地址</label>
-          <div class="email-field">
+          <div class="credential-field">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5 12 13l9-6.5M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <input id="login-email" type="email" required autocomplete="email" placeholder="name@example.com">
           </div>
-          <button class="primary-button" type="submit">发送登录链接 <span aria-hidden="true">→</span></button>
+          <label for="login-password">密码</label>
+          <div class="credential-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input id="login-password" type="password" required autocomplete="current-password" placeholder="输入密码">
+          </div>
+          <div data-register-fields hidden>
+            <p class="password-hint">密码至少 8 位，建议混合使用字母和数字。</p>
+            <label for="register-password-confirm">确认密码</label>
+            <div class="credential-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <input id="register-password-confirm" type="password" autocomplete="new-password" placeholder="再次输入密码">
+            </div>
+          </div>
+          <button class="primary-button" type="submit" data-auth-submit>登录 <span aria-hidden="true">→</span></button>
           <p class="form-status" data-login-status aria-live="polite"></p>
         </form>
       </div>

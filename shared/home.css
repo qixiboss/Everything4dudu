@@ -168,12 +168,16 @@ button { -webkit-tap-highlight-color: transparent; }
 .sheet-kicker { margin: 0 0 7px; color: #8466b7; font-size: 11px; font-weight: 820; letter-spacing: .13em; }
 .login-sheet h2 { margin: 0; font-size: 29px; line-height: 1.15; letter-spacing: -.035em; }
 .sheet-copy { margin: 12px 0 24px; color: #69718a; font-size: 14px; line-height: 1.65; }
-.login-form label { display: block; margin: 0 0 8px; color: #3d4661; font-size: 12px; font-weight: 720; }
-.email-field { height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #e0ddea; border-radius: 15px; background: white; box-shadow: 0 6px 16px rgba(38,43,73,.05); }
-.email-field:focus-within { border-color: #9373ca; box-shadow: 0 0 0 3px rgba(147,115,202,.13); }
-.email-field svg { width: 21px; flex: 0 0 auto; color: #9398aa; }
-.email-field input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 15px; }
-.email-field input::placeholder { color: #afb2c1; }
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0 0 22px; padding: 4px; border-radius: 13px; background: #efedf4; }
+.auth-tabs button { min-height: 39px; border: 0; border-radius: 10px; color: #777d91; background: transparent; cursor: pointer; font-size: 13px; font-weight: 750; }
+.auth-tabs button.is-active { color: #674994; background: white; box-shadow: 0 3px 10px rgba(50,45,72,.09); }
+.login-form label { display: block; margin: 14px 0 8px; color: #3d4661; font-size: 12px; font-weight: 720; }
+.login-form label:first-child { margin-top: 0; }
+.credential-field { height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #e0ddea; border-radius: 15px; background: white; box-shadow: 0 6px 16px rgba(38,43,73,.05); }
+.credential-field:focus-within { border-color: #9373ca; box-shadow: 0 0 0 3px rgba(147,115,202,.13); }
+.credential-field svg { width: 21px; flex: 0 0 auto; color: #9398aa; }
+.credential-field input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 15px; }
+.credential-field input::placeholder { color: #afb2c1; }
 .primary-button, .secondary-button { width: 100%; min-height: 51px; margin-top: 14px; border-radius: 15px; cursor: pointer; font-weight: 760; }
 .primary-button { display: flex; align-items: center; justify-content: center; gap: 9px; border: 0; color: white; background: linear-gradient(135deg,#9474ca,#7455ad); box-shadow: 0 11px 20px rgba(111,81,164,.22); }
 .primary-button:hover { filter: brightness(1.04); }
@@ -181,7 +185,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .secondary-button { border: 1px solid #ddd9e8; color: #6e55a1; background: white; }
 .form-status { min-height: 20px; margin: 10px 2px 0; color: #6f5a9d; font-size: 12px; line-height: 1.5; text-align: center; }
 .form-status[data-state="error"] { color: #bd4055; }
+.form-status[data-state="success"] { color: #368264; }
 .account-email { margin: 18px 0 0; padding: 14px 16px; border-radius: 14px; color: #584274; background: #f1ecf8; font-weight: 720; overflow-wrap: anywhere; }
+
+[hidden] { display: none !important; }
+.password-hint { margin: 8px 2px 0; color: #8b90a2; font-size: 11px; line-height: 1.5; }
 
 @media (min-width: 520px) {
   .phone-home { border: 8px solid rgba(255,255,255,.82); border-radius: 48px; }
@@ -197,11 +205,42 @@ button { -webkit-tap-highlight-color: transparent; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
   .page-dots { margin-top: 22px; }
+  .login-sheet.is-registering { padding-top: 12px; }
+  .login-sheet.is-registering .sheet-handle { margin-bottom: 12px; }
+  .login-sheet.is-registering .sheet-icon { width: 50px; height: 50px; margin-bottom: 10px; border-radius: 16px; }
+  .login-sheet.is-registering .sheet-icon svg { width: 31px; height: 31px; }
+  .login-sheet.is-registering .sheet-kicker { margin-bottom: 4px; }
+  .login-sheet.is-registering .sheet-copy { margin: 8px 0 14px; }
+  .login-sheet.is-registering .auth-tabs { margin-bottom: 14px; }
+  .login-sheet.is-registering .auth-tabs button { min-height: 36px; }
+  .login-sheet.is-registering .login-form label { margin-top: 10px; }
+  .login-sheet.is-registering .credential-field { height: 48px; }
+  .login-sheet.is-registering .primary-button { min-height: 48px; margin-top: 10px; }
 }
 
 @media (max-width: 519px) {
-  body { display: block; background: #c4cce9; }
-  .phone-home { min-height: 100dvh; }
+  html { background: #cbd4eb; }
+  body {
+    display: block;
+    background: linear-gradient(154deg, rgba(255,255,255,.62), rgba(255,255,255,.1) 42%), linear-gradient(155deg, #c9d7f1 0%, #b9c0e5 44%, #d2b9d5 100%);
+  }
+  .phone-home {
+    width: 100%;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: max(18px, env(safe-area-inset-top)) 24px max(16px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+    background: transparent;
+    box-shadow: none;
+  }
+  .status-bar { display: none; }
+  .home-header { padding-top: clamp(18px, 4.6vh, 38px); }
+  .app-grid { margin-top: clamp(36px, 6vh, 53px); }
+  .page-dots { margin-top: clamp(26px, 5vh, 42px); margin-bottom: 30px; }
+  .home-dock { position: relative; inset: auto; margin-top: auto; }
+  .login-sheet { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
