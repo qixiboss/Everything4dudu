@@ -11,7 +11,7 @@ function storage() {
   return { getItem: (key) => values.get(key) || null, setItem: (key, value) => values.set(key, String(value)) };
 }
 
-test('门户包含三个独立入口，考研页不再使用 iframe srcdoc', () => {
+test('手机主页包含三个应用入口和独立用户登录入口，考研页不使用 iframe', () => {
   ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html'].forEach((file) => {
     assert.equal(fs.existsSync(path.join(root, file)), true, file);
   });
@@ -19,6 +19,9 @@ test('门户包含三个独立入口，考研页不再使用 iframe srcdoc', () 
   assert.match(home, /href="words\/"/);
   assert.match(home, /href="training\/"/);
   assert.match(home, /href="exam-schedule\/"/);
+  assert.match(home, /data-login-open/);
+  assert.match(home, /role="dialog"/);
+  assert.match(home, /shared\/home\.js/);
   const schedule = fs.readFileSync(path.join(root, 'exam-schedule/index.html'), 'utf8');
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
 });
@@ -39,6 +42,16 @@ test('上游同步工作流定时拉取三个仓库并只提交验证后的生�
     assert.match(html, /\.\.\/shared\/hub-auth\.js/);
     assert.match(html, /hub-sync\.js/);
   });
+});
+
+test('GitHub Pages 工作流验证、构建并发布静态站点产物', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
+  assert.match(workflow, /pages: write/);
+  assert.match(workflow, /id-token: write/);
+  assert.ok(workflow.indexOf('npm run verify') < workflow.indexOf('npm run build'));
+  assert.match(workflow, /actions\/upload-pages-artifact@v5/);
+  assert.match(workflow, /path: _site/);
+  assert.match(workflow, /actions\/deploy-pages@v5/);
 });
 
 test('同步迁移启用 RLS、按用户隔离并发布 Realtime', () => {

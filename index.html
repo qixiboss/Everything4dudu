@@ -2,14 +2,108 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#8ea0d8">
+  <meta name="description" content="Dudu 的个人学习与成长空间">
   <title>Everything 4 Dudu</title>
-  <link rel="stylesheet" href="shared/hub.css">
-  <style>body{margin:0;background:#f6f7fb;color:#202431;font:16px/1.5 system-ui,-apple-system,sans-serif}.home{max-width:960px;margin:72px auto;padding:0 20px}.home h1{font-size:clamp(32px,6vw,56px);margin:0 0 12px}.home p{color:#5f6777}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:24px;color:inherit;text-decoration:none;box-shadow:0 8px 24px #1e293b0a}.card:hover{transform:translateY(-2px);box-shadow:0 14px 32px #1e293b15}.card span{font-size:32px}.card h2{margin:13px 0 6px;font-size:20px}@media(max-width:700px){.home{margin:40px auto}.cards{grid-template-columns:1fr}}</style>
+  <link rel="stylesheet" href="shared/home.css">
 </head>
 <body>
-  <div id="hub-shell"></div>
-  <main class="home"><p>个人学习与成长工具</p><h1>Everything 4 Dudu</h1><p>登录同一个邮箱后，三个应用的数据会保存在同一个 Supabase 项目中，并在设备之间自动同步。</p><section class="cards" aria-label="应用入口"><a class="card" href="words/"><span>📚</span><h2>词汇学习</h2><p>在语境中学习、复习和记录英语词汇。</p></a><a class="card" href="training/"><span>💪</span><h2>训练记录</h2><p>记录每日训练、组间计时和历史热力图。</p></a><a class="card" href="exam-schedule/"><span>🗓️</span><h2>考研日程</h2><p>管理一轮学习任务、完成进度与休息日。</p></a></section></main>
-  <script src="shared/vendor/supabase.js"></script><script src="shared/config.js"></script><script src="shared/hub-auth.js"></script><script src="shared/sync-store.js"></script><script src="shared/hub-shell.js"></script>
+  <main class="phone-home" aria-label="Everything 4 Dudu 手机主页">
+    <div class="wallpaper-glow wallpaper-glow-one" aria-hidden="true"></div>
+    <div class="wallpaper-glow wallpaper-glow-two" aria-hidden="true"></div>
+
+    <header class="home-header">
+      <div class="status-bar" aria-label="状态栏">
+        <time data-home-time>09:41</time>
+        <div class="status-icons" aria-hidden="true">
+          <svg viewBox="0 0 20 14"><path d="M2 10.5h2V13H2zm4-3h2V13H6zm4-3h2V13h-2zm4-3h2V13h-2z"/></svg>
+          <svg viewBox="0 0 20 14"><path d="M2.2 5.5a11 11 0 0 1 15.6 0l-1.7 1.8a8.6 8.6 0 0 0-12.2 0L2.2 5.5Zm3 3.2a6.8 6.8 0 0 1 9.6 0l-1.7 1.8a4.3 4.3 0 0 0-6.2 0L5.2 8.7Zm3.1 3.1a2.4 2.4 0 0 1 3.4 0L10 13.5l-1.7-1.7Z"/></svg>
+          <svg class="battery" viewBox="0 0 26 14"><rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M24 5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3.5" y="3.5" width="16" height="7" rx="1.5"/></svg>
+        </div>
+      </div>
+      <p class="eyebrow" data-home-date>8月11日 星期二</p>
+      <h1>你好，Dudu</h1>
+      <p class="home-subtitle">今天也向目标靠近一点。</p>
+    </header>
+
+    <section class="app-grid" aria-label="应用">
+      <a class="app" href="words/">
+        <span class="app-icon app-icon-words" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+        </span>
+        <span class="app-name">词汇学习</span>
+        <span class="app-caption">Words</span>
+      </a>
+      <a class="app" href="training/">
+        <span class="app-icon app-icon-training" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+        </span>
+        <span class="app-name">训练记录</span>
+        <span class="app-caption">Training</span>
+      </a>
+      <a class="app" href="exam-schedule/">
+        <span class="app-icon app-icon-schedule" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="app-name">考研日程</span>
+        <span class="app-caption">Schedule</span>
+      </a>
+      <button class="app app-login" type="button" data-login-open aria-haspopup="dialog">
+        <span class="app-icon app-icon-login" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><circle cx="32" cy="25" r="11" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 52c2-10 9-15 18-15s16 5 18 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+          <span class="login-dot" data-login-dot></span>
+        </span>
+        <span class="app-name" data-login-label>用户登录</span>
+        <span class="app-caption" data-login-caption>跨设备同步</span>
+      </button>
+    </section>
+
+    <div class="page-dots" aria-hidden="true"><span></span><span></span></div>
+
+    <footer class="home-dock">
+      <div>
+        <span class="dock-mark" aria-hidden="true">4D</span>
+        <p><strong>Everything 4 Dudu</strong><small>你的学习与成长空间</small></p>
+      </div>
+    </footer>
+  </main>
+
+  <div class="login-layer" data-login-layer hidden>
+    <button class="login-backdrop" type="button" data-login-close aria-label="关闭登录窗口"></button>
+    <section class="login-sheet" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <button class="sheet-close" type="button" data-login-close aria-label="关闭">×</button>
+      <div class="sheet-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><circle cx="32" cy="25" r="11" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 52c2-10 9-15 18-15s16 5 18 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+      </div>
+      <div data-login-guest>
+        <p class="sheet-kicker">DUDU ACCOUNT</p>
+        <h2 id="login-title">登录你的空间</h2>
+        <p class="sheet-copy">输入邮箱，我们会发送一次性登录链接。登录后，三个应用的数据会安全地跨设备同步。</p>
+        <form class="login-form" data-home-login>
+          <label for="login-email">邮箱地址</label>
+          <div class="email-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5 12 13l9-6.5M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="login-email" type="email" required autocomplete="email" placeholder="name@example.com">
+          </div>
+          <button class="primary-button" type="submit">发送登录链接 <span aria-hidden="true">→</span></button>
+          <p class="form-status" data-login-status aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="account-panel" data-login-account hidden>
+        <p class="sheet-kicker">SIGNED IN</p>
+        <h2>欢迎回来</h2>
+        <p class="account-email" data-account-email></p>
+        <p class="sheet-copy">你的学习数据正在通过同一个账户保持同步。</p>
+        <button class="secondary-button" type="button" data-home-signout>退出登录</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="shared/vendor/supabase.js"></script>
+  <script src="shared/config.js"></script>
+  <script src="shared/hub-auth.js"></script>
+  <script src="shared/home.js"></script>
 </body>
 </html>
