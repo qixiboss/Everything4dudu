@@ -24,7 +24,7 @@ test('门户包含三个独立入口，考研页不再使用 iframe srcdoc', () 
 });
 
 test('同步迁移启用 RLS、按用户隔离并发布 Realtime', () => {
-  const sql = fs.readFileSync(path.join(root, 'supabase/migrations/20260811030901_create_sync_items.sql'), 'utf8');
+  const sql = fs.readFileSync(path.join(root, 'supabase/migrations/20260811032047_create_sync_items.sql'), 'utf8');
   assert.match(sql, /enable row level security/i);
   assert.match(sql, /\(select auth\.uid\(\)\) = user_id/i);
   assert.match(sql, /alter publication supabase_realtime add table public\.sync_items/i);
