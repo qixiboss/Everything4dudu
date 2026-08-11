@@ -31,6 +31,7 @@ const expectedScripts = [
   'js/learning-progress-v2.js?v=3.0.8',
   'js/cloud-sync.js?v=1.1.0',
   'js/hub-sync.js?v=1.1.0',
+  '../shared/hub-sync.js',
   'js/study-record.js?v=1.0.0',
   'js/features.js?v=3.0.5'
 ];

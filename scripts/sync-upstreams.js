@@ -62,6 +62,7 @@ function sharedScripts() {
     '<script defer src="../shared/hub-auth.js"></script>',
     '<script defer src="../shared/auth-gate.js"></script>',
     '<script defer src="../shared/sync-store.js"></script>',
+    '<script defer src="../shared/hub-sync.js"></script>',
     '<script defer src="../shared/hub-shell.js"></script>'
   ].join('\n');
 }
@@ -95,7 +96,7 @@ function buildWords() {
   html = replaceOnce(
     html,
     '<script defer src="js/cloud-sync.js?v=1.0.0"></script>',
-    '<script defer src="js/cloud-sync.js?v=1.0.0"></script>\n\n<script defer src="js/hub-sync.js?v=1.0.0"></script>',
+    '<script defer src="js/cloud-sync.js?v=1.0.0"></script>\n\n<script defer src="js/hub-sync.js?v=1.1.0"></script>',
     'WordTales cloud adapter'
   );
 

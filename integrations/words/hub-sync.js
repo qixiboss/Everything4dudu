@@ -1,8 +1,8 @@
-/* Converts the existing WordTales profile into mergeable portal sync items. */
+/* Words adapter: converts the WordTales learning profile into mergeable
+ * portal sync items. Runs on the shared HubAppSync poll loop; the public
+ * HubProfileSync API is kept because legacy cloud-sync.js calls it. */
 WordTales.HubProfileSync = (function () {
-  var controller = null;
-  var previous = null;
-  var pollTimer = null;
+  var started = false;
 
   function eventKey(event, index) {
     var submission = event && event.meta && event.meta.submissionId;
@@ -19,10 +19,11 @@ WordTales.HubProfileSync = (function () {
     items.push({ item_key: 'meta', payload: { version: profile.version, createdAt: profile.createdAt, reminders: profile.reminders, starMigrationV2: profile.starMigrationV2, processedSubmissions: profile.processedSubmissions } });
     return items;
   }
+  function progress() { return WordTales.LearningProgress; }
+  function ready() { return progress() && progress().isReady(); }
   function applyRemote(rows) {
-    var progress = WordTales.LearningProgress;
-    if (!progress || !progress.isReady()) return;
-    var profile = progress.getData();
+    if (!ready()) return;
+    var profile = JSON.parse(JSON.stringify(progress().getData()));
     rows.forEach(function (row) {
       var key = row.item_key, value = row.payload || {};
       function assign(group, id) { if (row.deleted_at) delete profile[group][id]; else profile[group][id] = value; }
@@ -43,35 +44,42 @@ WordTales.HubProfileSync = (function () {
       }
     });
     profile.updatedAt = new Date().toISOString();
-    progress.replaceData(profile).then(function () {
-      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    /* replaceData is async (IndexedDB); HubAppSync refreshes `previous` from
+     * the merged snapshot, so a scan before the write lands does not
+     * re-upload remote rows. */
+    return progress().replaceData(profile).then(function () {
+      if (WordTales.Progress && WordTales.Progress.refresh) WordTales.Progress.refresh();
+      return true;
     });
   }
   function resetLocal() {
-    var progress = WordTales.LearningProgress;
-    if (!progress || !progress.isReady()) return;
-    previous = {};
-    progress.replaceData(null).then(function () {
-      if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    if (!ready()) return;
+    return progress().replaceData(null).then(function () {
+      if (WordTales.Progress && WordTales.Progress.refresh) WordTales.Progress.refresh();
+      return true;
     });
   }
   function start() {
-    if (controller) return true;
-    if (!window.HubSync || !WordTales.LearningProgress || !WordTales.LearningProgress.isReady()) return false;
-    controller = window.HubSync.register('words', { getItems: function () { return itemsFor(WordTales.LearningProgress.getData()); }, applyRemote: applyRemote, resetLocal: resetLocal });
-    previous = itemsFor(WordTales.LearningProgress.getData()).reduce(function (map, item) { map[item.item_key] = JSON.stringify(item.payload); return map; }, {});
-    if (!pollTimer) pollTimer = window.setInterval(queue, 1200);
-    return true;
+    if (started) return true;
+    if (!window.HubAppSync || !ready()) return false;
+    started = window.HubAppSync.start({
+      app: 'words',
+      items: function () { return itemsFor(progress().getData()); },
+      applyRemote: applyRemote,
+      resetLocal: resetLocal
+    });
+    return started;
   }
   function queue() {
-    if (!controller && !start()) return;
-    var next = {};
-    itemsFor(WordTales.LearningProgress.getData()).forEach(function (item) {
-      var encoded = JSON.stringify(item.payload); next[item.item_key] = encoded;
-      if (!previous || previous[item.item_key] !== encoded) controller.put(item.item_key, item.payload);
+    if (!started && !start()) return;
+    /* Keep legacy CloudSync upload cycles flowing through the shared poll
+     * loop instead of running a second timer of our own. */
+    window.HubAppSync.queue({
+      app: 'words',
+      items: function () { return itemsFor(progress().getData()); },
+      applyRemote: applyRemote,
+      resetLocal: resetLocal
     });
-    if (previous) Object.keys(previous).forEach(function (key) { if (!Object.prototype.hasOwnProperty.call(next, key)) controller.remove(key); });
-    previous = next;
   }
   return { start: start, queue: queue };
 })();

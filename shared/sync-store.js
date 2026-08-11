@@ -120,7 +120,9 @@
     }).catch(function (error) {
       emit(app, 'error', '同步失败，本地数据已保留');
       console.warn('Hub sync failed:', error.message);
-      scheduleFlush(registration, 2000);
+      /* 失败后不重新调度：下一次扫描（各适配器的轮询）自然会再次触发
+       * put/flush，避免网络断开时 catch → scheduleFlush → 再失败 → 再调度的
+       * 无限循环。 */
       return false;
     });
   }
@@ -220,10 +222,18 @@
     registration.api = {
       put: function (key, payload) { return queueLocal(app, key, payload, false); },
       remove: function (key) { return queueLocal(app, key, {}, true); },
-      flush: function () { return flush(app); }
+      flush: function () { return flush(app); },
+      /* Resolves once initial activation (fetch remote, reconcile local)
+       * settles, so callers can run their first scan after remote state
+       * has been applied. */
+      ready: function () {
+        return Promise.resolve(registration.initPromise).then(function () {
+          return registration.activationPromise || true;
+        });
+      }
     };
     registrations[app] = registration;
-    window.HubAuth.init().then(function (session) {
+    registration.initPromise = window.HubAuth.init().then(function (session) {
       if (!session) deactivate(registration);
       else if (registration.activeUserId !== session.user.id) activate(registration);
     });

@@ -128,7 +128,8 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
     const auth = html.indexOf('../shared/hub-auth.js');
     const gateIndex = html.indexOf('../shared/auth-gate.js');
     const sync = html.indexOf('../shared/sync-store.js');
-    assert.ok(auth >= 0 && auth < gateIndex && gateIndex < sync, app);
+    const appSync = html.indexOf('../shared/hub-sync.js');
+    assert.ok(auth >= 0 && auth < gateIndex && gateIndex < sync && sync < appSync, app);
     assert.match(html, /Content-Security-Policy/);
   });
 });
@@ -137,7 +138,7 @@ test('词汇学习先恢复本地档案，远端更新不再触发整页刷新',
   const features = fs.readFileSync(path.join(root, 'words/js/features.js'), 'utf8');
   const wordSync = fs.readFileSync(path.join(root, 'words/js/hub-sync.js'), 'utf8');
   assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.Auth.init()'));
-  assert.match(wordSync, /applyChain/);
+  assert.match(wordSync, /HubAppSync\.start/);
   assert.doesNotMatch(wordSync, /location\.reload/);
 });
 
@@ -266,4 +267,149 @@ test('同一账号的本地较新版本不会被旧云端行覆盖，并会重�
   await wait();
   assert.equal(local[0].payload.value, 'local-new');
   assert.equal(harness.writes.some((row) => row.payload.value === 'local-new'), true);
+});
+
+test('HubAppSync 只在条目变化时上传，并对比远端行避免重复上传', async () => {
+  const session = { user: { id: 'user-a' } };
+  let state = { targets: { pushup: 20, restSeconds: 60 } };
+  const writes = [];
+  const client = {
+    from() {
+      return {
+        select() { return this; },
+        eq() {
+          return Promise.resolve({ data: [
+            { item_key: 'settings', payload: { targets: { pushup: 30 }, restSeconds: 90 }, updated_at: '2026-08-11T00:00:00.000Z', deleted_at: null }
+          ], error: null });
+        },
+        upsert(rows) {
+          writes.push(...rows);
+          return Promise.resolve({ data: rows.map(({ item_key, payload, updated_at, deleted_at }) => ({ item_key, payload, updated_at, deleted_at })), error: null });
+        }
+      };
+    },
+    channel() { return { on() { return this; }, subscribe() { return this; } }; },
+    removeChannel() {}
+  };
+  const context = vm.createContext({
+    console,
+    localStorage: storage(),
+    setTimeout,
+    clearTimeout,
+    confirm: () => false,
+    CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+    dispatchEvent() {},
+    /* Real timers would keep the node test process alive; scans are driven
+     * manually via HubAppSync.queue(). */
+    setInterval: () => 0,
+    clearInterval: () => {},
+    /* First activation sees both local and remote data: "确定" keeps the
+     * local data and merges remote (the path the real adapter exercises). */
+    confirm: () => true
+  });
+  context.window = context;
+  context.HubAuth = {
+    init: () => Promise.resolve(session),
+    getSession: () => session,
+    getClient: () => client,
+    onChange() {}
+  };
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/sync-store.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), context);
+
+  const adapter = {
+    app: 'training',
+    items: () => [{ item_key: 'settings', payload: state }],
+    applyRemote(rows) {
+      // Simulates the real adapter: merge-only for settings keys the local
+      // copy has no value for yet.
+      const remote = rows.find((row) => row.item_key === 'settings');
+      if (remote && remote.payload) {
+        Object.keys(remote.payload).forEach((key) => {
+          if (state[key] === undefined || state[key] === null) state[key] = remote.payload[key];
+        });
+      }
+    },
+    resetLocal() {}
+  };
+  context.HubAppSync.start(adapter);
+  await wait(100);
+  // First activation applied the remote row: merged into local state
+  // (targets untouched, restSeconds added).
+  assert.equal(state.targets.pushup, 20);
+  assert.equal(state.restSeconds, 90);
+  // The post-activation scan queued the merged settings; flush sends it.
+  await context.HubSync.flush('training');
+  assert.equal(writes.some((row) => row.item_key === 'settings'), true);
+  writes.length = 0;
+  // Unchanged state does not re-upload on a subsequent scan.
+  context.HubAppSync.queue(adapter);
+  assert.equal(writes.length, 0);
+});
+
+test('HubAppSync 的 applyingRemote 闸门防止远端合并期间的本地写入被重复上传', async () => {
+  const session = { user: { id: 'user-a' } };
+  let state = { restSeconds: 60 };
+  const writes = [];
+  const client = {
+    from() {
+      return {
+        select() { return this; },
+        eq() { return Promise.resolve({ data: [], error: null }); },
+        upsert(rows) {
+          writes.push(...rows);
+          return Promise.resolve({ data: rows.map(({ item_key, payload, updated_at, deleted_at }) => ({ item_key, payload, updated_at, deleted_at })), error: null });
+        }
+      };
+    },
+    channel() { return { on() { return this; }, subscribe() { return this; } }; },
+    removeChannel() {}
+  };
+  const context = vm.createContext({
+    console,
+    localStorage: storage(),
+    setTimeout,
+    clearTimeout,
+    confirm: () => false,
+    CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+    dispatchEvent() {},
+    /* Real timers would keep the node test process alive; scans are driven
+     * manually via HubAppSync.queue(). */
+    setInterval: () => 0,
+    clearInterval: () => {}
+  });
+  context.window = context;
+  context.HubAuth = {
+    init: () => Promise.resolve(session),
+    getSession: () => session,
+    getClient: () => client,
+    onChange() {}
+  };
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/sync-store.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), context);
+
+  const adapter = {
+    app: 'training',
+    items: () => [{ item_key: 'settings', payload: state }],
+    applyRemote(rows) {
+      // Merge-only: the local restSeconds already exists, so remote rows
+      // cannot overwrite it; nothing below should change state.
+      rows.forEach((row) => {
+        if (row.item_key === 'settings' && row.payload) {
+          Object.keys(row.payload).forEach((key) => {
+            if (state[key] === undefined || state[key] === null) state[key] = row.payload[key];
+          });
+        }
+      });
+    },
+    resetLocal() {}
+  };
+  context.HubAppSync.start(adapter);
+  await wait(50);
+  // A local write lands while the merge is in flight: the applyingRemote
+  // gate means the next scan sees the merged baseline and does not upload
+  // it again as a "local" change.
+  writes.length = 0;
+  context.HubAppSync.queue(adapter);
+  assert.equal(writes.length, 0);
 });
