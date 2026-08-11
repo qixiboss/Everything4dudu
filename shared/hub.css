@@ -1,0 +1,11 @@
+:root { --hub-ink: #202431; --hub-panel: #fff; --hub-line: #e5e7eb; --hub-blue: #4263eb; }
+.hub-header { display:flex; align-items:center; gap:18px; padding:12px max(18px, calc((100% - 1180px)/2)); background:var(--hub-panel); border-bottom:1px solid var(--hub-line); color:var(--hub-ink); font:14px/1.3 system-ui,-apple-system,sans-serif; position:relative; z-index:30; }
+.hub-brand { color:var(--hub-ink); font-weight:800; text-decoration:none; white-space:nowrap; }
+.hub-nav { display:flex; flex-wrap:wrap; gap:4px; }
+.hub-nav a { color:#4b5563; padding:7px 9px; border-radius:7px; text-decoration:none; }
+.hub-nav a[aria-current=page], .hub-nav a:hover { background:#edf2ff; color:#3049bd; }
+.hub-auth { margin-left:auto; display:flex; align-items:center; gap:8px; min-height:32px; }
+.hub-login { display:flex; gap:6px; }.hub-login input { width:178px; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; }
+.hub-button { border:0; border-radius:7px; background:var(--hub-blue); color:white; padding:7px 10px; cursor:pointer; }.hub-button:disabled { opacity:.65; }
+.hub-account,.hub-sync-state { color:#64748b; white-space:nowrap; font-size:12px; }.hub-sync-state[data-state=error] { color:#c2410c; }
+@media (max-width:850px) { .hub-header { align-items:flex-start; flex-wrap:wrap; }.hub-auth { margin-left:0; width:100%; }.hub-login input { flex:1; width:auto; } }
