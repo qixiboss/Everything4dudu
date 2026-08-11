@@ -58,8 +58,8 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ### CI / deployment
 
-- `.github/workflows/pages.yml` — on push to master/main **or** `repository_dispatch` (`upstream-app-updated`, sent by the app repos when they're pushed): checks out the three app repos into `words/ training/ exam-schedule/`, runs `npm run verify` (build → test → check), and deploys `_site/` to Pages. One `pages` concurrency group so push and dispatch runs never race
-- App repos (`WordTales`, `Train_record`, `-Graduate-Entrance-Exam-Schedule`) each carry `.github/workflows/notify-portal.yml`: on push to main, POST a `repository_dispatch` to this repo using the `PORTAL_PAT` secret (fine-grained PAT with Actions: write on `qixiboss/Everything4dudu`)
+- `.github/workflows/pages.yml` — on push to master/main: checks out the three app repos (latest `main`) into `words/ training/ exam-schedule/`, runs `npm run verify` (build → test → check), and deploys `_site/` to Pages
+- The app repos deploy their own Pages independently (their own workflows); pushing them does not touch this portal. The portal builds from the apps' latest code whenever the portal is pushed
 - `_site/` is the build output (gitignored); `words/`, `training/`, `exam-schedule/` are gitignored clones
 
 ## Supabase

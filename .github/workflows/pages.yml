@@ -1,12 +1,10 @@
 name: Deploy unified portal to GitHub Pages
 
-# 推送门户或任一应用仓库通知（repository_dispatch）时构建并部署。
-# 三个应用目录在构建时从各自仓库检出,整合后输出到 _site/。
+# 推送门户时构建并部署。三个应用目录在构建时从各自仓库检出最新 main,
+# 整合后输出到 _site/;应用仓库的推送只更新它们自己的 Pages。
 on:
   push:
     branches: [master, main]
-  repository_dispatch:
-    types: [upstream-app-updated]
   workflow_dispatch:
 
 permissions:

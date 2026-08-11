@@ -170,10 +170,9 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   });
 });
 
-test('门户构建从应用仓库检出,推送与上游通知都触发部署', () => {
+test('门户构建时从应用仓库检出最新 main,推送门户才触发部署', () => {
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
-  assert.match(workflow, /repository_dispatch/);
-  assert.match(workflow, /upstream-app-updated/);
+  assert.doesNotMatch(workflow, /repository_dispatch/);
   assert.match(workflow, /repository: qixiboss\/WordTales/);
   assert.match(workflow, /repository: qixiboss\/Train_record/);
   assert.match(workflow, /repository: qixiboss\/-Graduate-Entrance-Exam-Schedule/);
@@ -183,15 +182,6 @@ test('门户构建从应用仓库检出,推送与上游通知都触发部署', (
   assert.match(workflow, /npm run verify/);
   assert.match(workflow, /group: pages/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
-
-  /* 应用仓库侧:push 时向门户发送 repository_dispatch 通知。 */
-  ['words/.github/workflows/notify-portal.yml', 'training/.github/workflows/notify-portal.yml', 'exam-schedule/.github/workflows/notify-portal.yml'].forEach((file) => {
-    assert.equal(fs.existsSync(path.join(root, file)), true, file);
-    const notify = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.match(notify, /createDispatchEvent/);
-    assert.match(notify, /upstream-app-updated/);
-    assert.match(notify, /PORTAL_PAT/);
-  });
 });
 
 test('GitHub Pages 工作流验证、构建并发布静态站点产物', () => {

@@ -25,8 +25,8 @@ cd _site && python3 -m http.server 8000
 
 **部署时机**:
 
-- 推送门户仓库 → 立即重新构建部署;
-- 推送任一应用仓库 → 其 `notify-portal.yml` 工作流会通知门户自动重新部署(需要在三个应用仓库配置 `PORTAL_PAT` secret:一个只授权 `qixiboss/Everything4dudu` 的 fine-grained token,权限 Actions: write)。
+- 应用仓库各自推送、各自部署它们自己的 GitHub Pages,与门户互不影响;
+- 推送门户仓库 → 构建时检出三个应用的最新 `main`,整合后部署门户。
 
 `changelog/` 是门户自有应用,只在本仓库维护。
 
