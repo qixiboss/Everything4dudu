@@ -49,6 +49,8 @@ test('GitHub Pages 工作流验证、构建并发布静态站点产物', () => {
   assert.match(workflow, /pages: write/);
   assert.match(workflow, /id-token: write/);
   assert.ok(workflow.indexOf('npm run verify') < workflow.indexOf('npm run build'));
+  assert.match(workflow, /actions\/configure-pages@v6/);
+  assert.match(workflow, /enablement: true/);
   assert.match(workflow, /actions\/upload-pages-artifact@v5/);
   assert.match(workflow, /path: _site/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
