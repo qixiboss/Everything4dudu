@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f6f3ec">
+  <meta name="theme-color" content="#dde3f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141a2e" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Everything 4 Dudu 版本更新记录">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
   <title>更新记录 · Everything 4 Dudu</title>
@@ -17,56 +18,11 @@
         <div id="hub-shell"></div>
         <p class="app-kicker">CHANGELOG</p>
         <h1>更新记录</h1>
-        <p class="app-subtitle">每一次改变，都值得被记住。</p>
+        <p class="app-subtitle">每一次改变，都值得被记住。<span class="app-count" data-count></span></p>
       </header>
 
       <section class="app-content" aria-label="更新条目">
         <div class="timeline" data-timeline></div>
-        <div class="empty-state" data-empty hidden>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-          <p>还没有更新记录</p>
-          <span>记录你的第一个版本吧。</span>
-          <button type="button" class="empty-add" data-entry-open>添加第一条</button>
-        </div>
-      </section>
-    </div>
-
-    <button class="add-entry" type="button" data-entry-open aria-label="添加更新记录">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-    </button>
-
-    <div class="entry-layer" data-sheet hidden>
-      <button class="entry-backdrop" type="button" data-sheet-close aria-label="关闭"></button>
-      <section class="entry-sheet" role="dialog" aria-modal="true" aria-labelledby="entry-title">
-        <div class="sheet-handle" aria-hidden="true"></div>
-        <button class="sheet-close" type="button" data-sheet-close aria-label="关闭">×</button>
-        <p class="sheet-kicker" data-sheet-kicker>NEW ENTRY</p>
-        <h2 id="entry-title" data-sheet-title>添加更新记录</h2>
-        <form class="entry-form" data-entry-form novalidate>
-          <label for="entry-version">版本号</label>
-          <input id="entry-version" data-entry-version type="text" required autocomplete="off" placeholder="v0.1.0">
-          <div class="form-row">
-            <div>
-              <label for="entry-date">日期</label>
-              <input id="entry-date" data-entry-date type="date" required>
-            </div>
-            <div>
-              <label for="entry-title-field">标题</label>
-              <input id="entry-title-field" data-entry-title type="text" placeholder="如：初版上线">
-            </div>
-          </div>
-          <label for="entry-desc">更新内容</label>
-          <div class="quick-tags" data-quick-tags aria-label="常用分类">
-            <button type="button" data-quick="新功能" title="插入「新功能」分组">新功能</button>
-            <button type="button" data-quick="改进" title="插入「改进」分组">改进</button>
-            <button type="button" data-quick="修复" title="插入「修复」分组">修复</button>
-            <button type="button" data-quick="其他" title="插入「其他」分组">其他</button>
-          </div>
-          <textarea id="entry-desc" data-entry-desc rows="8" placeholder="用「## 分组名」起行分块，例如：&#10;## 新功能&#10;- 新增更新记录应用&#10;- 支持跨设备同步"></textarea>
-          <p class="field-hint" data-field-hint>提示：以「## 」起行的文字会成为分组标题，其他每一行都是一条记录。</p>
-          <button class="entry-submit" type="submit" data-entry-submit>保存</button>
-          <p class="entry-status" data-entry-status aria-live="polite"></p>
-        </form>
       </section>
     </div>
   </main>
@@ -79,6 +35,5 @@
   <script defer src="../shared/hub-sync.js"></script>
   <script defer src="../shared/hub-shell.js"></script>
   <script defer src="changelog.js"></script>
-  <script defer src="hub-sync.js"></script>
 </body>
 </html>

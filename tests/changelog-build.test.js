@@ -64,11 +64,11 @@ const expectedScripts = [
   '<script defer src="../shared/sync-store.js"></script>',
   '<script defer src="../shared/hub-sync.js"></script>',
   '<script defer src="../shared/hub-shell.js"></script>',
-  '<script defer src="changelog.js"></script>',
-  '<script defer src="hub-sync.js"></script>'
+  '<script defer src="changelog.js"></script>'
 ].join('\n');
 
-// 已提交的模板没有挂载 app 自身的脚本（sharedScripts 之外只有 changelog.js 和 hub-sync.js）。
+// 已提交的模板没有挂载 app 自身的脚本（sharedScripts 之外只有 changelog.js；
+// 更新记录是只读版本历史，不生成同步适配器）。
 const committedScripts = committed.split('\n').filter((line) => line.includes('<script defer')).map((line) => line.trim());
 assert.deepEqual(committedScripts, expectedScripts.split('\n'));
 
@@ -76,7 +76,7 @@ assert.deepEqual(committedScripts, expectedScripts.split('\n'));
 for (let i = 0; i < 2; i += 1) {
   const result = runBuildChangelog();
   assert.equal(result.html, committed, `run ${i + 1} output differs from committed changelog/index.html`);
-  assert.deepEqual(result.copied.sort(), ['changelog/changelog.css', 'changelog/changelog.js', 'changelog/hub-sync.js']);
+  assert.deepEqual(result.copied.sort(), ['changelog/changelog.css', 'changelog/changelog.js']);
 }
 
 console.log('changelog build smoke test passed (idempotent, matches committed template).');

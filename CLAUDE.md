@@ -48,7 +48,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 ### Portal-owned code
 
 - `index.html` + `shared/home.js` + `shared/home.css` — the home page: app icons marked `data-protected-app` (redirect to login when signed out), login dialog (`data-login-open`, no register mode), account panel. All apps render on one page — no swipe/paging
-- `changelog/` — changelog app: `changelog.js` holds `SEED` entries merged with per-account local entries (`dudu.changelog.v1`, synced under `entry:<version>` keys); `hub-sync.js` is its sync adapter. Tests assert seed + cloud merge behavior
+- `changelog/` — changelog app: read-only release timeline. `changelog.js` holds the `SEED` entries (new versions are added to SEED with each release commit); no manual entry editing and no per-account sync
 - `integrations/` — per-app sync adapters: `words/hub-sync.js` (WordTales profile → per-key items; keeps a public `WordTales.HubProfileSync` for legacy `cloud-sync.js`), `training/hub-sync.js`, `exam-schedule/hub-sync.js`
 
 ### Tests and integrity checks
