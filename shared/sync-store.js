@@ -1,7 +1,14 @@
-/* Per-item, authenticated, local-first Supabase synchronisation. */
+/* Per-item, authenticated, local-first Supabase synchronisation. Each app
+ * syncs into its own table (words_sync_items / training_sync_items /
+ * exam_sync_items), so rows are already scoped per app and need no app_id. */
 (function () {
   'use strict';
-  var TABLE = 'sync_items';
+  var TABLES = {
+    words: 'words_sync_items',
+    training: 'training_sync_items',
+    'exam-schedule': 'exam_sync_items'
+  };
+  function tableFor(app) { return TABLES[app] || 'sync_items'; }
   var VERSIONS_KEY = 'hub.sync.versions.v2';
   var OUTBOX_KEY = 'hub.sync.outbox.v2';
   var registrations = {};
@@ -101,14 +108,13 @@
     var payload = rows.map(function (row) {
       return {
         user_id: row.user_id,
-        app_id: app,
         item_key: row.item_key,
         payload: row.payload,
         updated_at: row.updated_at,
         deleted_at: row.deleted_at
       };
     });
-    var request = client.from(TABLE).upsert(payload, { onConflict: 'user_id,app_id,item_key' });
+    var request = client.from(tableFor(registration.app)).upsert(payload, { onConflict: 'user_id,item_key' });
     if (request && typeof request.select === 'function') request = request.select('item_key,payload,updated_at,deleted_at');
     return Promise.resolve(request).then(function (result) {
       if (result && result.error) throw result.error;
@@ -142,9 +148,8 @@
     var client = window.HubAuth.getClient();
     if (registration.channel) client.removeChannel(registration.channel);
     registration.channel = client.channel('hub-sync-' + registration.app + '-' + userId)
-      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE, filter: 'user_id=eq.' + userId }, function (event) {
-        var row = event.new;
-        if (row && row.app_id === registration.app) applyRows(registration, [row], userId);
+      .on('postgres_changes', { event: '*', schema: 'public', table: tableFor(registration.app), filter: 'user_id=eq.' + userId }, function (event) {
+        if (event.new) applyRows(registration, [event.new], userId);
       }).subscribe();
   }
   function deactivate(registration) {
@@ -164,7 +169,7 @@
     var activationId = ++registration.activationId;
     registration.activeUserId = userId;
     emit(registration.app, 'syncing', '正在读取云端数据');
-    registration.activationPromise = client.from(TABLE).select('item_key,payload,updated_at,deleted_at').eq('app_id', registration.app).then(function (result) {
+    registration.activationPromise = client.from(tableFor(registration.app)).select('item_key,payload,updated_at,deleted_at').then(function (result) {
       if (result.error) throw result.error;
       if (activationId !== registration.activationId || sessionUserId() !== userId) return false;
       var remote = result.data || [];

@@ -28,8 +28,8 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
   const client = {
     from() {
       return {
-        select() { return this; },
-        eq() {
+        /* 引擎按 app 选表后不再链 .eq('app_id', ...)，select 直接返回结果。 */
+        select() {
           const rows = typeof remote === 'function' ? remote(state.session) : remote;
           return Promise.resolve({ data: rows, error: null });
         },
@@ -210,6 +210,15 @@ test('同步迁移启用 RLS、限制 payload、容忍缺失的历史函数并�
   assert.match(hardenSql, /old\.updated_at > now\(\) \+ interval '5 minutes'/i);
   assert.match(validateSql, /validate constraint sync_items_payload_size_check/i);
   assert.match(insertGuardSql, /before insert or update on public\.sync_items/i);
+  const splitSql = fs.readFileSync(path.join(root, 'supabase/migrations/20260812120000_split_sync_items_per_app.sql'), 'utf8');
+  assert.match(splitSql, /create table if not exists public\.words_sync_items/i);
+  assert.match(splitSql, /create table if not exists public\.training_sync_items/i);
+  assert.match(splitSql, /create table if not exists public\.exam_sync_items/i);
+  assert.match(splitSql, /enable row level security/i);
+  assert.match(splitSql, /octet_length\(payload::text\) <= 262144/i);
+  assert.match(splitSql, /alter publication supabase_realtime add table public\.words_sync_items/i);
+  assert.match(splitSql, /insert into public\.words_sync_items/i);
+  assert.match(splitSql, /drop table public\.sync_items/i);
 });
 
 test('SyncStore 登录后写入独立条目并在成功后清空持久化 outbox', async () => {
@@ -292,8 +301,7 @@ test('HubAppSync 只在条目变化时上传，并对比远端行避免重复上
   const client = {
     from() {
       return {
-        select() { return this; },
-        eq() {
+        select() {
           return Promise.resolve({ data: [
             { item_key: 'settings', payload: { targets: { pushup: 30 }, restSeconds: 90 }, updated_at: '2026-08-11T00:00:00.000Z', deleted_at: null }
           ], error: null });
@@ -337,8 +345,8 @@ test('HubAppSync 只在条目变化时上传，并对比远端行避免重复上
     app: 'training',
     items: () => [{ item_key: 'settings', payload: state }],
     applyRemote(rows) {
-      // Simulates the real adapter: merge-only for settings keys the local
-      // copy has no value for yet.
+      /* 引擎级测试夹具：'settings' 只是样本键，真实 training 适配器
+       * 现在只同步 day: 行，settings 是设备本地偏好、不再合并。 */
       const remote = rows.find((row) => row.item_key === 'settings');
       if (remote && remote.payload) {
         Object.keys(remote.payload).forEach((key) => {
@@ -370,8 +378,7 @@ test('HubAppSync 的 applyingRemote 闸门防止远端合并期间的本地写�
   const client = {
     from() {
       return {
-        select() { return this; },
-        eq() { return Promise.resolve({ data: [], error: null }); },
+        select() { return Promise.resolve({ data: [], error: null }); },
         upsert(rows) {
           writes.push(...rows);
           return Promise.resolve({ data: rows.map(({ item_key, payload, updated_at, deleted_at }) => ({ item_key, payload, updated_at, deleted_at })), error: null });
@@ -408,8 +415,8 @@ test('HubAppSync 的 applyingRemote 闸门防止远端合并期间的本地写�
     app: 'training',
     items: () => [{ item_key: 'settings', payload: state }],
     applyRemote(rows) {
-      // Merge-only: the local restSeconds already exists, so remote rows
-      // cannot overwrite it; nothing below should change state.
+      /* 引擎级测试夹具：'settings' 只是样本键，真实 training 适配器
+       * 现在只同步 day: 行，settings 是设备本地偏好、不再合并。 */
       rows.forEach((row) => {
         if (row.item_key === 'settings' && row.payload) {
           Object.keys(row.payload).forEach((key) => {

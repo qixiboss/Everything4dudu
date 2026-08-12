@@ -1,4 +1,6 @@
-/* Exam schedule adapter: portal sync for the kaoyan first-round state store. */
+/* Exam schedule adapter: portal sync for the kaoyan first-round state store.
+ * Only task completion rows sync; rest-day markers stay device-local (they
+ * annotate the UI and have no scheduling effect). */
 (function () {
   'use strict';
   var STORAGE_KEY = 'kaoyan-first-round-state-v4';
@@ -6,8 +8,7 @@
   function state() { try { var value = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; return { completed: value.completed || {}, rested: value.rested || {} }; } catch (_) { return { completed: {}, rested: {} }; } }
   function items() {
     var value = state();
-    return Object.keys(value.completed).map(function (id) { return { item_key: 'task:' + id, payload: { completedAt: Number(value.completed[id]) || Date.now() } }; })
-      .concat(Object.keys(value.rested).filter(function (day) { return value.rested[day]; }).map(function (day) { return { item_key: 'rest:' + day, payload: { rested: true } }; }));
+    return Object.keys(value.completed).map(function (id) { return { item_key: 'task:' + id, payload: { completedAt: Number(value.completed[id]) || Date.now() } }; });
   }
   function resetLocal() {
     localStorage.removeItem(STORAGE_KEY);
@@ -20,11 +21,6 @@
         var id = row.item_key.slice(5), at = Number(row.payload && row.payload.completedAt) || Date.now();
         if (row.deleted_at && Object.prototype.hasOwnProperty.call(value.completed, id)) { delete value.completed[id]; changed = true; }
         else if (!row.deleted_at && value.completed[id] !== at) { value.completed[id] = at; changed = true; }
-      }
-      if (row.item_key.indexOf('rest:') === 0) {
-        var day = row.item_key.slice(5);
-        if (row.deleted_at && Object.prototype.hasOwnProperty.call(value.rested, day)) { delete value.rested[day]; changed = true; }
-        else if (!row.deleted_at && value.rested[day] !== true) { value.rested[day] = true; changed = true; }
       }
     });
     if (!changed) return;

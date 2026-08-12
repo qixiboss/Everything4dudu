@@ -34,22 +34,21 @@ async function readyCloud(remoteProfile, owner) {
   return { context, remote, writes, progress: context.WordTales.LearningProgress };
 }
 
-test('首次登录自动上传整档表以建立云端档案，后续交回分条同步', async () => {
+test('首次登录只走分条同步：不再上传整档到 learning_profiles', async () => {
   const { progress, writes, context } = await readyCloud();
   const entry = context.WordTales.Data.getAllEntries()[0];
   await progress.rateWord(entry.id, 'Good', {}, 'cloud-first-login');
 
   await context.WordTales.CloudSync.connectProfile();
 
-  // 新上游：首次登录写入 learning_profiles 作为整档档案底座，
-  // 之后的每次变化由 HubProfileSync 分条上传 sync_items。
+  // 旧通道已停用：connectProfile 不写 learning_profiles，本地档案不受影响，
+  // 同步全部由 HubProfileSync（hub-sync.js）分条完成。
   assert.equal(progress.getData().words[entry.id].reviewCount, 1);
-  assert.equal(writes.length, 1);
-  assert.equal(writes[0].user_id, '8f45f983-fdd6-49f6-9d8e-7d6eb1e59892');
-  assert.equal(writes[0].profile.words[entry.id].reviewCount, 1);
+  assert.equal(writes.length, 0);
+  assert.equal(context.WordTales.CloudSync.getStatus(), 'synced');
 });
 
-test('已有更新云端档案时优先下载且不会反向覆盖', async () => {
+test('远端存在陈旧 learning_profiles 行时也不改动本地数据', async () => {
   const remoteProfile = {
     version: 2,
     createdAt: '2026-08-01T00:00:00.000Z',
@@ -61,6 +60,8 @@ test('已有更新云端档案时优先下载且不会反向覆盖', async () =>
 
   await context.WordTales.CloudSync.connectProfile();
 
-  assert.equal(progress.isColumnCompleted('s1col1', '2026-08-09'), true);
+  // 永不从远端档案恢复：即使旧表还有数据，本地进度也原样保留、零写入。
+  assert.equal(progress.isColumnCompleted('s1col1', '2026-08-09'), false);
   assert.equal(writes.length, 0);
+  assert.equal(context.WordTales.CloudSync.getStatus(), 'synced');
 });

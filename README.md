@@ -39,7 +39,7 @@ cd _site && python3 -m http.server 8000
 ## Supabase 部署
 
 1. 在已使用的 WordTales Supabase 项目应用 `supabase/migrations/` 中尚未执行的迁移。
-2. 在 Dashboard 的 **Data API** 中确认 `sync_items` 被暴露给 API；迁移已包含 authenticated 的权限与 RLS。
+2. 在 Dashboard 的 **Data API** 中确认 `words_sync_items`、`training_sync_items`、`exam_sync_items` 三张表被暴露给 API；迁移已包含 authenticated 的权限与 RLS。
 3. 在 Auth URL Configuration 中把 Site URL 设为 `https://qixiboss.github.io/Everything4dudu/`，并添加以下精确的 Redirect URLs：
    - `https://qixiboss.github.io/Everything4dudu/`
    - `https://qixiboss.github.io/Everything4dudu/words/`

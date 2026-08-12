@@ -27,7 +27,7 @@ Prerequisites: Node >= 22, and the three app submodules initialized (`git submod
 
 - injects the `data-app` attribute on `<html>`, a CSP meta tag, `shared/hub.css`, `<div id="hub-shell"></div>`, and the shared script block (`shared/vendor/supabase.js`, `config.js`, `hub-auth.js`, `auth-gate.js`, `sync-store.js`, `hub-sync.js`, `hub-shell.js` — kept in `sharedScripts()` and used verbatim by every app)
 - writes the per-app adapter from `integrations/<app>/hub-sync.js`
-- for words: copies from the clone's `vocab-essays/` subdir, removes the old upstream supabase vendor script, adds `hub-sync.js` after `cloud-sync.js`, rewrites `cloud-sync.js` to call `HubProfileSync.queue()` after uploads, and writes `integrations/words/{auth.js,supabase-config.js}`
+- for words: copies from the clone's `vocab-essays/` subdir, removes the old upstream supabase vendor script, adds `hub-sync.js` after `cloud-sync.js`, and writes `integrations/words/{auth.js,supabase-config.js,cloud-sync.js}` — the portal-owned `cloud-sync.js` stub keeps the login lifecycle and the `HubProfileSync.queue()` hook; the legacy whole-profile `learning_profiles` upload/restore path is disabled
 - for training: copies only `index.html`, `styles.css`, `app.js`
 - for exam-schedule: extracts the app from an iframe `srcdoc` and replaces its stricter CSP
 
@@ -40,7 +40,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 - `config.js` — `window.HubConfig` with the publishable Supabase URL/key (safe to commit; never add service-role keys)
 - `hub-auth.js` — wraps Supabase Auth: `window.HubAuth` with `init()`, `getSession()`, `getClient()`, `signInWithPassword()`, `signOut()`, `onChange()`; no signup API
 - `auth-gate.js` — per-app route guard: reads `document.documentElement.dataset.app`, sets `data-auth-ready` when authenticated, redirects to `../?login=1&next=<app>` otherwise. Supabase RLS is the authoritative data boundary; the gate is UI only
-- `sync-store.js` — `window.HubSync`: per-item, local-first sync engine. Items are keyed `user_id + ':' + item_key` in `sync_items` (Supabase table, RLS-scoped to `auth.uid()`). Holds a per-item `updated_at` version map (`hub.sync.versions.v2`) and a persistent outbox (`hub.sync.outbox.v2`) so writes survive offline; `put()`/`remove()`/`flush()`/`register()`; on account switch, backs up (`hub.sync.backup.*`) and resets local data before applying the new account's remote rows. On failure it deliberately does NOT reschedule (no retry loop)
+- `sync-store.js` — `window.HubSync`: per-item, local-first sync engine. Each app syncs into its own Supabase table (`words_sync_items` / `training_sync_items` / `exam_sync_items`), items keyed `user_id + ':' + item_key`, RLS-scoped to `auth.uid()`. Holds a per-item `updated_at` version map (`hub.sync.versions.v2`) and a persistent outbox (`hub.sync.outbox.v2`) so writes survive offline; `put()`/`remove()`/`flush()`/`register()`; on account switch, backs up (`hub.sync.backup.*`) and resets local data before applying the new account's remote rows. On failure it deliberately does NOT reschedule (no retry loop)
 - `hub-sync.js` — `window.HubAppSync.start(adapter)`: poll-driven adapter that diffs the app's local state against a baseline and calls `sync.put`/`sync.remove` only for changed items. Adapter contract: `items()` → `[{item_key, payload}]`, `applyRemote(rows)`, `resetLocal()`. An `applyingRemote` gate prevents re-uploading rows mid-merge
 - `hub-shell.js` — injects a minimal "back to home" link into per-app placement selectors (`.cover-inner`, `.topbar-inner`, `#kaoyan-plan .brand`, `.app-header`), falling back to `hub-home-fallback` class
 
@@ -48,7 +48,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 - `index.html` + `shared/home.js` + `shared/home.css` — the home page: app icons marked `data-protected-app` (redirect to login when signed out), login dialog (`data-login-open`, no register mode), account panel. All apps render on one page — no swipe/paging
 - `changelog/` — changelog app: read-only release timeline. `changelog.js` holds the `SEED` entries (new versions are added to SEED with each release commit); no manual entry editing and no per-account sync
-- `integrations/` — per-app sync adapters: `words/hub-sync.js` (WordTales profile → per-key items; keeps a public `WordTales.HubProfileSync` for legacy `cloud-sync.js`), `training/hub-sync.js`, `exam-schedule/hub-sync.js`
+- `integrations/` — per-app sync adapters: `words/hub-sync.js` (WordTales profile → starred-word `word:<id>` + daily punch-in `column:<日期>:<列>` items; public `WordTales.HubProfileSync` is called by the portal's `cloud-sync.js` stub), `training/hub-sync.js` (`day:<日期>` only; settings stay device-local), `exam-schedule/hub-sync.js` (`task:<id>` only; rest markers stay device-local)
 
 ### Tests and integrity checks
 
@@ -64,7 +64,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ## Supabase
 
-Migrations live in `supabase/migrations/` and must be applied to the WordTales Supabase project. `sync_items` must be exposed via the Data API with RLS enabled and `supabase_realtime` publication for live sync. Site URL and the five exact redirect URLs must be configured in Auth settings. Accounts are pre-created in the dashboard; signups are disabled (portal has no public registration). The browser only ever uses the publishable key from `shared/config.js`.
+Migrations live in `supabase/migrations/` and must be applied to the WordTales Supabase project. The three per-app tables (`words_sync_items`, `training_sync_items`, `exam_sync_items`) must be exposed via the Data API with RLS enabled and `supabase_realtime` publication for live sync. The retired `learning_profiles` whole-profile table is no longer written or read by any build. Site URL and the five exact redirect URLs must be configured in Auth settings. Accounts are pre-created in the dashboard; signups are disabled (portal has no public registration). The browser only ever uses the publishable key from `shared/config.js`.
 
 ## Notes
 

@@ -80,7 +80,7 @@ function buildWords(appRoot, destRoot) {
   html = replaceOnce(
     html,
     '<script defer src="js/cloud-sync.js?v=1.0.0"></script>',
-    '<script defer src="js/cloud-sync.js?v=1.0.0"></script>\n\n<script defer src="js/hub-sync.js?v=1.1.0"></script>',
+    '<script defer src="js/cloud-sync.js?v=2.0.0"></script>\n\n<script defer src="js/hub-sync.js?v=1.2.0"></script>',
     'WordTales cloud adapter'
   );
 
@@ -89,21 +89,9 @@ function buildWords(appRoot, destRoot) {
   write(destRoot, 'words/js/auth.js', read('integrations/words/auth.js'));
   write(destRoot, 'words/js/supabase-config.js', read('integrations/words/supabase-config.js'));
   write(destRoot, 'words/js/hub-sync.js', read('integrations/words/hub-sync.js'));
-
-  let cloudSync = fs.readFileSync(path.join(source, 'js/cloud-sync.js'), 'utf8');
-  cloudSync = replaceOnce(
-    cloudSync,
-    'timer = setTimeout(function() { timer = null; upload(); }, 1400);',
-    'timer = setTimeout(function() {\n      timer = null;\n      upload().then(function() { if (WordTales.HubProfileSync) WordTales.HubProfileSync.queue(); });\n    }, 1400);',
-    'WordTales upload schedule'
-  );
-  cloudSync = replaceOnce(
-    cloudSync,
-    '}).finally(function() { syncing = false; });\n  }\n  function init()',
-    '}).finally(function() {\n      syncing = false;\n      /* Migrate the resolved legacy profile, not the pre-login browser cache. */\n      if (WordTales.HubProfileSync) { WordTales.HubProfileSync.start(); WordTales.HubProfileSync.queue(); }\n    });\n  }\n  function init()',
-    'WordTales legacy profile migration'
-  );
-  write(destRoot, 'words/js/cloud-sync.js', cloudSync);
+  /* cloud-sync.js 是门户自有桩文件：保留登录生命周期与
+   * HubProfileSync.queue() 钩子，停用旧的 learning_profiles 全量上传。 */
+  write(destRoot, 'words/js/cloud-sync.js', read('integrations/words/cloud-sync.js'));
 }
 
 function buildTraining(appRoot, destRoot) {
