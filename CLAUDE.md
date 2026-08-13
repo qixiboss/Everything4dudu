@@ -66,6 +66,14 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 Migrations live in `supabase/migrations/` and must be applied to the WordTales Supabase project. The three per-app tables (`words_sync_items`, `training_sync_items`, `exam_sync_items`) must be exposed via the Data API with RLS enabled and `supabase_realtime` publication for live sync. The retired `learning_profiles` whole-profile table is no longer written or read by any build. Site URL and the five exact redirect URLs must be configured in Auth settings. Accounts are pre-created in the dashboard; signups are disabled (portal has no public registration). The browser only ever uses the publishable key from `shared/config.js`.
 
+### Development test account
+
+Local development credentials, when available, are stored in the gitignored
+`.dev-test-account.local.md` file at the repository root. Never commit that file
+or copy its credentials into tracked documentation. The test account must retain
+only the standard `authenticated` role and per-user RLS access; never grant it
+service-role, dashboard, schema, administrative, or cross-user access.
+
 ## Notes
 
 - All user-facing text is Simplified Chinese; code comments mix Chinese and English
