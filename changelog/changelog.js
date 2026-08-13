@@ -113,9 +113,28 @@
     if (count) count.textContent = '共 ' + entries.length + ' 个版本';
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderTimeline);
-  } else {
+  /* 状态栏时间与主页一致：立即显示，再对齐到整分钟后每分钟刷新一次。 */
+  function updateStatusClock() {
+    var time = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    Array.prototype.forEach.call(document.querySelectorAll('[data-home-time]'), function (node) { node.textContent = time; });
+  }
+
+  function startStatusClock() {
+    updateStatusClock();
+    window.setTimeout(function () {
+      updateStatusClock();
+      window.setInterval(updateStatusClock, 60000);
+    }, 60000 - (Date.now() % 60000) + 50);
+  }
+
+  function boot() {
+    startStatusClock();
     renderTimeline();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
 })();
