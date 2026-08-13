@@ -190,7 +190,9 @@ test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', (
   assert.match(html, /data-month-prev[^>]*><span aria-hidden="true">‹<\/span>/);
   assert.match(html, /<div class="month-picker"><label for="dashboard-month">/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]+\.view-tabs \{ position: fixed/);
-  assert.match(css, /\.month-nav \{ width: 100%; grid-template-columns: 48px minmax\(0, 1fr\) 48px; \}/);
+  assert.match(css, /\.month-nav \{ width: 100%; grid-template-columns: 36px minmax\(0, 1fr\) 36px; \}/);
+  assert.match(css, /\.filters > label \{ width: 100%; min-width: 0; max-width: 100%; \}/);
+  assert.match(css, /\.filters input, \.filters select \{ display: block; width: 100%; min-width: 0; max-width: 100%; \}/);
   assert.match(css, /\.details-actions \.secondary \{ flex: 0 0 48px; width: 48px; height: 48px;/);
   assert.match(css, /tbody tr \{ display: grid/);
   assert.match(css, /\.metric\.balance \{ grid-column: 1 \/ -1/);

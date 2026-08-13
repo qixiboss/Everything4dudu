@@ -220,9 +220,11 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .section-heading h2 { margin-top: 4px; font-size: 29px; }
   .section-heading p:not(.section-kicker) { font-size: 12px; line-height: 1.55; }
   .month-picker, .month-picker input { width: 100%; min-width: 0; }
-  .month-nav { width: 100%; grid-template-columns: 48px minmax(0, 1fr) 48px; }
+  .month-nav { width: 100%; grid-template-columns: 36px minmax(0, 1fr) 36px; }
   .month-nav .month-picker { min-width: 0; }
-  .month-step { width: 48px; height: 48px; min-width: 48px; min-height: 48px; }
+  .month-step { width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 10px; }
+  .month-step::before { content: ""; position: absolute; inset: -4px; }
+  .month-step span { font-size: 22px; }
   input, select { min-height: 47px; font-size: 16px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .metric { min-height: 118px; padding: 17px 15px; border-radius: 19px; box-shadow: 0 12px 28px rgba(45,55,94,.11); }
@@ -256,7 +258,9 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .details-actions .secondary svg { display: block; flex: none; width: 20px; height: 20px; }
   .details-actions .filter-toggle span { display: none; }
   .filter-toggle { display: flex; }
-  .filters { grid-template-columns: 1fr 1fr; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filters > label { width: 100%; min-width: 0; max-width: 100%; }
+  .filters input, .filters select { display: block; width: 100%; min-width: 0; max-width: 100%; }
   .search-filter { grid-column: 1 / -1; }
   .filters { padding: 13px; gap: 11px; border-radius: 17px; box-shadow: 0 10px 24px rgba(45,55,94,.1); }
   .filters:not(.is-expanded) label:not(.search-filter), .filters:not(.is-expanded) .text-button { display: none; }
@@ -286,7 +290,7 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .topbar-actions .primary { display: none; }
   .composition { grid-template-columns: 1fr; justify-items: center; }
   .chart-legend { width: 100%; }
-  .filters { grid-template-columns: 1fr; }
+  .filters { grid-template-columns: minmax(0, 1fr); }
   .search-filter { grid-column: auto; }
   .details-heading [data-result-summary] { max-width: 58vw; }
 }
