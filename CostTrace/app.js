@@ -146,27 +146,14 @@
   function setDashboardMonth(month) {
     if (month > Model.currentMonth()) month = Model.currentMonth();
     selectedMonth = month;
-    one('[data-dashboard-month]').textContent = month.replace('-', ' 年 ') + ' 月';
+    one('[data-dashboard-month]').value = month;
+    one('[data-month-label]').textContent = month.replace('-', ' 年 ') + ' 月';
     one('[data-month-next]').disabled = month >= Model.currentMonth();
     renderDashboard();
   }
   function moveDashboardMonth(delta) {
     if (!delta || (delta > 0 && selectedMonth >= Model.currentMonth())) return;
     setDashboardMonth(shiftMonth(selectedMonth, delta));
-  }
-  function bindMonthSlider() {
-    var slider = one('[data-month-slider]');
-    function reset() { slider.value = '0'; }
-    slider.addEventListener('input', function () {
-      var delta = Number(slider.value);
-      if (!delta) return;
-      moveDashboardMonth(delta);
-      reset();
-    });
-    slider.addEventListener('change', reset);
-    slider.addEventListener('keydown', function (event) {
-      if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); reset(); }
-    });
   }
   function trendHtml(currentCents, previousCents, downIsGood) {
     if (previousCents === 0) return '<span class="trend flat">上月无记录</span>';
@@ -295,9 +282,9 @@
     all('input[name="record-type"]').forEach(function (radio) { radio.addEventListener('change', updateRecordCategories); });
     one('[data-record-form]').addEventListener('submit', submitRecord);
     one('[data-cancel-edit]').addEventListener('click', function () { resetForm(); });
+    one('[data-dashboard-month]').addEventListener('change', function (event) { if (event.target.value) setDashboardMonth(event.target.value); });
     one('[data-month-prev]').addEventListener('click', function () { moveDashboardMonth(-1); });
     one('[data-month-next]').addEventListener('click', function () { moveDashboardMonth(1); });
-    bindMonthSlider();
     one('[data-filters]').addEventListener('input', function () { currentPage = 1; renderDetails(); });
     one('[data-filter-type]').addEventListener('change', function () { renderFilterCategories(); currentPage = 1; renderDetails(); });
     one('[data-clear-filters]').addEventListener('click', function () { one('[data-filters]').reset(); renderFilterCategories(); currentPage = 1; renderDetails(); });

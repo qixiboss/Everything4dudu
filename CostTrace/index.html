@@ -40,10 +40,10 @@
         <div class="month-nav">
           <button class="month-step" type="button" data-month-prev aria-label="查看上一个月"><span aria-hidden="true">‹</span></button>
           <div class="month-picker">
-            <span id="dashboard-month-label">查看月份</span>
-            <output class="month-value" data-dashboard-month aria-labelledby="dashboard-month-label" aria-live="polite"></output>
-            <input class="month-slider" type="range" data-month-slider min="-1" max="1" value="0" step="1" aria-label="滑动切换月份：向左上个月，向右下个月">
-            <p class="month-hint" aria-hidden="true">向左滑动查看上个月</p>
+            <span class="month-label" aria-hidden="true">查看月份</span>
+            <output class="month-value" data-month-label aria-live="polite"></output>
+            <svg class="month-picker-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="dashboard-month" type="month" data-dashboard-month aria-label="选择仪表盘月份">
           </div>
           <button class="month-step" type="button" data-month-next aria-label="查看下一个月"><span aria-hidden="true">›</span></button>
         </div>
