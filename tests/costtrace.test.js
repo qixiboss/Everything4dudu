@@ -185,9 +185,13 @@ test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', (
   const css = fs.readFileSync(path.join(root, 'CostTrace/styles.css'), 'utf8');
   const app = fs.readFileSync(path.join(root, 'CostTrace/app.js'), 'utf8');
 
-  assert.match(html, /data-filter-toggle[^>]+aria-controls="detail-filters"/);
+  assert.match(html, /data-filter-toggle[^>]+aria-label="展开筛选"[^>]+aria-controls="detail-filters"/);
   assert.match(html, /id="detail-filters" data-filters/);
+  assert.match(html, /data-month-prev[^>]*><span aria-hidden="true">‹<\/span>/);
+  assert.match(html, /<div class="month-picker"><label for="dashboard-month">/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]+\.view-tabs \{ position: fixed/);
+  assert.match(css, /\.month-nav \{ width: 100%; grid-template-columns: 48px minmax\(0, 1fr\) 48px; \}/);
+  assert.match(css, /\.details-actions \.secondary \{ flex: 0 0 48px; width: 48px; height: 48px;/);
   assert.match(css, /tbody tr \{ display: grid/);
   assert.match(css, /\.metric\.balance \{ grid-column: 1 \/ -1/);
   assert.match(app, /function toggleFilters\(force\)/);

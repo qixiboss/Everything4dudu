@@ -64,14 +64,15 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .section-heading h2 { margin: 5px 0 4px; font-size: clamp(28px, 4vw, 38px); line-height: 1.05; letter-spacing: -.05em; }
 .section-heading p:not(.section-kicker) { margin: 0; color: var(--muted); font-size: 13px; }
 .month-picker, .filters label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+.month-picker label { color: inherit; font: inherit; }
 input, select { min-height: 43px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: rgba(255,255,255,.72); }
 .month-picker input { width: 172px; }
-.month-nav { display: flex; align-items: flex-end; gap: 8px; }
-.month-step { width: 43px; height: 43px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 12px; color: var(--accent-deep); background: rgba(255,255,255,.72); cursor: pointer; transition: filter .16s ease, transform .16s ease, opacity .16s ease; }
+.month-nav { display: grid; grid-template-columns: 43px minmax(0, 172px) 43px; align-items: end; gap: 8px; }
+.month-step { position: relative; z-index: 1; width: 43px; height: 43px; min-width: 43px; min-height: 43px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 12px; color: var(--accent-deep); background: rgba(255,255,255,.72); cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; transition: filter .16s ease, transform .16s ease, opacity .16s ease; }
 .month-step:hover { filter: brightness(1.03); }
 .month-step:active { transform: scale(.94); }
 .month-step:disabled { opacity: .35; cursor: default; filter: none; }
-.month-step svg { width: 17px; height: 17px; }
+.month-step span { display: block; font: 500 31px/1 system-ui, sans-serif; transform: translateY(-1px); }
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .metric, .panel, .record-card, .record-tip, .filters, .table-card { border: 1px solid rgba(255,255,255,.62); background: var(--glass); box-shadow: var(--shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
 .metric { position: relative; min-height: 142px; overflow: hidden; padding: 23px; border-radius: 22px; }
@@ -218,10 +219,10 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .section-heading { align-items: flex-start; flex-direction: column; }
   .section-heading h2 { margin-top: 4px; font-size: 29px; }
   .section-heading p:not(.section-kicker) { font-size: 12px; line-height: 1.55; }
-  .month-picker, .month-picker input { width: 100%; }
-  .month-nav { width: 100%; }
-  .month-nav .month-picker { flex: 1; min-width: 0; }
-  .month-step { width: 47px; height: 47px; flex-shrink: 0; }
+  .month-picker, .month-picker input { width: 100%; min-width: 0; }
+  .month-nav { width: 100%; grid-template-columns: 48px minmax(0, 1fr) 48px; }
+  .month-nav .month-picker { min-width: 0; }
+  .month-step { width: 48px; height: 48px; min-width: 48px; min-height: 48px; }
   input, select { min-height: 47px; font-size: 16px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .metric { min-height: 118px; padding: 17px 15px; border-radius: 19px; box-shadow: 0 12px 28px rgba(45,55,94,.11); }
@@ -250,9 +251,9 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .details-heading { flex-direction: row; align-items: flex-end; }
   .details-heading > div:first-child { min-width: 0; }
   .details-heading [data-result-summary] { max-width: 62vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .details-actions { flex-shrink: 0; }
-  .details-actions .secondary { width: 44px; min-height: 44px; padding: 0; flex-shrink: 0; }
-  .details-actions .export-button { font-size: 0; }
+  .details-actions { flex: 0 0 auto; gap: 8px; }
+  .details-actions .secondary { flex: 0 0 48px; width: 48px; height: 48px; min-width: 48px; min-height: 48px; padding: 0; overflow: hidden; font-size: 0; line-height: 0; touch-action: manipulation; }
+  .details-actions .secondary svg { display: block; flex: none; width: 20px; height: 20px; }
   .details-actions .filter-toggle span { display: none; }
   .filter-toggle { display: flex; }
   .filters { grid-template-columns: 1fr 1fr; }

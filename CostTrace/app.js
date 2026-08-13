@@ -62,6 +62,7 @@
     var expanded = typeof force === 'boolean' ? force : !panel.classList.contains('is-expanded');
     panel.classList.toggle('is-expanded', expanded);
     button.setAttribute('aria-expanded', String(expanded));
+    button.setAttribute('aria-label', expanded ? '收起筛选' : '展开筛选');
     one('span', button).textContent = expanded ? '收起' : '筛选';
   }
   function setCategoryOptions(select, categories, includeAll) {
