@@ -156,8 +156,8 @@ input, select { min-height: 43px; padding: 0 12px; border: 1px solid var(--line)
 .record-tip p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
 .details-heading { align-items: center; }
 .details-actions { display: flex; align-items: center; gap: 9px; }
-.export-button, .filter-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.export-button svg, .filter-toggle svg { width: 17px; height: 17px; }
+.export-button, .filter-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; line-height: 1; }
+.export-button svg, .filter-toggle svg { display: block; flex: none; width: 17px; height: 17px; }
 .filter-toggle { display: none; }
 .filters { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)) minmax(180px, 1.4fr) auto; align-items: end; gap: 12px; margin-bottom: 16px; padding: 17px; border-radius: 19px; }
 .filters input, .filters select { width: 100%; min-width: 0; }
@@ -221,7 +221,9 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .section-heading p:not(.section-kicker) { font-size: 12px; line-height: 1.55; }
   .month-picker, .month-picker input { width: 100%; min-width: 0; }
   .month-nav { width: 100%; grid-template-columns: 36px minmax(0, 1fr) 36px; }
+  .month-nav { column-gap: 12px; }
   .month-nav .month-picker { min-width: 0; }
+  .month-picker input { display: block; }
   .month-step { width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 10px; }
   .month-step::before { content: ""; position: absolute; inset: -4px; }
   .month-step span { font-size: 22px; }
