@@ -57,6 +57,13 @@
     if (name === 'record') window.setTimeout(function () { one('[data-record-detail]').focus(); }, 0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  function toggleFilters(force) {
+    var panel = one('[data-filters]'), button = one('[data-filter-toggle]');
+    var expanded = typeof force === 'boolean' ? force : !panel.classList.contains('is-expanded');
+    panel.classList.toggle('is-expanded', expanded);
+    button.setAttribute('aria-expanded', String(expanded));
+    one('span', button).textContent = expanded ? '收起' : '筛选';
+  }
   function setCategoryOptions(select, categories, includeAll) {
     var previous = select.value;
     select.replaceChildren();
@@ -245,6 +252,7 @@
     one('[data-filters]').addEventListener('input', function () { currentPage = 1; renderDetails(); });
     one('[data-filter-type]').addEventListener('change', function () { renderFilterCategories(); currentPage = 1; renderDetails(); });
     one('[data-clear-filters]').addEventListener('click', function () { one('[data-filters]').reset(); renderFilterCategories(); currentPage = 1; renderDetails(); });
+    one('[data-filter-toggle]').addEventListener('click', function () { toggleFilters(); });
     one('[data-record-rows]').addEventListener('click', function (event) { var edit = event.target.closest('[data-edit-record]'), remove = event.target.closest('[data-delete-record]'); if (edit) editRecord(edit.dataset.editRecord); if (remove) deleteRecord(remove.dataset.deleteRecord); });
     one('[data-pagination]').addEventListener('click', function (event) { var button = event.target.closest('[data-page]'); if (!button || button.disabled) return; currentPage = Number(button.dataset.page); renderDetails(); });
     one('[data-export]').addEventListener('click', exportExcel);

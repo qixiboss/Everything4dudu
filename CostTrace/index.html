@@ -88,8 +88,8 @@
     </section>
 
     <section class="view" data-view="details" aria-labelledby="details-title" hidden>
-      <div class="section-heading details-heading"><div><p class="section-kicker">TRANSACTIONS</p><h2 id="details-title">收支明细</h2><p data-result-summary>共 0 条记录</p></div><button class="secondary export-button" type="button" data-export><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>导出 Excel</button></div>
-      <form class="filters" data-filters>
+      <div class="section-heading details-heading"><div><p class="section-kicker">TRANSACTIONS</p><h2 id="details-title">收支明细</h2><p data-result-summary>共 0 条记录</p></div><div class="details-actions"><button class="secondary filter-toggle" type="button" data-filter-toggle aria-expanded="false" aria-controls="detail-filters"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10m-7 6h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>筛选</span></button><button class="secondary export-button" type="button" data-export><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>导出 Excel</button></div></div>
+      <form class="filters" id="detail-filters" data-filters>
         <label><span>月份</span><input type="month" data-filter-month></label>
         <label><span>开始日期</span><input type="date" data-filter-start></label>
         <label><span>结束日期</span><input type="date" data-filter-end></label>

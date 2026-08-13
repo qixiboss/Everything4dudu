@@ -179,3 +179,17 @@ test('CostTrace 同步在损坏账本上暂停且不注册适配器', () => {
   assert.equal(starts, 0);
   assert.equal(statuses.at(-1).detail.state, 'error');
 });
+
+test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', () => {
+  const html = fs.readFileSync(path.join(root, 'CostTrace/index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'CostTrace/styles.css'), 'utf8');
+  const app = fs.readFileSync(path.join(root, 'CostTrace/app.js'), 'utf8');
+
+  assert.match(html, /data-filter-toggle[^>]+aria-controls="detail-filters"/);
+  assert.match(html, /id="detail-filters" data-filters/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]+\.view-tabs \{ position: fixed/);
+  assert.match(css, /tbody tr \{ display: grid/);
+  assert.match(css, /\.metric\.balance \{ grid-column: 1 \/ -1/);
+  assert.match(app, /function toggleFilters\(force\)/);
+  assert.match(app, /\[data-filter-toggle\].+toggleFilters/);
+});
