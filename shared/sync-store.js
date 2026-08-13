@@ -1,12 +1,13 @@
 /* Per-item, authenticated, local-first Supabase synchronisation. Each app
  * syncs into its own table (words_sync_items / training_sync_items /
- * exam_sync_items), so rows are already scoped per app and need no app_id. */
+ * exam_sync_items / costtrace_sync_items), so rows are scoped per app. */
 (function () {
   'use strict';
   var TABLES = {
     words: 'words_sync_items',
     training: 'training_sync_items',
-    'exam-schedule': 'exam_sync_items'
+    'exam-schedule': 'exam_sync_items',
+    'cost-trace': 'costtrace_sync_items'
   };
   function tableFor(app) { return TABLES[app] || 'sync_items'; }
   var VERSIONS_KEY = 'hub.sync.versions.v2';

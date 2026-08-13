@@ -95,15 +95,18 @@ button { -webkit-tap-highlight-color: transparent; }
 .home-header h1 { margin: 0; font-size: clamp(30px, 9vw, 40px); line-height: 1.08; letter-spacing: -.045em; }
 .home-subtitle { margin: 10px 0 0; color: var(--ink-soft); font-size: 15px; }
 
-/* 四个应用排成两行两列，登录入口在底部 Dock 里。 */
+/* 五个应用在宽屏时三列排布，最后一行居中；窄屏保持两列。 */
 .app-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 34px;
-  row-gap: 30px;
-  margin-top: 46px;
-  padding: 0 9px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 25px;
+  margin-top: 36px;
+  padding: 0;
 }
+.app-grid .app { grid-column: span 2; }
+.app-grid .app:nth-child(4) { grid-column: 2 / span 2; }
+.app-grid .app:nth-child(5) { grid-column: 4 / span 2; }
 
 /* 入场动效：头部下沉、图标依次浮起、Dock 最后出现。 */
 @keyframes fade-down { from { opacity: 0; transform: translateY(-12px); } }
@@ -115,6 +118,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-grid .app:nth-child(2) { animation-delay: .12s; }
 .app-grid .app:nth-child(3) { animation-delay: .18s; }
 .app-grid .app:nth-child(4) { animation-delay: .24s; }
+.app-grid .app:nth-child(5) { animation-delay: .3s; }
 .home-dock { animation: app-in .55s .34s cubic-bezier(.22,.8,.31,1) both; }
 
 ::selection { background: rgba(122,140,239,.35); }
@@ -159,6 +163,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-icon-training { background: linear-gradient(145deg, #fd9b7c, #ed6e76); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(237,110,118,.3); }
 .app-icon-schedule { background: linear-gradient(145deg, #68cdb9, #3cae9c); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(60,174,156,.3); }
 .app-icon-changelog { background: linear-gradient(145deg, #e3b071, #c4843f); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(196,132,63,.32); }
+.app-icon-costtrace { background: linear-gradient(145deg, #8792e2, #5f6dca); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(95,109,202,.32); }
 
 .app:hover .app-icon { transform: translateY(-3px) scale(1.025); box-shadow: inset 0 1px 1px rgba(255,255,255,.4), 0 16px 29px rgba(51,58,101,.25); }
 .app:active .app-icon { transform: scale(.94); }
@@ -272,7 +277,7 @@ button { -webkit-tap-highlight-color: transparent; }
   .home-header { padding-top: 14px; }
   .hero-clock { font-size: 54px; }
   .eyebrow { margin-top: 9px; }
-  .app-grid { margin-top: 30px; row-gap: 22px; }
+  .app-grid { margin-top: 24px; row-gap: 17px; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
 }
@@ -297,7 +302,9 @@ button { -webkit-tap-highlight-color: transparent; }
   .status-bar { display: none; }
   .home-header { padding-top: clamp(12px, 3.4vh, 30px); }
   .hero-clock { font-size: clamp(58px, 17.5vw, 74px); }
-  .app-grid { margin-top: clamp(32px, 5vh, 46px); }
+  .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(24px, 4vh, 36px); row-gap: 18px; }
+  .app-grid .app, .app-grid .app:nth-child(4), .app-grid .app:nth-child(5) { grid-column: auto; }
+  .app-grid .app:nth-child(5) { grid-column: 1 / -1; }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
 }

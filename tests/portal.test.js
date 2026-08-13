@@ -63,7 +63,7 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
 }
 
 test('主页把应用标记为登录后访问且不暴露公开注册入口', () => {
-  ['index.html', '_site/words/index.html', '_site/training/index.html', '_site/exam-schedule/index.html', 'changelog/index.html'].forEach((file) => {
+  ['index.html', '_site/words/index.html', '_site/training/index.html', '_site/exam-schedule/index.html', '_site/CostTrace/index.html', 'changelog/index.html'].forEach((file) => {
     assert.equal(fs.existsSync(path.join(root, file)), true, file);
   });
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -71,6 +71,7 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /href="training\/" data-protected-app="training"/);
   assert.match(home, /href="exam-schedule\/" data-protected-app="exam-schedule"/);
   assert.match(home, /href="changelog\/" data-protected-app="changelog"/);
+  assert.match(home, /href="CostTrace\/" data-protected-app="cost-trace"/);
   assert.match(home, /hero-clock/);
   assert.match(home, /data-login-open/);
   assert.match(home, /role="dialog"/);
@@ -139,7 +140,7 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.match(css, /data-app.*not\(\[data-auth-ready\]\).*visibility: hidden/);
   assert.match(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
-  ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
     const auth = html.indexOf('../shared/hub-auth.js');
     const gateIndex = html.indexOf('../shared/auth-gate.js');
@@ -164,7 +165,7 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   assert.match(shell, /class="hub-home-link"/);
   assert.match(shell, /href="\.\.\/"/);
   assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
-  ['words', 'training', 'exam-schedule', 'changelog'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
     assert.match(html, /<div id="hub-shell"><\/div>/);
   });
@@ -219,6 +220,14 @@ test('同步迁移启用 RLS、限制 payload、容忍缺失的历史函数并�
   assert.match(splitSql, /alter publication supabase_realtime add table public\.words_sync_items/i);
   assert.match(splitSql, /insert into public\.words_sync_items/i);
   assert.match(splitSql, /drop table public\.sync_items/i);
+  const costTraceSql = fs.readFileSync(path.join(root, 'supabase/migrations/20260813000000_create_costtrace_sync_items.sql'), 'utf8');
+  assert.match(costTraceSql, /create table if not exists public\.costtrace_sync_items/i);
+  assert.match(costTraceSql, /enable row level security/i);
+  assert.match(costTraceSql, /to authenticated using \(\(select auth\.uid\(\)\) = user_id\)/i);
+  assert.match(costTraceSql, /with check \(\(select auth\.uid\(\)\) = user_id\)/i);
+  assert.match(costTraceSql, /revoke all on public\.costtrace_sync_items from anon/i);
+  assert.match(costTraceSql, /revoke delete, truncate, references, trigger on public\.costtrace_sync_items from authenticated/i);
+  assert.match(costTraceSql, /alter publication supabase_realtime add table public\.costtrace_sync_items/i);
 });
 
 test('SyncStore 登录后写入独立条目并在成功后清空持久化 outbox', async () => {

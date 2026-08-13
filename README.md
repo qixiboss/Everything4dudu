@@ -1,6 +1,6 @@
 # Everything 4 Dudu
 
-统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、更新记录和用户登录五个应用图标。三个学习应用保持独立页面，但都要求先使用同一个预先创建的 Supabase 邮箱密码账号登录，随后才会读取和操作学习数据。
+统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、记账、更新记录和用户登录。各应用保持独立页面，并使用同一个预先创建的 Supabase 邮箱密码账号登录和同步数据。
 
 生产站点：<https://qixiboss.github.io/Everything4dudu/>
 
@@ -13,7 +13,7 @@ npm run build                        # 从三个子模块整合应用,输出 _si
 cd _site && python3 -m http.server 8000
 ```
 
-访问 `/`、`/words/`、`/training/`、`/exam-schedule/` 或 `/changelog/`。
+访问 `/`、`/words/`、`/training/`、`/exam-schedule/`、`/CostTrace/` 或 `/changelog/`。
 
 ## 应用在各自仓库开发
 
@@ -30,7 +30,7 @@ cd _site && python3 -m http.server 8000
 - 应用仓库各自推送、各自部署它们自己的 GitHub Pages,与门户互不影响;
 - 推送门户仓库 → CI 按门户登记的指针检出应用子模块,整合后部署门户。要让门户带上应用的新改动,在门户提交中 `git add words training exam-schedule`(更新指针)后再推送即可。
 
-`changelog/` 是门户自有应用,只在本仓库维护。
+`changelog/` 和 `CostTrace/` 是门户自有应用，只在本仓库维护。CostTrace 使用浏览器本地存储保持离线可用，并按记录同步到当前 Supabase 账户。
 
 ## 更新记录
 
@@ -39,12 +39,13 @@ cd _site && python3 -m http.server 8000
 ## Supabase 部署
 
 1. 在已使用的 WordTales Supabase 项目应用 `supabase/migrations/` 中尚未执行的迁移。
-2. 在 Dashboard 的 **Data API** 中确认 `words_sync_items`、`training_sync_items`、`exam_sync_items` 三张表被暴露给 API；迁移已包含 authenticated 的权限与 RLS。
+2. 在 Dashboard 的 **Data API** 中确认 `words_sync_items`、`training_sync_items`、`exam_sync_items`、`costtrace_sync_items` 四张表被暴露给 API；迁移已包含 authenticated 的权限与 RLS。
 3. 在 Auth URL Configuration 中把 Site URL 设为 `https://qixiboss.github.io/Everything4dudu/`，并添加以下精确的 Redirect URLs：
    - `https://qixiboss.github.io/Everything4dudu/`
    - `https://qixiboss.github.io/Everything4dudu/words/`
    - `https://qixiboss.github.io/Everything4dudu/training/`
    - `https://qixiboss.github.io/Everything4dudu/exam-schedule/`
+   - `https://qixiboss.github.io/Everything4dudu/CostTrace/`
    - `https://qixiboss.github.io/Everything4dudu/changelog/`
 4. 在 **Authentication → Users** 中预先创建允许使用门户的账号；在 **Authentication → Sign In / Providers → Email** 中启用 Email Provider，并关闭 **Allow new users to sign up**。门户不提供公开注册入口。
 5. 保持合理的密码策略和 Auth 速率限制。密码只提交给 Supabase Auth 并由其加盐哈希保存；不要在业务表、日志或前端存储密码。

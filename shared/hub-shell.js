@@ -5,7 +5,8 @@
     words: '.cover-inner',
     training: '.topbar-inner',
     'exam-schedule': '#kaoyan-plan .brand',
-    changelog: '.app-header'
+    changelog: '.app-header',
+    'cost-trace': '.brand-row'
   };
 
   function render() {

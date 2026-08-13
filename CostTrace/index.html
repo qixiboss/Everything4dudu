@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN" data-app="cost-trace">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#dbe3f4" media="(prefers-color-scheme: light)">
+  <meta name="description" content="CostTrace 收支记录与月度财务仪表盘">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+  <title>CostTrace · 记账</title>
+  <link rel="stylesheet" href="../shared/hub.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wallpaper-glow wallpaper-glow-one" aria-hidden="true"></div>
+  <div class="wallpaper-glow wallpaper-glow-two" aria-hidden="true"></div>
+  <main class="app-frame">
+    <header class="topbar">
+      <div class="brand-row">
+        <div id="hub-shell"></div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M8 7.5h16v17H8zM11 12h10M11 16h4M18 16h3M11 20h4M18 20h3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><p class="kicker">COSTTRACE</p><h1>记账</h1></div>
+      </div>
+      <div class="topbar-actions">
+        <span class="sync-chip" data-sync-status aria-live="polite"><i></i><span>本地数据已就绪</span></span>
+        <button class="primary compact" type="button" data-quick-add>＋ 记一笔</button>
+      </div>
+    </header>
+
+    <nav class="view-tabs" aria-label="记账功能">
+      <button type="button" data-view-target="dashboard" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-3H4v3Z"/></svg>仪表盘</button>
+      <button type="button" data-view-target="record"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>记一笔</button>
+      <button type="button" data-view-target="details"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>收支明细</button>
+    </nav>
+
+    <section class="view is-active" data-view="dashboard" aria-labelledby="dashboard-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">MONTHLY OVERVIEW</p><h2 id="dashboard-title">月度概览</h2><p>每一笔记录，都会即时汇总在这里。</p></div>
+        <label class="month-picker">查看月份<input type="month" data-dashboard-month aria-label="选择仪表盘月份"></label>
+      </div>
+      <div class="metrics" aria-label="月度关键指标">
+        <article class="metric expense"><span class="metric-icon">↗</span><p>本月累计支出</p><strong data-total-expense>¥0.00</strong><small data-expense-count>0 笔支出</small></article>
+        <article class="metric income"><span class="metric-icon">↙</span><p>本月累计收入</p><strong data-total-income>¥0.00</strong><small data-income-count>0 笔收入</small></article>
+        <article class="metric balance"><span class="metric-icon">≈</span><p>本月剩余金额</p><strong data-total-balance>¥0.00</strong><small>收入 − 支出</small></article>
+      </div>
+      <div class="dashboard-grid">
+        <article class="panel composition-panel">
+          <div class="panel-heading"><div><h3>支出类型占比</h3><p>所选月份的消费构成</p></div></div>
+          <div class="composition" data-composition></div>
+        </article>
+        <article class="panel daily-panel">
+          <div class="panel-heading"><div><h3>每日支出变化</h3><p data-daily-subtitle>按日观察消费波动</p></div></div>
+          <div class="chart-wrap" data-daily-chart></div>
+        </article>
+        <article class="panel ranking-panel">
+          <div class="panel-heading"><div><h3>开支排行</h3><p>按支出类别汇总</p></div></div>
+          <div class="ranking" data-ranking></div>
+        </article>
+        <article class="panel income-panel">
+          <div class="panel-heading"><div><h3>月收入情况</h3><p data-year-label>本自然年</p></div></div>
+          <div class="chart-wrap" data-income-chart></div>
+        </article>
+        <article class="panel balance-panel">
+          <div class="panel-heading"><div><h3>每月结余</h3><p>月收入减去月支出</p></div><span class="legend"><i></i>正结余 <i></i>负结余</span></div>
+          <div class="chart-wrap" data-balance-chart></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" data-view="record" aria-labelledby="record-title" hidden>
+      <div class="section-heading"><div><p class="section-kicker">NEW TRANSACTION</p><h2 id="record-title" data-form-title>记一笔</h2><p data-form-copy>把今天的每一笔收支清楚地记下来。</p></div></div>
+      <div class="record-layout">
+        <form class="record-card" data-record-form novalidate>
+          <input type="hidden" data-record-id>
+          <fieldset class="type-switch"><legend>收支类型</legend><label><input type="radio" name="record-type" value="expense" checked><span>支出</span></label><label><input type="radio" name="record-type" value="income"><span>收入</span></label></fieldset>
+          <div class="field-grid">
+            <label class="field"><span>日期</span><input type="date" data-record-date required></label>
+            <label class="field"><span>类别</span><select data-record-category required></select></label>
+            <label class="field full"><span>明细</span><input type="text" data-record-detail maxlength="120" placeholder="例如：午餐、房租、八月工资" autocomplete="off" required></label>
+            <label class="field full amount-field"><span>金额</span><span class="amount-input"><b>¥</b><input type="text" data-record-amount inputmode="decimal" placeholder="0.00" autocomplete="off" required></span></label>
+          </div>
+          <p class="form-message" data-form-message aria-live="polite"></p>
+          <div class="form-actions"><button class="secondary" type="button" data-cancel-edit hidden>取消编辑</button><button class="primary" type="submit" data-save-record>保存记录</button></div>
+        </form>
+        <aside class="record-tip"><span>✦</span><h3>小小习惯，清晰生活</h3><p>金额以人民币记录并保留两位小数。数据会先保存在此设备，登录后自动同步到你的账户。</p></aside>
+      </div>
+    </section>
+
+    <section class="view" data-view="details" aria-labelledby="details-title" hidden>
+      <div class="section-heading details-heading"><div><p class="section-kicker">TRANSACTIONS</p><h2 id="details-title">收支明细</h2><p data-result-summary>共 0 条记录</p></div><button class="secondary export-button" type="button" data-export><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>导出 Excel</button></div>
+      <form class="filters" data-filters>
+        <label><span>月份</span><input type="month" data-filter-month></label>
+        <label><span>开始日期</span><input type="date" data-filter-start></label>
+        <label><span>结束日期</span><input type="date" data-filter-end></label>
+        <label><span>收支</span><select data-filter-type><option value="">全部</option><option value="expense">支出</option><option value="income">收入</option></select></label>
+        <label><span>类别</span><select data-filter-category><option value="">全部类别</option></select></label>
+        <label class="search-filter"><span>明细关键词</span><input type="search" data-filter-query placeholder="搜索明细"></label>
+        <button class="text-button" type="button" data-clear-filters>清除筛选</button>
+      </form>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table><thead><tr><th>日期</th><th>收支</th><th>明细</th><th>类别</th><th class="amount-column">金额</th><th><span class="sr-only">操作</span></th></tr></thead><tbody data-record-rows></tbody></table>
+        </div>
+        <div class="table-empty" data-table-empty hidden><span>⌁</span><h3>还没有符合条件的记录</h3><p>记下第一笔收支，或调整上方筛选条件。</p><button class="primary compact" type="button" data-empty-add>记一笔</button></div>
+        <div class="pagination" data-pagination></div>
+      </div>
+    </section>
+  </main>
+  <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+  <script defer src="../shared/vendor/supabase.js"></script>
+  <script defer src="../shared/config.js"></script>
+  <script defer src="../shared/hub-auth.js"></script>
+  <script defer src="../shared/auth-gate.js"></script>
+  <script defer src="../shared/sync-store.js"></script>
+  <script defer src="../shared/hub-sync.js"></script>
+  <script defer src="../shared/hub-shell.js"></script>
+  <script defer src="model.js"></script>
+  <script defer src="vendor/xlsx-lite.js"></script>
+  <script defer src="sync.js"></script>
+  <script defer src="app.js"></script>
+</body>
+</html>

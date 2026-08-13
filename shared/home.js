@@ -167,7 +167,7 @@
 
   function requestedApp() {
     var params = new URLSearchParams(window.location.search || '');
-    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/', changelog: 'changelog/' };
+    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/', changelog: 'changelog/', 'cost-trace': 'CostTrace/' };
     return { href: routes[params.get('next')] || '', login: params.get('login') === '1' };
   }
 

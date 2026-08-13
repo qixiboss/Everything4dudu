@@ -92,6 +92,12 @@ html[data-app="changelog"] .hub-home-link:focus-visible {
   color: rgba(43, 52, 83, .82);
 }
 
+/* CostTrace: align with the application brand in its wide toolbar. */
+html[data-app="cost-trace"] .hub-home-link {
+  flex: none;
+  color: rgba(43, 52, 83, .62);
+}
+
 .hub-home-fallback {
   position: fixed;
   z-index: 100;

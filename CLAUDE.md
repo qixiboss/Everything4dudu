@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Everything 4 Dudu is a mobile-style home-page portal (GitHub Pages site) that unifies three independently-developed apps — WordTales (vocabulary learning), Train_record (training log), and the Graduate Entrance Exam Schedule — plus a portal-owned changelog app. All apps share a single Supabase email/password login (pre-created accounts only, no public signup) and sync learning data across devices through the same account.
+Everything 4 Dudu is a mobile-style home-page portal (GitHub Pages site) that unifies three independently-developed apps — WordTales (vocabulary learning), Train_record (training log), and the Graduate Entrance Exam Schedule — plus portal-owned CostTrace and changelog apps. All apps share a single Supabase email/password login (pre-created accounts only, no public signup) and sync data across devices through the same account.
 
-The three apps are developed **in their own repositories** (`qixiboss/WordTales`, `qixiboss/Train_record`, `qixiboss/-Graduate-Entrance-Exam-Schedule`), each with its own GitHub Pages. `words/`, `training/`, `exam-schedule/` are **git submodules** of those repos (registered in `.gitmodules`): each folder is a full git repo with its own remote, and the portal records the exact commit (pointer) it deploys. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`. The only hand-maintained app in this repo is `changelog/`; the home page (`index.html` + `shared/home.js` + `shared/home.css`) is also hand-maintained.
+The three apps are developed **in their own repositories** (`qixiboss/WordTales`, `qixiboss/Train_record`, `qixiboss/-Graduate-Entrance-Exam-Schedule`), each with its own GitHub Pages. `words/`, `training/`, `exam-schedule/` are **git submodules** of those repos (registered in `.gitmodules`): each folder is a full git repo with its own remote, and the portal records the exact commit (pointer) it deploys. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`. The hand-maintained portal apps are `CostTrace/` and `changelog/`; the home page (`index.html` + `shared/home.js` + `shared/home.css`) is also hand-maintained.
 
 ## Commands
 
@@ -48,6 +48,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 - `index.html` + `shared/home.js` + `shared/home.css` — the home page: app icons marked `data-protected-app` (redirect to login when signed out), login dialog (`data-login-open`, no register mode), account panel. All apps render on one page — no swipe/paging
 - `changelog/` — changelog app: read-only release timeline. `changelog.js` holds the `SEED` entries (new versions are added to SEED with each release commit); no manual entry editing and no per-account sync
+- `CostTrace/` — bookkeeping app: local-first transactions, dashboard charts, filtered detail table, offline XLSX export, and per-record sync through `costtrace_sync_items`
 - `integrations/` — per-app sync adapters: `words/hub-sync.js` (WordTales profile → starred-word `word:<id>` + daily punch-in `column:<日期>:<列>` items; public `WordTales.HubProfileSync` is called by the portal's `cloud-sync.js` stub), `training/hub-sync.js` (`day:<日期>` only; settings stay device-local), `exam-schedule/hub-sync.js` (`task:<id>` only; rest markers stay device-local)
 
 ### Tests and integrity checks
@@ -64,7 +65,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ## Supabase
 
-Migrations live in `supabase/migrations/` and must be applied to the WordTales Supabase project. The three per-app tables (`words_sync_items`, `training_sync_items`, `exam_sync_items`) must be exposed via the Data API with RLS enabled and `supabase_realtime` publication for live sync. The retired `learning_profiles` whole-profile table is no longer written or read by any build. Site URL and the five exact redirect URLs must be configured in Auth settings. Accounts are pre-created in the dashboard; signups are disabled (portal has no public registration). The browser only ever uses the publishable key from `shared/config.js`.
+Migrations live in `supabase/migrations/` and must be applied to the WordTales Supabase project. The four per-app tables (`words_sync_items`, `training_sync_items`, `exam_sync_items`, `costtrace_sync_items`) must be exposed via the Data API with RLS enabled and `supabase_realtime` publication for live sync. The retired `learning_profiles` whole-profile table is no longer written or read by any build. Site URL and the six exact redirect URLs must be configured in Auth settings. Accounts are pre-created in the dashboard; signups are disabled (portal has no public registration). The browser only ever uses the publishable key from `shared/config.js`.
 
 ### Development test account
 
