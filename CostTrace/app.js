@@ -144,12 +144,21 @@
     return year + '-' + String(m + 1).padStart(2, '0');
   }
   function setDashboardMonth(month) {
-    if (month > Model.currentMonth()) month = Model.currentMonth();
+    var currentMonth = Model.currentMonth();
+    if (month > currentMonth) month = currentMonth;
     selectedMonth = month;
     one('[data-dashboard-month]').value = month;
+    one('[data-dashboard-month]').max = currentMonth;
     one('[data-month-label]').textContent = month.replace('-', ' 年 ') + ' 月';
-    one('[data-month-next]').disabled = month >= Model.currentMonth();
+    one('[data-month-prev-label]').textContent = shortMonthLabel(shiftMonth(month, -1), month);
+    one('[data-month-next-label]').textContent = month >= currentMonth ? '本月' : shortMonthLabel(shiftMonth(month, 1), month);
+    one('[data-month-state]').textContent = month === currentMonth ? '本月' : '历史';
+    one('[data-month-next]').disabled = month >= currentMonth;
     renderDashboard();
+  }
+  function shortMonthLabel(month, referenceMonth) {
+    var parts = month.split('-'), reference = referenceMonth.split('-');
+    return (parts[0] === reference[0] ? '' : parts[0] + '年 ') + Number(parts[1]) + '月';
   }
   function moveDashboardMonth(delta) {
     if (!delta || (delta > 0 && selectedMonth >= Model.currentMonth())) return;

@@ -65,20 +65,30 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .section-heading h2 { margin: 5px 0 4px; font-size: clamp(28px, 4vw, 38px); line-height: 1.05; letter-spacing: -.05em; }
 .section-heading p:not(.section-kicker) { margin: 0; color: var(--muted); font-size: 13px; }
-.month-picker, .filters label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
-.month-picker { position: relative; min-width: 0; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 7px; min-height: 60px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.72); transition: border-color .16s ease, background .16s ease; }
-.month-picker:focus-within { border-color: rgba(86,100,196,.52); background: rgba(255,255,255,.9); }
-.month-label { grid-column: 1 / -1; color: var(--muted); font-size: 10px; font-weight: 700; }
-.month-value { min-width: 0; color: var(--ink); font-size: 15px; font-weight: 780; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-.month-picker-icon { width: 17px; height: 17px; color: var(--accent-deep); }
+.filters label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+.month-nav { display: grid; grid-template-columns: 94px minmax(184px, 214px) 94px; align-items: stretch; gap: 4px; padding: 5px; border: 1px solid rgba(255,255,255,.7); border-radius: 19px; background: rgba(255,255,255,.4); box-shadow: 0 12px 30px rgba(45,55,94,.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.month-picker { position: relative; min-width: 0; min-height: 64px; display: grid; grid-template-columns: 35px minmax(0, 1fr) auto 15px; align-items: center; gap: 9px; padding: 8px 12px; overflow: hidden; border-radius: 14px; color: white; background: linear-gradient(145deg, #7f8ae0, #5d6aca); box-shadow: 0 8px 20px rgba(86,100,196,.23); cursor: pointer; transition: filter .16s ease, transform .16s ease, box-shadow .16s ease; }
+.month-picker:hover { filter: brightness(1.035); box-shadow: 0 10px 24px rgba(86,100,196,.29); }
+.month-picker:active { transform: scale(.985); }
+.month-picker:focus-within { box-shadow: 0 0 0 3px rgba(86,100,196,.22), 0 10px 24px rgba(86,100,196,.28); }
+.month-calendar { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 10px; background: rgba(255,255,255,.16); }
+.month-calendar svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.month-picker-copy { min-width: 0; display: grid; gap: 2px; }
+.month-label { color: rgba(255,255,255,.72); font-size: 9px; font-weight: 720; letter-spacing: .08em; }
+.month-value { min-width: 0; overflow: hidden; color: white; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap; text-overflow: ellipsis; }
+.month-state { padding: 4px 6px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; color: rgba(255,255,255,.9); background: rgba(255,255,255,.12); font-size: 9px; font-weight: 760; white-space: nowrap; }
+.month-picker-icon { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .78; }
 input, select { min-height: 43px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: rgba(255,255,255,.72); }
 .month-picker input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; }
-.month-nav { display: grid; grid-template-columns: 43px minmax(0, 208px) 43px; align-items: end; gap: 8px; }
-.month-step { position: relative; z-index: 1; width: 43px; height: 43px; min-width: 43px; min-height: 43px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 12px; color: var(--accent-deep); background: rgba(255,255,255,.72); cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; transition: filter .16s ease, transform .16s ease, opacity .16s ease; }
-.month-step:hover { filter: brightness(1.03); }
+.month-step { position: relative; z-index: 1; min-width: 0; min-height: 64px; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 8px; border: 0; border-radius: 14px; color: var(--accent-deep); background: transparent; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; transition: color .16s ease, background .16s ease, transform .16s ease, opacity .16s ease; }
+.month-step:hover { background: rgba(255,255,255,.58); }
 .month-step:active { transform: scale(.94); }
-.month-step:disabled { opacity: .35; cursor: default; filter: none; }
-.month-step span { display: block; font: 500 31px/1 system-ui, sans-serif; transform: translateY(-1px); }
+.month-step:disabled { opacity: .38; cursor: default; background: transparent; }
+.month-step svg { flex: 0 0 auto; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.month-step-copy { min-width: 0; display: grid; gap: 2px; text-align: left; }
+.month-step-next .month-step-copy { text-align: right; }
+.month-step-copy small { color: var(--muted); font-size: 9px; font-weight: 680; white-space: nowrap; }
+.month-step-copy b { overflow: hidden; font-size: 11px; font-weight: 790; font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .metric, .panel, .record-card, .record-tip, .filters, .table-card { border: 1px solid rgba(255,255,255,.62); background: var(--glass); box-shadow: var(--shadow); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
 .metric { position: relative; min-height: 142px; overflow: hidden; padding: 23px; border-radius: 22px; }
@@ -227,13 +237,12 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .section-heading h2 { margin-top: 4px; font-size: 29px; }
   .section-heading p:not(.section-kicker) { font-size: 12px; line-height: 1.55; }
   .month-picker, .month-picker input { width: 100%; min-width: 0; }
-  .month-nav { width: 100%; grid-template-columns: 36px minmax(0, 1fr) 36px; }
-  .month-nav { column-gap: 12px; }
+  .month-nav { width: 100%; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 4px; }
   .month-nav .month-picker { min-width: 0; }
   .month-picker input { display: block; }
-  .month-step { width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 10px; }
-  .month-step::before { content: ""; position: absolute; inset: -4px; }
-  .month-step span { font-size: 22px; }
+  .month-step { min-width: 44px; min-height: 64px; padding: 0; }
+  .month-step-copy { display: none; }
+  .month-step svg { width: 20px; height: 20px; }
   input, select { min-height: 47px; font-size: 16px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .metric { min-height: 118px; padding: 17px 15px; border-radius: 19px; box-shadow: 0 12px 28px rgba(45,55,94,.11); }
@@ -297,6 +306,8 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
 }
 @media (max-width: 360px) {
   .brand-row .kicker { display: none; }
+  .month-picker { grid-template-columns: 35px minmax(0, 1fr) 15px; }
+  .month-state { display: none; }
   .details-heading { align-items: flex-start; flex-direction: column; }
   .details-heading [data-result-summary] { max-width: 100%; }
   .details-actions { width: 100%; justify-content: flex-start; }

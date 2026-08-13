@@ -37,15 +37,25 @@
     <section class="view is-active" data-view="dashboard" aria-labelledby="dashboard-title">
       <div class="section-heading">
         <div><p class="section-kicker">MONTHLY OVERVIEW</p><h2 id="dashboard-title">月度概览</h2><p>每一笔记录，都会即时汇总在这里。</p></div>
-        <div class="month-nav">
-          <button class="month-step" type="button" data-month-prev aria-label="查看上一个月"><span aria-hidden="true">‹</span></button>
-          <div class="month-picker">
-            <span class="month-label" aria-hidden="true">查看月份</span>
-            <output class="month-value" data-month-label aria-live="polite"></output>
-            <svg class="month-picker-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="month-nav" role="group" aria-label="月度数据浏览">
+          <button class="month-step month-step-prev" type="button" data-month-prev aria-label="查看上一个月">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            <span class="month-step-copy" aria-hidden="true"><small>上个月</small><b data-month-prev-label></b></span>
+          </button>
+          <label class="month-picker" for="dashboard-month">
+            <span class="month-calendar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3m10-3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v12H4V7a2 2 0 0 1 2-2Z"/></svg></span>
+            <span class="month-picker-copy">
+              <span class="month-label">查看月份</span>
+              <output class="month-value" data-month-label aria-live="polite"></output>
+            </span>
+            <span class="month-state" data-month-state aria-hidden="true">本月</span>
+            <svg class="month-picker-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg>
             <input id="dashboard-month" type="month" data-dashboard-month aria-label="选择仪表盘月份">
-          </div>
-          <button class="month-step" type="button" data-month-next aria-label="查看下一个月"><span aria-hidden="true">›</span></button>
+          </label>
+          <button class="month-step month-step-next" type="button" data-month-next aria-label="查看下一个月">
+            <span class="month-step-copy" aria-hidden="true"><small>下个月</small><b data-month-next-label></b></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
       <div class="metrics" aria-label="月度关键指标">
