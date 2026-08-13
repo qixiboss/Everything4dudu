@@ -36,6 +36,16 @@ test('金额以分精确解析并拒绝无效精度和零金额', () => {
   assert.equal(Model.parseAmountToCents('-2'), null);
 });
 
+test('本地账本解析区分空数据与损坏或无效数据', () => {
+  assert.deepEqual(Model.parseStoredRecords(null), []);
+  assert.deepEqual(Model.parseStoredRecords(JSON.stringify([
+    record('1', '2026-08-13', 'expense', '食', 1250, '午餐')
+  ])).map((item) => item.id), ['1']);
+  assert.throws(() => Model.parseStoredRecords('{broken'), SyntaxError);
+  assert.throws(() => Model.parseStoredRecords('{}'), TypeError);
+  assert.throws(() => Model.parseStoredRecords(JSON.stringify([{ id: 'bad' }])), TypeError);
+});
+
 test('表单校验限制未来日期、明细、类别联动和收入支出类型', () => {
   const valid = Model.validate({ id: 'a', date: '2026-08-13', type: 'expense', detail: ' 午餐 ', category: '食', amount: '18.50' }, '2026-08-13');
   assert.equal(valid.valid, true);
@@ -112,4 +122,60 @@ test('CostTrace 同步适配器使用 transaction 键并处理远端墓碑', () 
   assert.match(source, /if \(row\.deleted_at\) delete map\[id\]/);
   assert.match(source, /app: 'cost-trace'/);
   assert.match(source, /costtrace\.transactions\.v1/);
+});
+
+test('CostTrace 远端合并落盘失败时抛错并保留原账本', async () => {
+  const initial = JSON.stringify([record('1', '2026-08-13', 'expense', '食', 1250, '午餐')]);
+  let stored = initial;
+  let adapter;
+  const context = vm.createContext({
+    console,
+    localStorage: {
+      getItem: () => stored,
+      setItem() { throw new Error('quota exceeded'); },
+      removeItem() { stored = null; }
+    },
+    document: { readyState: 'complete' },
+    CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+    dispatchEvent() {},
+    HubAppSync: { start(value) { adapter = value; } }
+  });
+  context.window = context;
+  context.globalThis = context;
+  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/model.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/sync.js'), 'utf8'), context);
+
+  assert.equal(typeof adapter.applyRemote, 'function');
+  await assert.rejects(adapter.applyRemote([{
+    item_key: 'transaction:2',
+    payload: record('2', '2026-08-12', 'income', '工资', 500000, '工资'),
+    updated_at: '2026-08-13T00:00:00.000Z',
+    deleted_at: null
+  }]), /quota exceeded/);
+  assert.equal(stored, initial);
+});
+
+test('CostTrace 同步在损坏账本上暂停且不注册适配器', () => {
+  let starts = 0;
+  const statuses = [];
+  const context = vm.createContext({
+    console,
+    localStorage: { getItem: () => '{broken' },
+    document: { readyState: 'complete' },
+    CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+    dispatchEvent(event) { statuses.push(event); },
+    HubAppSync: {
+      start(adapter) {
+        adapter.items();
+        starts += 1;
+      }
+    }
+  });
+  context.window = context;
+  context.globalThis = context;
+  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/model.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/sync.js'), 'utf8'), context);
+
+  assert.equal(starts, 0);
+  assert.equal(statuses.at(-1).detail.state, 'error');
 });

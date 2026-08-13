@@ -8,22 +8,42 @@
   var selectedMonth = Model.currentMonth();
   var currentPage = 1;
   var toastTimer = 0;
+  var storageReadError = null;
 
   function one(selector, parent) { return (parent || document).querySelector(selector); }
   function all(selector, parent) { return Array.prototype.slice.call((parent || document).querySelectorAll(selector)); }
   function readRecords() {
     try {
-      var value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      return Array.isArray(value) ? Model.sortRecords(value.map(Model.normalizeRecord).filter(Boolean)) : [];
-    } catch (_) { return []; }
+      var value = Model.parseStoredRecords(localStorage.getItem(STORAGE_KEY));
+      storageReadError = null;
+      return value;
+    } catch (error) {
+      storageReadError = error;
+      return null;
+    }
   }
   function writeRecords(next) {
-    records = Model.sortRecords(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
+    if (storageReadError) { showToast('本地账本无法读取，已停止写入以保护原始数据。'); return false; }
+    var sorted = Model.sortRecords(next);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted)); }
     catch (_) { showToast('此设备的本地存储空间不足，记录暂未保存。'); return false; }
+    records = sorted;
     window.dispatchEvent(new CustomEvent('costtrace:local-change'));
     renderAll();
     return true;
+  }
+  function withStorageLock(callback) {
+    if (window.navigator && window.navigator.locks && typeof window.navigator.locks.request === 'function') {
+      return window.navigator.locks.request('costtrace-transactions', { mode: 'exclusive' }, callback);
+    }
+    return Promise.resolve().then(callback);
+  }
+  function mutateRecords(mutator) {
+    return withStorageLock(function () {
+      var latest = readRecords();
+      if (!latest) { showToast('本地账本无法读取，原始数据未被覆盖。'); return false; }
+      return writeRecords(mutator(latest));
+    });
   }
   function showToast(message) {
     var toast = one('[data-toast]');
@@ -63,7 +83,7 @@
     if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
     return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 11);
   }
-  function submitRecord(event) {
+  async function submitRecord(event) {
     event.preventDefault();
     var editingId = one('[data-record-id]').value;
     var result = Model.validate({ id: editingId || id(), date: one('[data-record-date]').value, type: currentType(), detail: one('[data-record-detail]').value, category: one('[data-record-category]').value, amount: one('[data-record-amount]').value });
@@ -74,9 +94,12 @@
       if (field) field.focus();
       return;
     }
-    var next = records.filter(function (record) { return record.id !== result.value.id; });
-    next.push(result.value);
-    if (!writeRecords(next)) return;
+    var saved = await mutateRecords(function (latest) {
+      var next = latest.filter(function (record) { return record.id !== result.value.id; });
+      next.push(result.value);
+      return next;
+    });
+    if (!saved) return;
     resetForm();
     message = one('[data-form-message]'); message.textContent = editingId ? '记录已更新。' : '记录已保存。'; message.dataset.state = 'success';
     showToast(editingId ? '这笔记录已更新' : '已记下这笔收支');
@@ -98,10 +121,11 @@
     one('[data-cancel-edit]').hidden = false;
     one('[data-form-message]').textContent = '';
   }
-  function deleteRecord(recordId) {
+  async function deleteRecord(recordId) {
     var record = records.find(function (item) { return item.id === recordId; });
     if (!record || !window.confirm('确定删除“' + record.detail + '”这笔记录吗？此操作会同步到其他设备。')) return;
-    if (writeRecords(records.filter(function (item) { return item.id !== recordId; }))) showToast('记录已删除');
+    var saved = await mutateRecords(function (latest) { return latest.filter(function (item) { return item.id !== recordId; }); });
+    if (saved) showToast('记录已删除');
   }
   function empty(message) { return '<div class="empty-chart"><span>⌁</span><div>' + message + '</div></div>'; }
   function formatCompact(cents) {
@@ -225,15 +249,29 @@
     one('[data-pagination]').addEventListener('click', function (event) { var button = event.target.closest('[data-page]'); if (!button || button.disabled) return; currentPage = Number(button.dataset.page); renderDetails(); });
     one('[data-export]').addEventListener('click', exportExcel);
     window.addEventListener('hub:sync-status', function (event) { var detail = event.detail || {}; if (detail.app !== 'cost-trace') return; var target = one('[data-sync-status]'); target.dataset.state = detail.state; one('span', target).textContent = detail.message || '本地数据已就绪'; });
-    window.addEventListener('costtrace:data-change', function () { records = readRecords(); renderAll(); });
+    window.addEventListener('costtrace:data-change', function () { var latest = readRecords(); if (latest) { records = latest; renderAll(); } });
+    window.addEventListener('storage', function (event) {
+      if (event.key !== STORAGE_KEY || (event.storageArea && event.storageArea !== localStorage)) return;
+      var latest = readRecords();
+      if (!latest) { showToast('检测到无法读取的账本数据，已停止写入。'); return; }
+      records = latest;
+      renderAll();
+    });
   }
   function init() {
-    records = readRecords();
+    var initialRecords = readRecords();
+    records = initialRecords || [];
     selectedMonth = Model.currentMonth();
     one('[data-dashboard-month]').value = selectedMonth;
     one('[data-dashboard-month]').max = selectedMonth;
     one('[data-filter-start]').max = Model.localDate(); one('[data-filter-end]').max = Model.localDate();
     resetForm(); renderFilterCategories(); bind(); renderAll();
+    if (!initialRecords) {
+      var syncStatus = one('[data-sync-status]');
+      syncStatus.dataset.state = 'error';
+      one('span', syncStatus).textContent = '本地账本异常，同步已暂停';
+      showToast('本地账本数据损坏，原始数据已保留，写入和同步已暂停。');
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

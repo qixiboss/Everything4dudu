@@ -303,6 +303,32 @@ test('同一账号的本地较新版本不会被旧云端行覆盖，并会重�
   assert.equal(harness.writes.some((row) => row.payload.value === 'local-new'), true);
 });
 
+test('远端记录落盘失败时不提交版本，并可在重新激活后重试', async () => {
+  const session = { user: { id: 'user-a' } };
+  const remote = [{ item_key: 'transaction:1', payload: { detail: '午餐' }, updated_at: '2026-08-13T00:00:00.000Z', deleted_at: null }];
+  const harness = syncHarness({ session, remote });
+  let attempts = 0;
+  let local = [];
+  harness.context.HubSync.register('cost-trace', {
+    getItems: () => local,
+    applyRemote(rows) {
+      attempts += 1;
+      if (attempts === 1) throw new Error('quota exceeded');
+      local = rows.map((row) => ({ item_key: row.item_key, payload: row.payload }));
+    }
+  });
+
+  await wait();
+  assert.equal(attempts, 1);
+  assert.equal(harness.localStorage.getItem('hub.sync.versions.v2'), null);
+
+  harness.authListeners[0](session);
+  await wait();
+  assert.equal(attempts, 2);
+  assert.equal(local[0].payload.detail, '午餐');
+  assert.equal(JSON.parse(harness.localStorage.getItem('hub.sync.versions.v2'))['user-a:cost-trace:transaction:1'].updated_at, remote[0].updated_at);
+});
+
 test('HubAppSync 只在条目变化时上传，并对比远端行避免重复上传', async () => {
   const session = { user: { id: 'user-a' } };
   let state = { targets: { pushup: 20, restSeconds: 60 } };
@@ -444,4 +470,25 @@ test('HubAppSync 的 applyingRemote 闸门防止远端合并期间的本地写�
   writes.length = 0;
   context.HubAppSync.queue(adapter);
   assert.equal(writes.length, 0);
+});
+
+test('HubAppSync 等待异步远端落盘失败并把错误传回 SyncStore', async () => {
+  const session = { user: { id: 'user-a' } };
+  const harness = syncHarness({
+    session,
+    remote: [{ item_key: 'settings', payload: { value: 'cloud' }, updated_at: '2026-08-13T00:00:00.000Z', deleted_at: null }]
+  });
+  harness.context.setInterval = () => 0;
+  harness.context.clearInterval = () => {};
+  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), harness.context);
+
+  harness.context.HubAppSync.start({
+    app: 'training',
+    items: () => [],
+    applyRemote: () => Promise.reject(new Error('async storage failure')),
+    resetLocal() {}
+  });
+  await wait();
+
+  assert.equal(harness.localStorage.getItem('hub.sync.versions.v2'), null);
 });

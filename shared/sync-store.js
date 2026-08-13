@@ -39,17 +39,26 @@
     return versions[versionKey(userId, app, itemKey)] || null;
   }
   function applyRows(registration, rows, userId) {
-    var accepted = rows.filter(function (row) {
-      var key = versionKey(userId, registration.app, row.item_key);
-      var current = versions[key];
-      if (current && timestamp(current.updated_at) >= timestamp(row.updated_at)) return false;
-      versions[key] = { updated_at: row.updated_at, deleted_at: row.deleted_at || null };
-      return true;
+    var previous = registration.applyChain || Promise.resolve();
+    var operation = previous.catch(function () {}).then(function () {
+      var accepted = rows.filter(function (row) {
+        var key = versionKey(userId, registration.app, row.item_key);
+        var current = versions[key];
+        return !current || timestamp(current.updated_at) < timestamp(row.updated_at);
+      });
+      if (!accepted.length) return false;
+      return Promise.resolve().then(function () {
+        return registration.applyRemote ? registration.applyRemote(accepted) : undefined;
+      }).then(function () {
+        accepted.forEach(function (row) {
+          versions[versionKey(userId, registration.app, row.item_key)] = { updated_at: row.updated_at, deleted_at: row.deleted_at || null };
+        });
+        saveVersions();
+        return true;
+      });
     });
-    if (!accepted.length) return Promise.resolve(false);
-    saveVersions();
-    if (!registration.applyRemote) return Promise.resolve(true);
-    return Promise.resolve(registration.applyRemote(accepted)).then(function () { return true; });
+    registration.applyChain = operation;
+    return operation;
   }
   function scheduleFlush(registration, delay) {
     window.clearTimeout(registration.timer);
@@ -224,7 +233,7 @@
   }
   function register(app, options) {
     if (registrations[app]) return registrations[app].api;
-    var registration = Object.assign({ app: app, timer: null, channel: null, activeUserId: '', activationId: 0, activationPromise: null }, options || {});
+    var registration = Object.assign({ app: app, timer: null, channel: null, activeUserId: '', activationId: 0, activationPromise: null, applyChain: Promise.resolve() }, options || {});
     registration.api = {
       put: function (key, payload) { return queueLocal(app, key, payload, false); },
       remove: function (key) { return queueLocal(app, key, {}, true); },

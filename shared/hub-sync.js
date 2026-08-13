@@ -17,23 +17,31 @@
   /* Per-app scan state, so callers may pass a fresh adapter object for a
    * manual queue() without losing the change baseline. */
   var state = {};
-  var applyingRemote = false;
+  var applyingRemote = 0;
 
   function keys(value) { return Object.keys(value || {}); }
   function items(adapter) {
     var value = adapter.items();
     return Array.isArray(value) ? value : [];
   }
-  function encodedItems(adapter) {
+  function encodedItems(adapter, values) {
     var map = {};
-    items(adapter).forEach(function (item) { map[item.item_key] = JSON.stringify(item.payload); });
+    (values || items(adapter)).forEach(function (item) { map[item.item_key] = JSON.stringify(item.payload); });
     return map;
   }
   function scan(adapter) {
     var entry = state[adapter.app];
     if (!entry || !entry.controller || applyingRemote) return;
-    var current = encodedItems(adapter);
-    items(adapter).forEach(function (item) {
+    var values, current;
+    try {
+      values = items(adapter);
+      current = encodedItems(adapter, values);
+    } catch (error) {
+      window.dispatchEvent(new CustomEvent('hub:sync-status', { detail: { app: adapter.app, state: 'error', message: '本地数据异常，同步已暂停' } }));
+      console.warn('Hub sync scan skipped:', error.message);
+      return;
+    }
+    values.forEach(function (item) {
       if (!entry.previous || entry.previous[item.item_key] !== current[item.item_key]) entry.controller.put(item.item_key, item.payload);
     });
     if (entry.previous) keys(entry.previous).forEach(function (key) {
@@ -42,34 +50,35 @@
     entry.previous = current;
   }
   function applyRemote(adapter, rows) {
-    if (!rows || !rows.length) return;
-    applyingRemote = true;
-    try {
-      adapter.applyRemote(rows);
-    } finally {
-      applyingRemote = false;
-    }
-    /* The reload (or the app's own re-render) may not have happened yet:
-     * record that we were mid-merge so the next scan does not re-upload
-     * remote rows the app has not persisted yet. */
-    state[adapter.app].previous = encodedItems(adapter);
+    if (!rows || !rows.length) return Promise.resolve(false);
+    applyingRemote += 1;
+    return Promise.resolve().then(function () { return adapter.applyRemote(rows); }).then(function () {
+      /* Record the post-merge state only after the adapter has persisted it. */
+      state[adapter.app].previous = encodedItems(adapter);
+      return true;
+    }).finally(function () { applyingRemote -= 1; });
   }
   function resetLocal(adapter) {
-    if (!adapter.resetLocal) return;
-    applyingRemote = true;
-    try { adapter.resetLocal(); } finally { applyingRemote = false; }
-    state[adapter.app].previous = {};
+    if (!adapter.resetLocal) return Promise.resolve(false);
+    applyingRemote += 1;
+    return Promise.resolve().then(function () { return adapter.resetLocal(); }).then(function () {
+      state[adapter.app].previous = {};
+      return true;
+    }).finally(function () { applyingRemote -= 1; });
   }
   function start(adapter) {
     if (!window.HubSync) return false;
     if (!state[adapter.app]) {
+      /* Validate the local snapshot before registering. A broken adapter must
+       * not leave a half-registered sync controller behind. */
+      var initial = encodedItems(adapter);
       state[adapter.app] = {
         controller: window.HubSync.register(adapter.app, {
           getItems: adapter.items,
-          applyRemote: function (rows) { applyRemote(adapter, rows); },
-          resetLocal: function () { resetLocal(adapter); }
+          applyRemote: function (rows) { return applyRemote(adapter, rows); },
+          resetLocal: function () { return resetLocal(adapter); }
         }),
-        previous: encodedItems(adapter)
+        previous: initial
       };
       window.setInterval(function () { scan(adapter); }, POLL_MS);
       /* The first scan must wait for registration to settle: activation

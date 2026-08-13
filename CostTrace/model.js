@@ -65,6 +65,14 @@
       return b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id));
     });
   }
+  function parseStoredRecords(raw) {
+    if (raw == null) return [];
+    var value = JSON.parse(raw);
+    if (!Array.isArray(value)) throw new TypeError('CostTrace stored data must be an array.');
+    var records = value.map(normalizeRecord);
+    if (records.some(function (record) { return !record; })) throw new TypeError('CostTrace stored data contains an invalid record.');
+    return sortRecords(records);
+  }
   function recordsForMonth(records, month) {
     return records.filter(function (record) { return record.date.slice(0, 7) === month; });
   }
@@ -141,6 +149,7 @@
     parseAmountToCents: parseAmountToCents,
     validate: validate,
     normalizeRecord: normalizeRecord,
+    parseStoredRecords: parseStoredRecords,
     sortRecords: sortRecords,
     recordsForMonth: recordsForMonth,
     monthSummary: monthSummary,
