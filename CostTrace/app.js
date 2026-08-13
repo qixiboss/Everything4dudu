@@ -134,7 +134,27 @@
     var saved = await mutateRecords(function (latest) { return latest.filter(function (item) { return item.id !== recordId; }); });
     if (saved) showToast('记录已删除');
   }
-  function empty(message) { return '<div class="empty-chart"><span>⌁</span><div>' + message + '</div></div>'; }
+  function empty(message) { return '<div class="empty-chart"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3M3 18c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>' + message + '</div></div>'; }
+  function shiftMonth(month, delta) {
+    var parts = month.split('-').map(Number);
+    var total = parts[0] * 12 + (parts[1] - 1) + delta;
+    var year = Math.floor(total / 12), m = total % 12;
+    if (m < 0) { year -= 1; m += 12; }
+    return year + '-' + String(m + 1).padStart(2, '0');
+  }
+  function setDashboardMonth(month) {
+    selectedMonth = month;
+    one('[data-dashboard-month]').value = month;
+    one('[data-month-next]').disabled = month >= Model.currentMonth();
+    renderDashboard();
+  }
+  function trendHtml(currentCents, previousCents, downIsGood) {
+    if (previousCents === 0) return '<span class="trend flat">上月无记录</span>';
+    var delta = (currentCents - previousCents) / previousCents;
+    if (Math.abs(delta) < 0.005) return '<span class="trend flat">与上月持平</span>';
+    var up = delta > 0, good = downIsGood ? !up : up;
+    return '<span class="trend ' + (good ? 'good' : 'bad') + '">较上月 ' + (up ? '↑' : '↓') + ' ' + Math.round(Math.abs(delta) * 100) + '%</span>';
+  }
   function formatCompact(cents) {
     var value = Math.abs(cents) / 100;
     if (value >= 10000) return '¥' + (value / 10000).toFixed(value >= 100000 ? 0 : 1) + '万';
@@ -143,11 +163,15 @@
   function renderMetrics() {
     var scoped = Model.recordsForMonth(records, selectedMonth);
     var summary = Model.monthSummary(records, selectedMonth);
+    var previous = Model.monthSummary(records, shiftMonth(selectedMonth, -1));
     one('[data-total-expense]').textContent = Model.formatCurrency(summary.expense);
     one('[data-total-income]').textContent = Model.formatCurrency(summary.income);
     one('[data-total-balance]').textContent = Model.formatCurrency(summary.balance);
     one('[data-expense-count]').textContent = scoped.filter(function (record) { return record.type === 'expense'; }).length + ' 笔支出';
     one('[data-income-count]').textContent = scoped.filter(function (record) { return record.type === 'income'; }).length + ' 笔收入';
+    one('[data-expense-trend]').innerHTML = trendHtml(summary.expense, previous.expense, true);
+    one('[data-income-trend]').innerHTML = trendHtml(summary.income, previous.income, false);
+    one('[data-balance-count]').textContent = summary.count + ' 笔记录';
     one('[data-total-balance]').closest('.metric').classList.toggle('is-negative', summary.balance < 0);
   }
   function renderComposition() {
@@ -155,10 +179,11 @@
     var data = Model.expenseComposition(records, selectedMonth);
     var total = data.reduce(function (sum, item) { return sum + item.amountCents; }, 0);
     if (!data.length) { target.innerHTML = empty('这个月还没有支出记录'); return; }
-    var circumference = 2 * Math.PI * 54, offset = 0;
+    var circumference = 2 * Math.PI * 54, offset = 0, gap = data.length > 1 ? 2.6 : 0;
     var circles = data.map(function (item, index) {
-      var length = circumference * item.percent, circle = '<circle cx="70" cy="70" r="54" fill="none" stroke="' + CATEGORY_COLORS[index % CATEGORY_COLORS.length] + '" stroke-width="16" stroke-dasharray="' + length + ' ' + (circumference - length) + '" stroke-dashoffset="-' + offset + '"><title>' + item.category + ' ' + Model.formatCurrency(item.amountCents) + '</title></circle>';
-      offset += length; return circle;
+      var length = Math.max(1, circumference * item.percent - gap);
+      var circle = '<circle cx="70" cy="70" r="54" fill="none" stroke="' + CATEGORY_COLORS[index % CATEGORY_COLORS.length] + '" stroke-width="16" stroke-linecap="round" stroke-dasharray="' + length + ' ' + (circumference - length) + '" stroke-dashoffset="-' + offset + '"><title>' + item.category + ' ' + Model.formatCurrency(item.amountCents) + '</title></circle>';
+      offset += circumference * item.percent; return circle;
     }).join('');
     var legend = data.map(function (item, index) { return '<div class="legend-row"><i style="background:' + CATEGORY_COLORS[index % CATEGORY_COLORS.length] + '"></i><span>' + item.category + '</span><b>' + Math.round(item.percent * 100) + '% · ' + formatCompact(item.amountCents) + '</b></div>'; }).join('');
     target.innerHTML = '<div class="donut"><svg viewBox="0 0 140 140" role="img" aria-label="支出类型占比">' + circles + '</svg><div class="donut-center"><strong>' + formatCompact(total) + '</strong><span>总支出</span></div></div><div class="chart-legend">' + legend + '</div>';
@@ -225,7 +250,9 @@
     var filtered = Model.applyFilters(records, filters());
     var pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)); currentPage = Math.min(currentPage, pages);
     var pageRecords = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE), body = one('[data-record-rows]'); body.replaceChildren(); pageRecords.forEach(function (record) { body.appendChild(rowFor(record)); });
-    one('[data-result-summary]').textContent = '共 ' + filtered.length + ' 条记录' + (filtered.length ? ' · 收入 ' + Model.formatCurrency(filtered.filter(function (r) { return r.type === 'income'; }).reduce(function (sum, r) { return sum + r.amountCents; }, 0)) + ' · 支出 ' + Model.formatCurrency(filtered.filter(function (r) { return r.type === 'expense'; }).reduce(function (sum, r) { return sum + r.amountCents; }, 0)) : '');
+    var incomeSum = filtered.filter(function (r) { return r.type === 'income'; }).reduce(function (sum, r) { return sum + r.amountCents; }, 0);
+    var expenseSum = filtered.filter(function (r) { return r.type === 'expense'; }).reduce(function (sum, r) { return sum + r.amountCents; }, 0);
+    one('[data-result-summary]').textContent = '共 ' + filtered.length + ' 条记录' + (filtered.length ? ' · 收入 ' + Model.formatCurrency(incomeSum) + ' · 支出 ' + Model.formatCurrency(expenseSum) + ' · 结余 ' + Model.formatCurrency(incomeSum - expenseSum) : '');
     one('[data-table-empty]').hidden = filtered.length > 0; one('.table-scroll').hidden = filtered.length === 0;
     var pagination = one('[data-pagination]');
     if (!filtered.length) { pagination.innerHTML = ''; return; }
@@ -248,7 +275,9 @@
     all('input[name="record-type"]').forEach(function (radio) { radio.addEventListener('change', updateRecordCategories); });
     one('[data-record-form]').addEventListener('submit', submitRecord);
     one('[data-cancel-edit]').addEventListener('click', function () { resetForm(); });
-    one('[data-dashboard-month]').addEventListener('change', function (event) { if (!event.target.value) return; selectedMonth = event.target.value; renderDashboard(); });
+    one('[data-dashboard-month]').addEventListener('change', function (event) { if (!event.target.value) return; setDashboardMonth(event.target.value); });
+    one('[data-month-prev]').addEventListener('click', function () { setDashboardMonth(shiftMonth(selectedMonth, -1)); });
+    one('[data-month-next]').addEventListener('click', function () { if (selectedMonth < Model.currentMonth()) setDashboardMonth(shiftMonth(selectedMonth, 1)); });
     one('[data-filters]').addEventListener('input', function () { currentPage = 1; renderDetails(); });
     one('[data-filter-type]').addEventListener('change', function () { renderFilterCategories(); currentPage = 1; renderDetails(); });
     one('[data-clear-filters]').addEventListener('click', function () { one('[data-filters]').reset(); renderFilterCategories(); currentPage = 1; renderDetails(); });
@@ -272,6 +301,7 @@
     selectedMonth = Model.currentMonth();
     one('[data-dashboard-month]').value = selectedMonth;
     one('[data-dashboard-month]').max = selectedMonth;
+    one('[data-month-next]').disabled = true;
     one('[data-filter-start]').max = Model.localDate(); one('[data-filter-end]').max = Model.localDate();
     resetForm(); renderFilterCategories(); bind(); renderAll();
     if (!initialRecords) {

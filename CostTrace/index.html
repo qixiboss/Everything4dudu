@@ -37,12 +37,16 @@
     <section class="view is-active" data-view="dashboard" aria-labelledby="dashboard-title">
       <div class="section-heading">
         <div><p class="section-kicker">MONTHLY OVERVIEW</p><h2 id="dashboard-title">月度概览</h2><p>每一笔记录，都会即时汇总在这里。</p></div>
-        <label class="month-picker">查看月份<input type="month" data-dashboard-month aria-label="选择仪表盘月份"></label>
+        <div class="month-nav">
+          <button class="month-step" type="button" data-month-prev aria-label="查看上一个月"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <label class="month-picker">查看月份<input type="month" data-dashboard-month aria-label="选择仪表盘月份"></label>
+          <button class="month-step" type="button" data-month-next aria-label="查看下一个月"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
       <div class="metrics" aria-label="月度关键指标">
-        <article class="metric expense"><span class="metric-icon">↗</span><p>本月累计支出</p><strong data-total-expense>¥0.00</strong><small data-expense-count>0 笔支出</small></article>
-        <article class="metric income"><span class="metric-icon">↙</span><p>本月累计收入</p><strong data-total-income>¥0.00</strong><small data-income-count>0 笔收入</small></article>
-        <article class="metric balance"><span class="metric-icon">≈</span><p>本月剩余金额</p><strong data-total-balance>¥0.00</strong><small>收入 − 支出</small></article>
+        <article class="metric expense"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>本月累计支出</p><strong data-total-expense>¥0.00</strong><small><span data-expense-count>0 笔支出</span><span class="trend-sep" aria-hidden="true"> · </span><span data-expense-trend>较上月 —</span></small></article>
+        <article class="metric income"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m7 7 10 10M16 17H7V8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>本月累计收入</p><strong data-total-income>¥0.00</strong><small><span data-income-count>0 笔收入</span><span class="trend-sep" aria-hidden="true"> · </span><span data-income-trend>较上月 —</span></small></article>
+        <article class="metric balance"><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9c2.4 0 2.4 2.2 4.8 2.2S11.2 9 13.6 9s2.4 2.2 4.8 2.2M4 15c2.4 0 2.4 2.2 4.8 2.2s2.4-2.2 4.8-2.2 2.4 2.2 4.8 2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><p>本月剩余金额</p><strong data-total-balance>¥0.00</strong><small><span>收入 − 支出</span><span class="trend-sep" aria-hidden="true"> · </span><span data-balance-count>0 笔记录</span></small></article>
       </div>
       <div class="dashboard-grid">
         <article class="panel composition-panel">
@@ -83,7 +87,7 @@
           <p class="form-message" data-form-message aria-live="polite"></p>
           <div class="form-actions"><button class="secondary" type="button" data-cancel-edit hidden>取消编辑</button><button class="primary" type="submit" data-save-record>保存记录</button></div>
         </form>
-        <aside class="record-tip"><span>✦</span><h3>小小习惯，清晰生活</h3><p>金额以人民币记录并保留两位小数。数据会先保存在此设备，登录后自动同步到你的账户。</p></aside>
+        <aside class="record-tip"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5 14 9l6.5 2-6.5 2-2 6.5-2-6.5L3.5 11 10 9l2-6.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></span><h3>小小习惯，清晰生活</h3><p>金额以人民币记录并保留两位小数。数据会先保存在此设备，登录后自动同步到你的账户。</p></aside>
       </div>
     </section>
 
@@ -102,7 +106,7 @@
         <div class="table-scroll">
           <table><thead><tr><th>日期</th><th>收支</th><th>明细</th><th>类别</th><th class="amount-column">金额</th><th><span class="sr-only">操作</span></th></tr></thead><tbody data-record-rows></tbody></table>
         </div>
-        <div class="table-empty" data-table-empty hidden><span>⌁</span><h3>还没有符合条件的记录</h3><p>记下第一笔收支，或调整上方筛选条件。</p><button class="primary compact" type="button" data-empty-add>记一笔</button></div>
+        <div class="table-empty" data-table-empty hidden><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3M3 18c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><h3>还没有符合条件的记录</h3><p>记下第一笔收支，或调整上方筛选条件。</p><button class="primary compact" type="button" data-empty-add>记一笔</button></div>
         <div class="pagination" data-pagination></div>
       </div>
     </section>
