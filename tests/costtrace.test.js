@@ -188,7 +188,8 @@ test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', (
   assert.match(html, /data-filter-toggle[^>]+aria-label="展开筛选"[^>]+aria-controls="detail-filters"/);
   assert.match(html, /id="detail-filters" data-filters/);
   assert.match(html, /data-month-prev[^>]*><span aria-hidden="true">‹<\/span>/);
-  assert.match(html, /<div class="month-picker"><label for="dashboard-month">/);
+  assert.match(html, /data-month-slider min="-1" max="1" value="0" step="1"/);
+  assert.match(html, /data-dashboard-month aria-labelledby="dashboard-month-label"/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]+\.view-tabs \{ position: fixed/);
   assert.match(css, /\.month-nav \{ width: 100%; grid-template-columns: 36px minmax\(0, 1fr\) 36px; \}/);
   assert.match(css, /\.filters > label \{ width: 100%; min-width: 0; max-width: 100%; \}/);
@@ -197,5 +198,7 @@ test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', (
   assert.match(css, /tbody tr \{ display: grid/);
   assert.match(css, /\.metric\.balance \{ grid-column: 1 \/ -1/);
   assert.match(app, /function toggleFilters\(force\)/);
+  assert.match(app, /function bindMonthSlider\(\)/);
+  assert.match(app, /moveDashboardMonth\(delta\)/);
   assert.match(app, /\[data-filter-toggle\].+toggleFilters/);
 });

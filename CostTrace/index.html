@@ -39,7 +39,12 @@
         <div><p class="section-kicker">MONTHLY OVERVIEW</p><h2 id="dashboard-title">月度概览</h2><p>每一笔记录，都会即时汇总在这里。</p></div>
         <div class="month-nav">
           <button class="month-step" type="button" data-month-prev aria-label="查看上一个月"><span aria-hidden="true">‹</span></button>
-          <div class="month-picker"><label for="dashboard-month">查看月份</label><input id="dashboard-month" type="month" data-dashboard-month aria-label="选择仪表盘月份"></div>
+          <div class="month-picker">
+            <span id="dashboard-month-label">查看月份</span>
+            <output class="month-value" data-dashboard-month aria-labelledby="dashboard-month-label" aria-live="polite"></output>
+            <input class="month-slider" type="range" data-month-slider min="-1" max="1" value="0" step="1" aria-label="滑动切换月份：向左上个月，向右下个月">
+            <p class="month-hint" aria-hidden="true">向左滑动查看上个月</p>
+          </div>
           <button class="month-step" type="button" data-month-next aria-label="查看下一个月"><span aria-hidden="true">›</span></button>
         </div>
       </div>
