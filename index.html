@@ -31,43 +31,52 @@
       <p class="home-subtitle" data-home-subtitle>今天也向目标靠近一点。</p>
     </header>
 
-    <div class="app-grid" aria-label="应用">
-      <a class="app" href="words/" data-protected-app="words">
-        <span class="app-icon app-icon-words" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-        </span>
-        <span class="app-name">词汇学习</span>
-        <span class="app-caption">Words</span>
-      </a>
-      <a class="app" href="training/" data-protected-app="training">
-        <span class="app-icon app-icon-training" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
-        </span>
-        <span class="app-name">训练记录</span>
-        <span class="app-caption">Training</span>
-      </a>
-      <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
-        <span class="app-icon app-icon-schedule" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span class="app-name">考研日程</span>
-        <span class="app-caption">Schedule</span>
-      </a>
-      <a class="app" href="changelog/" data-protected-app="changelog">
-        <span class="app-icon app-icon-changelog" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-        </span>
-        <span class="app-name">更新记录</span>
-        <span class="app-caption">Changelog</span>
-      </a>
-      <a class="app" href="CostTrace/" data-protected-app="cost-trace">
-        <span class="app-icon app-icon-costtrace" aria-hidden="true">
-          <svg viewBox="0 0 64 64"><path d="M17 12h30v40H17zM24 22h16M24 31h6M35 31h5M24 40h6M35 40h5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span class="app-name">记账</span>
-        <span class="app-caption">CostTrace</span>
-      </a>
-    </div>
+    <section class="app-pager" data-app-pager aria-label="应用分页">
+      <div class="app-pages" data-app-pages>
+        <div class="app-grid" data-app-page aria-label="应用，第 1 页">
+          <a class="app" href="words/" data-protected-app="words">
+            <span class="app-icon app-icon-words" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 23h13M25 32h16M25 41h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+            </span>
+            <span class="app-name">词汇学习</span>
+            <span class="app-caption">Words</span>
+          </a>
+          <a class="app" href="training/" data-protected-app="training">
+            <span class="app-icon app-icon-training" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M11 27v10m8-17v24m26-24v24m8-17v10M19 32h26" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="app-name">训练记录</span>
+            <span class="app-caption">Training</span>
+          </a>
+          <a class="app" href="exam-schedule/" data-protected-app="exam-schedule">
+            <span class="app-icon app-icon-schedule" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="37" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><path d="M12 27h40M23 11v10M41 11v10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m24 40 5 5 11-12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="app-name">考研日程</span>
+            <span class="app-caption">Schedule</span>
+          </a>
+          <a class="app" href="changelog/" data-protected-app="changelog">
+            <span class="app-icon app-icon-changelog" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M17 14h22a8 8 0 0 1 8 8v29H23a6 6 0 0 1-6-6V14Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M25 25h14M25 33h14M25 41h8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+            </span>
+            <span class="app-name">更新记录</span>
+            <span class="app-caption">Changelog</span>
+          </a>
+          <a class="app" href="CostTrace/" data-protected-app="cost-trace">
+            <span class="app-icon app-icon-costtrace" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M17 12h30v40H17zM24 22h16M24 31h6M35 31h5M24 40h6M35 40h5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="app-name">记账</span>
+            <span class="app-caption">CostTrace</span>
+          </a>
+        </div>
+      </div>
+      <nav class="app-pagination" data-app-pagination aria-label="应用页码" hidden>
+        <button class="app-page-arrow" type="button" data-page-prev aria-label="上一页">‹</button>
+        <span class="app-page-dots" data-page-dots></span>
+        <button class="app-page-arrow" type="button" data-page-next aria-label="下一页">›</button>
+      </nav>
+    </section>
 
     <footer class="home-dock">
       <div class="dock-inner">

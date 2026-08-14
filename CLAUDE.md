@@ -46,7 +46,7 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ### Portal-owned code
 
-- `index.html` + `shared/home.js` + `shared/home.css` — the home page: app icons marked `data-protected-app` (redirect to login when signed out), login dialog (`data-login-open`, no register mode), account panel. All apps render on one page — no swipe/paging
+- `index.html` + `shared/home.js` + `shared/home.css` — the home page: app icons marked `data-protected-app` (redirect to login when signed out), login dialog (`data-login-open`, no register mode), account panel. Apps use a two-column, three-row grid with six apps per page; additional apps are split into swipeable/keyboard-accessible pages with arrow and dot controls
 - `changelog/` — changelog app: read-only release timeline. `changelog.js` holds the `SEED` entries (new versions are added to SEED with each release commit); no manual entry editing and no per-account sync
 - `CostTrace/` — bookkeeping app: local-first transactions, dashboard charts, filtered detail table, offline XLSX export, and per-record sync through `costtrace_sync_items`
 - `integrations/` — per-app sync adapters: `words/hub-sync.js` (WordTales profile → starred-word `word:<id>` + daily punch-in `column:<日期>:<列>` items; public `WordTales.HubProfileSync` is called by the portal's `cloud-sync.js` stub), `training/hub-sync.js` (`day:<日期>` only; settings stay device-local), `exam-schedule/hub-sync.js` (`task:<id>` only; rest markers stay device-local)

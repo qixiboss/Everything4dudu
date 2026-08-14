@@ -95,18 +95,77 @@ button { -webkit-tap-highlight-color: transparent; }
 .home-header h1 { margin: 0; font-size: clamp(30px, 9vw, 40px); line-height: 1.08; letter-spacing: -.045em; }
 .home-subtitle { margin: 10px 0 0; color: var(--ink-soft); font-size: 15px; }
 
-/* 五个应用在宽屏时三列排布，最后一行居中；窄屏保持两列。 */
-.app-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  column-gap: 18px;
-  row-gap: 25px;
+/* 每页固定为两列三行；第七个应用起由脚本自动放入下一页。 */
+.app-pager {
   margin-top: 36px;
+  overflow: hidden;
+  outline: none;
+}
+
+.app-pager:focus-visible {
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px rgba(55,75,145,.42);
+}
+
+.app-pages {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  touch-action: pan-y;
+  transition: transform .32s cubic-bezier(.22,.8,.31,1);
+}
+
+.app-grid {
+  width: 100%;
+  flex: 0 0 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, auto));
+  column-gap: 36px;
+  row-gap: 25px;
   padding: 0;
 }
-.app-grid .app { grid-column: span 2; }
-.app-grid .app:nth-child(4) { grid-column: 2 / span 2; }
-.app-grid .app:nth-child(5) { grid-column: 4 / span 2; }
+
+.app-pagination {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.app-page-dots { display: inline-flex; align-items: center; gap: 7px; }
+
+.app-page-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(45,55,91,.25);
+  cursor: pointer;
+  transition: width .2s ease, background .2s ease;
+}
+
+.app-page-dot.is-active { width: 20px; background: rgba(45,55,91,.72); }
+.app-page-dot:focus-visible { outline: 2px solid rgba(55,75,145,.6); outline-offset: 3px; }
+
+.app-page-arrow {
+  width: 28px;
+  height: 28px;
+  padding: 0 0 2px;
+  border: 1px solid rgba(255,255,255,.52);
+  border-radius: 50%;
+  color: #485273;
+  background: rgba(255,255,255,.34);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.app-page-arrow:disabled { opacity: .28; cursor: default; }
+.app-page-arrow:focus-visible { outline: 2px solid rgba(55,75,145,.6); outline-offset: 2px; }
 
 /* 入场动效：头部下沉、图标依次浮起、Dock 最后出现。 */
 @keyframes fade-down { from { opacity: 0; transform: translateY(-12px); } }
@@ -277,7 +336,8 @@ button { -webkit-tap-highlight-color: transparent; }
   .home-header { padding-top: 14px; }
   .hero-clock { font-size: 54px; }
   .eyebrow { margin-top: 9px; }
-  .app-grid { margin-top: 24px; row-gap: 17px; }
+  .app-pager { margin-top: 24px; }
+  .app-grid { row-gap: 17px; }
   .app-icon { width: 70px; height: 70px; border-radius: 20px; }
   .app-icon svg { width: 40px; height: 40px; }
 }
@@ -302,9 +362,8 @@ button { -webkit-tap-highlight-color: transparent; }
   .status-bar { display: none; }
   .home-header { padding-top: clamp(12px, 3.4vh, 30px); }
   .hero-clock { font-size: clamp(58px, 17.5vw, 74px); }
-  .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(24px, 4vh, 36px); row-gap: 18px; }
-  .app-grid .app, .app-grid .app:nth-child(4), .app-grid .app:nth-child(5) { grid-column: auto; }
-  .app-grid .app:nth-child(5) { grid-column: 1 / -1; }
+  .app-pager { margin-top: clamp(24px, 4vh, 36px); }
+  .app-grid { column-gap: 24px; row-gap: 18px; }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
 }

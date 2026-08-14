@@ -4,6 +4,7 @@
   var layer;
   var lastFocus;
   var pendingHref = '';
+  var APP_PAGE_SIZE = 6;
 
   function text(selector, value) {
     var node = document.querySelector(selector);
@@ -44,6 +45,102 @@
       updateClock();
       window.setInterval(updateClock, 60000);
     }, 60000 - (Date.now() % 60000) + 50);
+  }
+
+  function initAppPager() {
+    var pager = document.querySelector('[data-app-pager]');
+    var pages = document.querySelector('[data-app-pages]');
+    var firstPage = document.querySelector('[data-app-page]');
+    var pagination = document.querySelector('[data-app-pagination]');
+    if (!pager || !pages || !firstPage || !pagination) return;
+
+    var apps = Array.prototype.slice.call(firstPage.querySelectorAll(':scope > .app'));
+    var pageCount = Math.ceil(apps.length / APP_PAGE_SIZE);
+    var currentPage = 0;
+    var startX = 0;
+    var startY = 0;
+    var trackingPointer = false;
+    var ignoreClickUntil = 0;
+
+    for (var pageIndex = 1; pageIndex < pageCount; pageIndex += 1) {
+      var page = document.createElement('div');
+      page.className = 'app-grid';
+      page.setAttribute('data-app-page', '');
+      page.setAttribute('aria-label', '应用，第 ' + (pageIndex + 1) + ' 页');
+      apps.slice(pageIndex * APP_PAGE_SIZE, (pageIndex + 1) * APP_PAGE_SIZE).forEach(function (app) {
+        page.appendChild(app);
+      });
+      pages.appendChild(page);
+    }
+
+    var pageNodes = Array.prototype.slice.call(pages.querySelectorAll('[data-app-page]'));
+    var dots = document.querySelector('[data-page-dots]');
+    var previous = document.querySelector('[data-page-prev]');
+    var next = document.querySelector('[data-page-next]');
+    if (pageCount <= 1 || !dots || !previous || !next) return;
+
+    pagination.hidden = false;
+    pager.setAttribute('tabindex', '0');
+    pager.setAttribute('aria-roledescription', '轮播');
+
+    pageNodes.forEach(function (_page, index) {
+      var dot = document.createElement('button');
+      dot.className = 'app-page-dot';
+      dot.type = 'button';
+      dot.setAttribute('aria-label', '前往第 ' + (index + 1) + ' 页');
+      dot.addEventListener('click', function () { showPage(index); });
+      dots.appendChild(dot);
+    });
+
+    function showPage(index) {
+      currentPage = Math.max(0, Math.min(index, pageCount - 1));
+      pages.style.transform = 'translateX(-' + (currentPage * 100) + '%)';
+      pageNodes.forEach(function (page, pageIndex) {
+        var active = pageIndex === currentPage;
+        page.setAttribute('aria-hidden', active ? 'false' : 'true');
+        Array.prototype.forEach.call(page.querySelectorAll('.app'), function (app) {
+          if (active) app.removeAttribute('tabindex');
+          else app.setAttribute('tabindex', '-1');
+        });
+      });
+      Array.prototype.forEach.call(dots.querySelectorAll('.app-page-dot'), function (dot, dotIndex) {
+        var active = dotIndex === currentPage;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-current', active ? 'page' : 'false');
+      });
+      previous.disabled = currentPage === 0;
+      next.disabled = currentPage === pageCount - 1;
+    }
+
+    previous.addEventListener('click', function () { showPage(currentPage - 1); });
+    next.addEventListener('click', function () { showPage(currentPage + 1); });
+    pager.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      showPage(currentPage + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+    pages.addEventListener('pointerdown', function (event) {
+      startX = event.clientX;
+      startY = event.clientY;
+      trackingPointer = true;
+    });
+    pages.addEventListener('pointerup', function (event) {
+      if (!trackingPointer) return;
+      trackingPointer = false;
+      var deltaX = event.clientX - startX;
+      var deltaY = event.clientY - startY;
+      if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      event.preventDefault();
+      ignoreClickUntil = Date.now() + 400;
+      showPage(currentPage + (deltaX < 0 ? 1 : -1));
+    });
+    pages.addEventListener('pointercancel', function () { trackingPointer = false; });
+    pages.addEventListener('click', function (event) {
+      if (Date.now() >= ignoreClickUntil) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+    showPage(0);
   }
 
   function sessionEmail(session) {
@@ -174,6 +271,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     layer = document.querySelector('[data-login-layer]');
     startClock();
+    initAppPager();
     document.querySelector('[data-login-open]').addEventListener('click', openLogin);
     Array.prototype.forEach.call(document.querySelectorAll('[data-login-close]'), function (button) { button.addEventListener('click', closeLogin); });
     document.addEventListener('keydown', handleKeydown);

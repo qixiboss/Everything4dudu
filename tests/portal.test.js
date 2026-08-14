@@ -74,10 +74,18 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /href="CostTrace\/" data-protected-app="cost-trace"/);
   assert.match(home, /hero-clock/);
   assert.match(home, /data-login-open/);
+  assert.match(home, /data-app-pager/);
+  assert.match(home, /data-app-pagination/);
   assert.match(home, /role="dialog"/);
   assert.match(home, /autocomplete="current-password"/);
   assert.doesNotMatch(home, /data-auth-mode="register"|register-password-confirm/);
   assert.match(home, /Content-Security-Policy/);
+  const homeJs = fs.readFileSync(path.join(root, 'shared/home.js'), 'utf8');
+  const homeCss = fs.readFileSync(path.join(root, 'shared/home.css'), 'utf8');
+  assert.match(homeJs, /APP_PAGE_SIZE = 6/);
+  assert.match(homeJs, /Math\.ceil\(apps\.length \/ APP_PAGE_SIZE\)/);
+  assert.match(homeCss, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(homeCss, /grid-template-rows: repeat\(3, minmax\(0, auto\)\)/);
   const schedule = fs.readFileSync(path.join(root, '_site/exam-schedule/index.html'), 'utf8');
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
 
