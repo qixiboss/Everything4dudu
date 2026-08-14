@@ -73,8 +73,8 @@ function buildWords(appRoot, destRoot) {
   );
   html = replaceOnce(
     html,
-    '<link rel="stylesheet" href="css/styles.css?v=3.0.6">',
-    '<link rel="stylesheet" href="css/styles.css?v=3.0.6">\n<link rel="stylesheet" href="../shared/hub.css">',
+    '<link rel="stylesheet" href="css/styles.css?v=3.0.7">',
+    '<link rel="stylesheet" href="css/styles.css?v=3.0.7">\n<link rel="stylesheet" href="../shared/hub.css">',
     'WordTales stylesheet'
   );
   html = replaceOnce(html, '<body>', '<body>\n<div id="hub-shell"></div>', 'WordTales body');
