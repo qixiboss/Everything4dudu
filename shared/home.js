@@ -163,7 +163,11 @@
     text('[data-account-email]', email);
     text('[data-login-label]', email ? shortEmail(email) : '用户登录');
     var dot = document.querySelector('[data-login-dot]');
-    if (dot) dot.classList.toggle('is-online', !!email);
+    if (dot) {
+      dot.classList.toggle('is-online', !!email);
+      /* 圆点颜色只传达在线状态，同步文本名称避免仅靠颜色传达。 */
+      dot.setAttribute('aria-label', email ? '已登录' : '未登录');
+    }
     var pill = document.querySelector('[data-login-open]');
     if (pill) pill.title = email ? '当前账户：' + email : '';
     var submit = document.querySelector('[data-auth-submit]');
