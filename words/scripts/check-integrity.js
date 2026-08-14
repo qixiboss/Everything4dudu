@@ -11,29 +11,22 @@ const vm = require('vm');
  * 的约束集中到一个零依赖脚本里。脚本只读取文件，不修复数据，适合在提交前和
  * GitHub Pages 发布前重复执行。
  */
-/* 应用在构建时从门户内源码整合,校验对象是 _site/ 的构建产物。 */
-const htmlPath = path.resolve(__dirname, '../_site/words/index.html');
+const htmlPath = path.resolve(__dirname, '../vocab-essays/vocab-essays.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 const errors = [];
 
-/* 共享脚本段落以 integrate.js 的 sharedScriptTags() 为唯一来源,
- * 这里只提取 src 路径,避免与构建脚本手动同步。 */
-const sharedScriptSources = require('./integrate.js').sharedScriptTags()
-  .map((tag) => tag.match(/src="([^"]+)"/)[1]);
-
 const expectedScripts = [
   'vendor/ts-fsrs/index.umd.js?v=5.4.1',
-  ...sharedScriptSources,
-  'js/namespace.js',
-  'js/supabase-config.js',
-  'js/auth.js',
-  'js/data.js',
-  'js/renderer.js',
-  'js/learning-progress-v2.js',
-  'js/cloud-sync.js',
-  'js/hub-sync.js',
-  'js/study-record.js',
-  'js/features.js'
+  'vendor/supabase-js/supabase.js?v=2.112.2',
+  'js/namespace.js?v=3.0.0',
+  'js/supabase-config.js?v=1.0.0',
+  'js/auth.js?v=1.0.0',
+  'js/data.js?v=3.0.0',
+  'js/renderer.js?v=3.0.0',
+  'js/learning-progress-v2.js?v=3.0.8',
+  'js/cloud-sync.js?v=1.0.0',
+  'js/study-record.js?v=1.0.0',
+  'js/features.js?v=3.0.4'
 ];
 const scriptTags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 const scripts = scriptTags.map((match) => {
@@ -44,10 +37,7 @@ const scripts = scriptTags.map((match) => {
 if (scripts.some((script) => !script.source)) {
   errors.push('All application scripts must be external static files.');
 }
-/* 上游应用自行管理脚本版本号（?v= 查询串），比较顺序时忽略版本号，
- * 只校验脚本文件本身及其相对顺序。 */
-function stripVersion(reference) { return reference.replace(/\?v=[^"']*$/, ''); }
-if (scripts.map((script) => stripVersion(script.source)).join('\n') !== expectedScripts.map(stripVersion).join('\n')) {
+if (scripts.map((script) => script.source).join('\n') !== expectedScripts.join('\n')) {
   errors.push(`Unexpected script order: ${scripts.map((script) => script.source || '[inline]').join(', ')}.`);
 }
 

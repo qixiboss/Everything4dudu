@@ -14,7 +14,7 @@ fs.mkdirSync(output, { recursive: true });
   fs.cpSync(path.join(root, directory), path.join(output, directory), { recursive: true });
 });
 
-/* 三个应用目录是各自仓库的本地克隆;复制原始应用并注入门户整合后输出到 _site/。 */
+/* 三个应用目录是门户仓库内的普通源码;复制应用并注入门户整合后输出到 _site/。 */
 integrateApps(root, output);
 
 console.log('Built integrated static site in _site/.');

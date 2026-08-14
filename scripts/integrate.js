@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/* 门户整合:把三个应用仓库(本地克隆)的原始代码复制到目标目录,注入
+/* 门户整合:把三个应用目录的原始代码复制到目标目录,注入
  * 门户共享脚本、CSP、登录门与同步适配器。由 build-site.js 在构建 _site/
- * 时调用;应用代码只存在于各自的仓库,本文件不提交任何应用内容。 */
+ * 时调用;应用源码和整合适配器都由本仓库统一维护。 */
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -104,7 +104,7 @@ function buildWords(appRoot, destRoot) {
 
 function buildTraining(appRoot, destRoot) {
   const source = path.join(appRoot, 'training');
-  /* 只复制应用文件,不携带克隆仓库自身的 .git 等元数据。 */
+  /* 只复制应用运行所需文件,不把应用文档或开发配置带入发布产物。 */
   fs.mkdirSync(path.join(destRoot, 'training'), { recursive: true });
   ['index.html', 'styles.css', 'app.js'].forEach((file) => {
     assert(fs.existsSync(path.join(source, file)), `Training source is missing ${file}.`);

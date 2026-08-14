@@ -4,34 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Everything 4 Dudu is a mobile-style home-page portal (GitHub Pages site) that unifies three independently-developed apps — WordTales (vocabulary learning), Train_record (training log), and the Graduate Entrance Exam Schedule — plus portal-owned CostTrace and changelog apps. All apps share a single Supabase email/password login (pre-created accounts only, no public signup) and sync data across devices through the same account.
+Everything 4 Dudu is a mobile-style home-page portal (GitHub Pages site) that unifies WordTales (vocabulary learning), Train_record (training log), the Graduate Entrance Exam Schedule, CostTrace, and changelog. All application source is maintained in this repository. All apps share a single Supabase email/password login (pre-created accounts only, no public signup) and sync data across devices through the same account.
 
-The three apps are developed **in their own repositories** (`qixiboss/WordTales`, `qixiboss/Train_record`, `qixiboss/-Graduate-Entrance-Exam-Schedule`), each with its own GitHub Pages. `words/`, `training/`, `exam-schedule/` are **git submodules** of those repos (registered in `.gitmodules`): each folder is a full git repo with its own remote, and the portal records the exact commit (pointer) it deploys. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`. The hand-maintained portal apps are `CostTrace/` and `changelog/`; the home page (`index.html` + `shared/home.js` + `shared/home.css`) is also hand-maintained.
+`words/`, `training/`, and `exam-schedule/` are ordinary application directories in this repository, alongside the portal-owned `CostTrace/` and `changelog/` apps. There are no app submodules, app remotes, or app-specific deployment workflows. The portal integration (shared login/sync scripts, CSP, adapters) is applied **at build time** by `scripts/integrate.js` when generating `_site/`.
 
 ## Commands
 
 ```sh
 npm test                 # node --test over tests/*.test.js and tests/**/*.test.js (auto-builds _site/ first when missing)
 npm run check            # scripts/check-integrity.js: static integrity checks on _site/words (auto-builds _site/ first when missing)
-npm run build            # scripts/build-site.js: integrate apps from clones + copy portal files into _site/
+npm run build            # scripts/build-site.js: integrate apps from portal source + copy portal files into _site/
 npm run verify           # build + test + check; runs in CI before every deploy
 ```
 
-Prerequisites: Node >= 22, and the three app submodules initialized (`git submodule update --init` after a fresh clone; clone once with `git clone --recurse-submodules` to get everything). Local preview: `npm run build` then `python3 -m http.server 8000` from `_site/` (or serve the repo root — portal files are at root, but app pages only exist in `_site/`).
+Prerequisites: Node >= 22. Local preview: `npm run build` then `python3 -m http.server 8000` from `_site/` (or serve the repo root — portal files are at root, but app pages only exist in `_site/`).
 
 ## Architecture
 
 ### Build-time integration (the load-bearing part)
 
-`scripts/integrate.js` exports `integrateApps(appRoot, destRoot)`: it reads each app from its clone directory and writes the integrated version into the destination (called by `scripts/build-site.js` with `_site/`). Integration is string replacement against exact anchors (each replaced once; missing/duplicate anchors fail the build). Per app it:
+`scripts/integrate.js` exports `integrateApps(appRoot, destRoot)`: it reads each app from the portal source directories and writes the integrated version into the destination (called by `scripts/build-site.js` with `_site/`). Integration is string replacement against exact anchors (each replaced once; missing/duplicate anchors fail the build). Per app it:
 
 - injects the `data-app` attribute on `<html>`, a CSP meta tag, `shared/hub.css`, `<div id="hub-shell"></div>`, and the shared script block (`shared/vendor/supabase.js`, `config.js`, `hub-auth.js`, `auth-gate.js`, `sync-store.js`, `hub-sync.js`, `hub-shell.js` — kept in `sharedScripts()` and used verbatim by every app)
 - writes the per-app adapter from `integrations/<app>/hub-sync.js`
-- for words: copies from the clone's `vocab-essays/` subdir, removes the old upstream supabase vendor script, adds `hub-sync.js` after `cloud-sync.js`, and writes `integrations/words/{auth.js,supabase-config.js,cloud-sync.js}` — the portal-owned `cloud-sync.js` stub keeps the login lifecycle and the `HubProfileSync.queue()` hook; the legacy whole-profile `learning_profiles` upload/restore path is disabled
+- for words: copies from the portal's `vocab-essays/` subdir, removes the old upstream supabase vendor script, adds `hub-sync.js` after `cloud-sync.js`, and writes `integrations/words/{auth.js,supabase-config.js,cloud-sync.js}` — the portal-owned `cloud-sync.js` stub keeps the login lifecycle and the `HubProfileSync.queue()` hook; the legacy whole-profile `learning_profiles` upload/restore path is disabled
 - for training: copies only `index.html`, `styles.css`, `app.js`
 - for exam-schedule: extracts the app from an iframe `srcdoc` and replaces its stricter CSP
 
-The committed app content is reproducible from the submodules via `npm run build`; the portal repo only records submodule pointers (`.gitmodules` + gitlinks), never app content.
+The committed app content is the source of truth. `npm run build` deterministically produces the integrated `_site/` output from this repository alone.
 
 ### Shared runtime
 
@@ -59,9 +59,9 @@ Scripts in `shared/` run in every app and on the home page (the browser context,
 
 ### CI / deployment
 
-- `.github/workflows/pages.yml` — on push to master/main: checks out the portal with `submodules: recursive` (materializes the pinned app commits), runs `npm run verify` (build → test → check), and deploys `_site/` to Pages
-- The app repos deploy their own Pages independently (their own workflows); pushing them does not touch this portal. The portal deploys the exact app versions recorded in the portal commit — to include new app changes, `git add <app>` in the portal commit (updates the pointer), then push the portal
-- `_site/` is the build output (gitignored); `words/`, `training/`, `exam-schedule/` are submodules
+- `.github/workflows/pages.yml` — on push to master/main: checks out this repository, runs `npm run verify` (build → test → check), and deploys `_site/` to Pages
+- All application changes are validated and deployed through this workflow; a failing app check blocks the portal deployment rather than being handled by a separate app CI
+- `_site/` is the build output (gitignored); all five application directories are ordinary tracked source directories
 
 ## Supabase
 
@@ -79,6 +79,6 @@ service-role, dashboard, schema, administrative, or cross-user access.
 
 - All user-facing text is Simplified Chinese; code comments mix Chinese and English
 - Browser scripts are ES5-style IIFEs (no modules, no build step) — keep that style when touching `shared/`, `changelog/`, or `integrations/`
-- App changes happen inside the submodules: commit and push from `words/`, `training/`, or `exam-schedule/` (each goes to its own remote); the portal commit then records the new pointer via `git add <app>` — never commit app files directly into the portal tree
-- The portal deploys the app versions pinned in the portal commit; there is no "always latest" behavior
+- App changes happen directly inside `words/`, `training/`, `exam-schedule/`, `CostTrace/`, or `changelog/`, and are committed together with the portal changes
+- The portal deploys exactly the application source present in the same portal commit; there is no external app checkout or "always latest" behavior
 - Any change to the shared script block or its order must keep `tests/portal.test.js` and `check-integrity.js` expectations in sync

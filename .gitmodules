@@ -1,9 +1,0 @@
-[submodule "words"]
-	path = words
-	url = https://github.com/qixiboss/WordTales.git
-[submodule "training"]
-	path = training
-	url = https://github.com/qixiboss/Train_record.git
-[submodule "exam-schedule"]
-	path = exam-schedule
-	url = https://github.com/qixiboss/-Graduate-Entrance-Exam-Schedule.git

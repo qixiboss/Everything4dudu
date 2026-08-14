@@ -179,15 +179,16 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   });
 });
 
-test('三个应用以子模块登记,门户构建时按指针检出', () => {
-  const modules = fs.readFileSync(path.join(root, '.gitmodules'), 'utf8');
-  assert.match(modules, /path = words\n\s*url = https:\/\/github\.com\/qixiboss\/WordTales\.git/);
-  assert.match(modules, /path = training\n\s*url = https:\/\/github\.com\/qixiboss\/Train_record\.git/);
-  assert.match(modules, /path = exam-schedule\n\s*url = https:\/\/github\.com\/qixiboss\/-Graduate-Entrance-Exam-Schedule\.git/);
+test('所有应用由门户源码统一维护,不再依赖子模块或独立 CI', () => {
+  assert.equal(fs.existsSync(path.join(root, '.gitmodules')), false);
+  ['words', 'training', 'exam-schedule'].forEach((app) => {
+    assert.equal(fs.existsSync(path.join(root, app, '.git')), false, `${app} still has nested git metadata`);
+    assert.equal(fs.existsSync(path.join(root, app, '.github', 'workflows')), false, `${app} still has an app CI workflow`);
+  });
 
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
   assert.doesNotMatch(workflow, /repository_dispatch/);
-  assert.match(workflow, /submodules: recursive/);
+  assert.doesNotMatch(workflow, /submodules|gitmodules|checkout.*remote/i);
   assert.match(workflow, /npm run verify/);
   assert.match(workflow, /group: pages/);
   assert.match(workflow, /actions\/deploy-pages@v5/);

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync Article Audio"
+  short_description: "为网页文章录音批量生成逐词时间轴并完成播放器与部署适配"
+  default_prompt: "Use $sync-article-audio to map article MP3 files, generate verified word cues, and integrate them into this reading app."

@@ -1,8 +1,6 @@
 name: Deploy unified portal to GitHub Pages
 
-# 推送门户时构建并部署。三个应用以子模块登记在门户仓库里(见 .gitmodules),
-# 检出时按登记的指针拉取,整合后输出到 _site/;应用仓库的推送只更新它们
-# 自己的 Pages,门户要带上新版本需在门户提交中更新对应子模块指针。
+# 推送门户时构建并部署。所有应用源码都在本仓库内，统一由这一条工作流验证和发布。
 on:
   push:
     branches: [master, main]
@@ -22,8 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: recursive
       - uses: actions/setup-node@v6
         with: { node-version: 22 }
       - run: npm run verify

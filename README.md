@@ -1,15 +1,13 @@
 # Everything 4 Dudu
 
-统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、记账、更新记录和用户登录。各应用保持独立页面，并使用同一个预先创建的 Supabase 邮箱密码账号登录和同步数据。
+统一入口采用手机主屏幕布局，包含词汇学习、训练记录、考研日程、记账、更新记录和用户登录。各应用保持独立页面，并使用同一个预先创建的 Supabase 邮箱密码账号登录和同步数据。所有应用源码都归属于本仓库，由门户统一开发、验证和部署。
 
 生产站点：<https://qixiboss.github.io/Everything4dudu/>
 
 ## 本地查看
 
 ```sh
-git clone --recurse-submodules ...   # 首次克隆:同时取回三个应用子模块
-git submodule update --init          # 或已克隆后初始化子模块
-npm run build                        # 从三个子模块整合应用,输出 _site/
+npm run build                        # 从门户内应用源码整合,输出 _site/
 cd _site && python3 -m http.server 8000
 ```
 
@@ -17,18 +15,12 @@ cd _site && python3 -m http.server 8000
 
 ## 应用在各自仓库开发
 
-三个应用保持独立仓库,各自有自己的 GitHub Pages:
-
-- `qixiboss/WordTales` → `/words/`
-- `qixiboss/Train_record` → `/training/`
-- `qixiboss/-Graduate-Entrance-Exam-Schedule` → `/exam-schedule/`
-
-本仓库的 `words/`、`training/`、`exam-schedule/` 是这三个仓库的 **git 子模块**(见 `.gitmodules`):每个文件夹都是完整的 git 仓库,直接在里面开发、`git push` 到各自远程即可;门户仓库登记每个应用的确切提交版本。门户的整合(共享登录/同步脚本、CSP、返回主页入口)由 `scripts/integrate.js` 在构建 `_site/` 时注入,不修改应用源码。
+`words/`、`training/`、`exam-schedule/`、`CostTrace/` 和 `changelog/` 都是本仓库内的应用目录，不再作为 git 子模块，也不再连接或依赖其他应用仓库。门户的整合(共享登录/同步脚本、CSP、返回主页入口)由 `scripts/integrate.js` 在构建 `_site/` 时注入。
 
 **部署时机**:
 
-- 应用仓库各自推送、各自部署它们自己的 GitHub Pages,与门户互不影响;
-- 推送门户仓库 → CI 按门户登记的指针检出应用子模块,整合后部署门户。要让门户带上应用的新改动,在门户提交中 `git add words training exam-schedule`(更新指针)后再推送即可。
+- 所有应用改动与门户改动一起提交到本仓库;
+- 推送门户仓库 → CI 在同一份源码上运行 `npm run verify`,整合后部署门户。任一应用的校验失败都会阻止本次门户部署，避免发布不完整的站点。
 
 `changelog/` 和 `CostTrace/` 是门户自有应用，只在本仓库维护。CostTrace 使用浏览器本地存储保持离线可用，并按记录同步到当前 Supabase 账户。
 
@@ -58,3 +50,5 @@ cd _site && python3 -m http.server 8000
 ```sh
 npm run verify    # build + test + check,校验的是构建产物 _site/
 ```
+
+应用开发约定：直接修改对应应用目录，在门户根目录运行 `npm run verify`，确认所有应用和门户一起通过后再提交。应用目录中的旧版独立仓库 CI/Pages 配置已移除。
