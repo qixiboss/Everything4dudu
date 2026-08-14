@@ -3,94 +3,129 @@
  * verifies the session in the background. */
 #hub-shell { display: contents; }
 
+/* Phone-style back chevron: no visible label, a round glass target in each
+ * app's top-left corner. The accessible name lives on the link itself. */
 .hub-home-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  width: max-content;
-  min-height: 32px;
-  padding: 5px 10px 5px 7px;
-  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
   color: inherit;
-  font: 600 12px/1 system-ui, -apple-system, "PingFang SC", sans-serif;
-  letter-spacing: .01em;
+  background: rgba(127, 127, 127, .12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   text-decoration: none;
-  opacity: .64;
-  transition: opacity .16s ease, background-color .16s ease;
+  transition: background-color .16s ease, transform .16s ease;
 }
 
 .hub-home-link svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex: none;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.7;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.hub-home-link:hover,
-.hub-home-link:focus-visible {
-  color: inherit;
-  background: rgba(127, 127, 127, .12);
-  opacity: 1;
-  text-decoration: none;
+.hub-home-link:hover {
+  background: rgba(127, 127, 127, .2);
+}
+
+.hub-home-link:active {
+  transform: scale(.94);
 }
 
 .hub-home-link:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
+  background: rgba(127, 127, 127, .2);
 }
 
-/* Vocabulary: sit naturally above the cover title. */
+/* Vocabulary: float over the dark hero, aligned to the viewport's top-left. */
+html[data-app="words"] .cover { position: relative; }
 html[data-app="words"] .hub-home-link {
-  margin: 0 0 18px;
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: max(14px, env(safe-area-inset-left));
   color: #fbf9f4;
-  background: rgba(251, 249, 244, .08);
+  background: rgba(251, 249, 244, .12);
 }
 
 html[data-app="words"] .hub-home-link:hover,
 html[data-app="words"] .hub-home-link:focus-visible {
-  background: rgba(251, 249, 244, .16);
+  background: rgba(251, 249, 244, .22);
 }
 
-/* Training: become a small native control in the sticky toolbar. */
+/* The cover's mobile top padding is 3rem: keep the chevron fully inside it. */
+@media (max-width: 600px) {
+  html[data-app="words"] .hub-home-link {
+    top: 10px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Training: leading native control in the sticky toolbar. */
 html[data-app="training"] .hub-home-link {
   flex: none;
   color: var(--sub, #6e7078);
+  background: rgba(25, 27, 33, .06);
 }
 
-/* Schedule: share the sidebar's compact brand row. */
+html[data-app="training"] .hub-home-link:hover,
+html[data-app="training"] .hub-home-link:focus-visible {
+  background: rgba(25, 27, 33, .1);
+}
+
+/* Schedule: leading control in the sidebar's compact brand row. */
 html[data-app="exam-schedule"] .hub-home-link {
   flex: none;
+  width: 34px;
+  height: 34px;
   color: var(--muted-foreground, #737373);
+  background: var(--muted, rgba(127, 127, 127, .12));
 }
 
-/* Changelog: sit in the app header above the title. */
+html[data-app="exam-schedule"] .hub-home-link:hover,
+html[data-app="exam-schedule"] .hub-home-link:focus-visible {
+  background: var(--input, rgba(127, 127, 127, .18));
+}
+
+/* Changelog: back chevron above the title inside the phone frame. */
 html[data-app="changelog"] .hub-home-link {
-  margin: 0 0 14px;
-  color: rgba(43, 52, 83, .62);
+  margin: 2px 0 12px;
+  color: rgba(43, 52, 83, .72);
+  background: rgba(122, 140, 239, .16);
 }
 
 html[data-app="changelog"] .hub-home-link:hover,
 html[data-app="changelog"] .hub-home-link:focus-visible {
-  background: rgba(122, 140, 239, .16);
-  color: rgba(43, 52, 83, .82);
+  color: rgba(43, 52, 83, .88);
+  background: rgba(122, 140, 239, .28);
 }
 
-/* CostTrace: align with the application brand in its wide toolbar. */
+/* CostTrace: leading control in the brand row of its wide toolbar. */
 html[data-app="cost-trace"] .hub-home-link {
   flex: none;
-  color: rgba(43, 52, 83, .62);
+  color: var(--muted, rgba(43, 52, 83, .62));
+  background: rgba(95, 108, 205, .08);
+}
+
+html[data-app="cost-trace"] .hub-home-link:hover,
+html[data-app="cost-trace"] .hub-home-link:focus-visible {
+  background: rgba(95, 108, 205, .16);
 }
 
 .hub-home-fallback {
   position: fixed;
   z-index: 100;
   top: max(12px, env(safe-area-inset-top));
-  left: 12px;
+  left: max(12px, env(safe-area-inset-left));
 }
 
 @media (prefers-reduced-motion: reduce) {

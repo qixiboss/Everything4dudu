@@ -39,7 +39,6 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .topbar { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand-row, .topbar-actions { display: flex; align-items: center; gap: 13px; }
 .topbar > *, .brand-row > *, .topbar-actions, .section-heading > *, .panel-heading > *, .details-actions { min-width: 0; }
-.brand-row .hub-home-link { margin-right: 4px; color: var(--muted); }
 .brand-mark { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 15px; color: white; background: linear-gradient(145deg, #8892e3, #5f6ccd); box-shadow: 0 10px 22px rgba(86,100,196,.25); }
 .brand-mark svg { width: 30px; height: 30px; }
 .kicker, .section-kicker { margin: 0; color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: .13em; }
@@ -221,7 +220,6 @@ tbody tr:hover { background: rgba(255,255,255,.27); }
   .app-frame { width: 100%; min-height: 100dvh; margin: 0; padding: max(16px, env(safe-area-inset-top)) 15px calc(98px + env(safe-area-inset-bottom)); border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
   .topbar { min-height: 47px; align-items: center; gap: 8px; }
   .brand-row { gap: 9px; }
-  .brand-row .hub-home-link { width: 32px; min-width: 32px; min-height: 32px; padding: 0; overflow: hidden; gap: 0; }
   .brand-mark { width: 39px; height: 39px; border-radius: 13px; }
   .brand-mark svg { width: 26px; height: 26px; }
   .brand-row h1 { font-size: 19px; }

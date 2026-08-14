@@ -16,8 +16,7 @@
     var app = document.documentElement.dataset.app || '';
     var target = document.querySelector(placements[app]);
     mount.innerHTML = '<a class="hub-home-link" href="../" aria-label="返回 Everything 4 Dudu 主页">' +
-      '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m11.5 5-5 5 5 5"/><path d="M7 10h7"/></svg>' +
-      '<span>主页</span></a>';
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5.5-6 6.5 6 6.5"/></svg></a>';
 
     if (target) target.insertBefore(mount, target.firstChild);
     else mount.className = 'hub-home-fallback';
