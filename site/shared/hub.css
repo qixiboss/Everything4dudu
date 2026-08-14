@@ -1,18 +1,6 @@
-/* The shared app shell is deliberately just a quiet way home. */
-html[data-app]:not([data-auth-ready]) body { visibility: hidden; }
-html[data-app]:not([data-auth-ready])::before {
-  content: "正在验证账户…";
-  position: fixed;
-  z-index: 10000;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  color: #4b5563;
-  background: #f7f8fb;
-  font: 600 14px/1.6 system-ui, -apple-system, "PingFang SC", sans-serif;
-  visibility: visible;
-}
+/* The shared app shell is deliberately just a quiet way home. App entry never
+ * blocks on account verification: pages render immediately and auth-gate.js
+ * verifies the session in the background. */
 #hub-shell { display: contents; }
 
 .hub-home-link {

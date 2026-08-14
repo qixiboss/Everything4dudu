@@ -135,7 +135,7 @@ test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除�
   assert.equal(clientOptions.auth.lockAcquireTimeout, 2500);
 });
 
-test('每个应用仅在账户验证前锁定，云端同步在后台进行', () => {
+test('应用页面不被验证遮罩阻塞，无会话时仍跳回门户登录', () => {
   const gate = fs.readFileSync(path.join(siteRoot, 'shared/auth-gate.js'), 'utf8');
   const css = fs.readFileSync(path.join(siteRoot, 'shared/hub.css'), 'utf8');
   assert.match(gate, /next=' \+ encodeURIComponent\(app\)/);
@@ -143,8 +143,9 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.match(gate, /data-auth-ready/);
   assert.match(gate, /setAttribute\('data-auth-ready', ''\)/);
   assert.doesNotMatch(gate, /detail\.state === 'error'[\s\S]{0,180}removeAttribute\('data-auth-ready'\)/);
-  assert.match(css, /data-app.*not\(\[data-auth-ready\]\).*visibility: hidden/);
-  assert.match(css, /正在验证账户…/);
+  /* 页面立即可见：验证在后台进行，不再用全屏遮罩隐藏内容。 */
+  assert.doesNotMatch(css, /visibility:\s*hidden/);
+  assert.doesNotMatch(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
   ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
     const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
@@ -157,6 +158,48 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
     });
     assert.match(html, /Content-Security-Policy/);
   });
+});
+
+test('验证不可用但本机存有会话缓存时留在本地模式，无缓存才跳回门户', async () => {
+  function gateHarness({ cached = null, initError = false }) {
+    const attributes = new Set();
+    const replaced = [];
+    const context = vm.createContext({
+      console,
+      localStorage: { getItem: (key) => (key === 'supabase.auth.token' ? cached : null) },
+      CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+      dispatchEvent() {},
+      addEventListener() {},
+      HubAuth: {
+        init: () => (initError ? Promise.reject(new Error('offline')) : Promise.resolve(null)),
+        onChange() {}
+      },
+      location: { replace: (target) => replaced.push(target) },
+      document: {
+        documentElement: {
+          dataset: { app: 'words' },
+          setAttribute: (name) => attributes.add(name),
+          removeAttribute: (name) => attributes.delete(name)
+        }
+      }
+    });
+    context.window = context;
+    vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/auth-gate.js'), 'utf8'), context);
+    return { attributes, replaced };
+  }
+
+  const cachedSession = JSON.stringify({ user: { id: 'user-a' }, access_token: 'token', expires_at: 4102444800 });
+  const offline = gateHarness({ cached: cachedSession, initError: true });
+  await wait();
+  assert.equal(offline.attributes.has('data-auth-ready'), true);
+  assert.equal(offline.attributes.has('data-authenticated'), false);
+  assert.equal(offline.replaced.length, 0);
+
+  const anon = gateHarness({ cached: null });
+  await wait();
+  assert.equal(anon.attributes.has('data-auth-ready'), false);
+  assert.equal(anon.replaced.length, 1);
+  assert.match(anon.replaced[0], /next=words/);
 });
 
 test('词汇学习先建立登录会话与云端同步，再恢复本地档案', () => {
