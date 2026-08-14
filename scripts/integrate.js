@@ -71,10 +71,11 @@ function buildWords(appRoot, destRoot) {
     '<meta name="description" content="通过主题短文、双面词卡、语音朗读、练习和学习记录表，在真实语境中学习和记忆英语词汇。">\n<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\'; style-src \'self\' \'unsafe-inline\'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src \'self\' data:; media-src \'self\' blob:; object-src \'none\'; base-uri \'self\'; form-action \'none\'; frame-src \'none\'">',
     'WordTales content security policy'
   );
+  const wordStylesheetAnchor = /<link rel="stylesheet" href="css\/styles\.css(?:\?v=[^"]*)?">/;
   html = replaceOnce(
     html,
-    '<link rel="stylesheet" href="css/styles.css?v=3.0.7">',
-    '<link rel="stylesheet" href="css/styles.css?v=3.0.7">\n<link rel="stylesheet" href="../shared/hub.css">',
+    wordStylesheetAnchor,
+    (match) => `${match}\n<link rel="stylesheet" href="../shared/hub.css">`,
     'WordTales stylesheet'
   );
   html = replaceOnce(html, '<body>', '<body>\n<div id="hub-shell"></div>', 'WordTales body');
