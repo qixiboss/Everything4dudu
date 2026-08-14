@@ -16,15 +16,14 @@ const htmlPath = path.resolve(__dirname, '../_site/words/index.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 const errors = [];
 
+/* 共享脚本段落以 integrate.js 的 sharedScriptTags() 为唯一来源,
+ * 这里只提取 src 路径,避免与构建脚本手动同步。 */
+const sharedScriptSources = require('./integrate.js').sharedScriptTags()
+  .map((tag) => tag.match(/src="([^"]+)"/)[1]);
+
 const expectedScripts = [
   'vendor/ts-fsrs/index.umd.js?v=5.4.1',
-  '../shared/vendor/supabase.js',
-  '../shared/config.js',
-  '../shared/hub-auth.js',
-  '../shared/auth-gate.js',
-  '../shared/sync-store.js',
-  '../shared/hub-sync.js',
-  '../shared/hub-shell.js',
+  ...sharedScriptSources,
   'js/namespace.js',
   'js/supabase-config.js',
   'js/auth.js',

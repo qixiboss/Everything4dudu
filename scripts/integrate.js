@@ -20,7 +20,10 @@ function replaceOnce(source, search, replacement, label) {
   return source.replace(search, replacement);
 }
 
-function sharedScripts() {
+/* 门户注入给每个应用的共享脚本清单:这里是唯一权威来源,
+ * tests/portal.test.js 与 scripts/check-integrity.js 在运行时直接引用,
+ * 新增或删除共享脚本只需改这一处。 */
+function sharedScriptTags() {
   return [
     '<script defer src="../shared/vendor/supabase.js"></script>',
     '<script defer src="../shared/config.js"></script>',
@@ -29,7 +32,11 @@ function sharedScripts() {
     '<script defer src="../shared/sync-store.js"></script>',
     '<script defer src="../shared/hub-sync.js"></script>',
     '<script defer src="../shared/hub-shell.js"></script>'
-  ].join('\n');
+  ];
+}
+
+function sharedScripts() {
+  return sharedScriptTags().join('\n');
 }
 
 function copyDir(source, destination) {
@@ -173,4 +180,4 @@ function integrateApps(appRoot, destRoot) {
   buildExamSchedule(appRoot, destRoot);
 }
 
-module.exports = { integrateApps };
+module.exports = { integrateApps, sharedScriptTags, sharedScripts };

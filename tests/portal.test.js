@@ -6,6 +6,10 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 
+/* 共享脚本清单以 integrate.js 为唯一来源,测试在运行时生成期望列表,
+ * 新增或删除共享脚本不必同步改这里。 */
+const { sharedScriptTags } = require(path.join(root, 'scripts/integrate.js'));
+
 function storage(initial = {}) {
   const values = new Map(Object.entries(initial));
   return {
@@ -93,13 +97,7 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   const changelog = fs.readFileSync(path.join(root, 'changelog/index.html'), 'utf8');
   const changelogScripts = changelog.split('\n').filter((line) => line.includes('<script defer')).map((line) => line.trim());
   assert.deepEqual(changelogScripts, [
-    '<script defer src="../shared/vendor/supabase.js"></script>',
-    '<script defer src="../shared/config.js"></script>',
-    '<script defer src="../shared/hub-auth.js"></script>',
-    '<script defer src="../shared/auth-gate.js"></script>',
-    '<script defer src="../shared/sync-store.js"></script>',
-    '<script defer src="../shared/hub-sync.js"></script>',
-    '<script defer src="../shared/hub-shell.js"></script>',
+    ...sharedScriptTags(),
     '<script defer src="changelog.js"></script>'
   ]);
 });
@@ -150,11 +148,13 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
   ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
     const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
-    const auth = html.indexOf('../shared/hub-auth.js');
-    const gateIndex = html.indexOf('../shared/auth-gate.js');
-    const sync = html.indexOf('../shared/sync-store.js');
-    const appSync = html.indexOf('../shared/hub-sync.js');
-    assert.ok(auth >= 0 && auth < gateIndex && gateIndex < sync && sync < appSync, app);
+    /* 共享脚本必须按 integrate.js 定义的顺序完整出现（登录先于锁定与同步）。 */
+    let previous = -1;
+    sharedScriptTags().forEach((tag) => {
+      const position = html.indexOf(tag);
+      assert.ok(position > previous, `${app} is missing or misordering ${tag}`);
+      previous = position;
+    });
     assert.match(html, /Content-Security-Policy/);
   });
 });

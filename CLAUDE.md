@@ -11,8 +11,8 @@ The three apps are developed **in their own repositories** (`qixiboss/WordTales`
 ## Commands
 
 ```sh
-npm test                 # node --test over tests/*.test.js and tests/**/*.test.js (needs _site, run verify)
-npm run check            # scripts/check-integrity.js: static integrity checks on _site/words
+npm test                 # node --test over tests/*.test.js and tests/**/*.test.js (auto-builds _site/ first when missing)
+npm run check            # scripts/check-integrity.js: static integrity checks on _site/words (auto-builds _site/ first when missing)
 npm run build            # scripts/build-site.js: integrate apps from clones + copy portal files into _site/
 npm run verify           # build + test + check; runs in CI before every deploy
 ```
