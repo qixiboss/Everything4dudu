@@ -5,7 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
-const Model = require('../CostTrace/model.js');
+const siteRoot = path.join(root, 'site');
+const Model = require('../site/CostTrace/model.js');
 
 function record(id, date, type, category, amountCents, detail = '测试记录') {
   return { id, date, type, category, amountCents, detail };
@@ -104,7 +105,7 @@ test('XLSX 导出包含工作表、类型化日期金额、冻结首行与自动
   const context = vm.createContext({ TextEncoder, Blob, console });
   context.window = context;
   context.globalThis = context;
-  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/vendor/xlsx-lite.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'CostTrace/vendor/xlsx-lite.js'), 'utf8'), context);
   const output = Buffer.from(context.CostTraceXlsx.build([record('1', '2026-08-13', 'expense', '食', 1250, '午餐')]));
   const files = xlsxFiles(output);
   assert.match(files['xl/workbook.xml'], /name="收支明细"/);
@@ -117,7 +118,7 @@ test('XLSX 导出包含工作表、类型化日期金额、冻结首行与自动
 });
 
 test('CostTrace 同步适配器使用 transaction 键并处理远端墓碑', () => {
-  const source = fs.readFileSync(path.join(root, 'CostTrace/sync.js'), 'utf8');
+  const source = fs.readFileSync(path.join(siteRoot, 'CostTrace/sync.js'), 'utf8');
   assert.match(source, /item_key: 'transaction:' \+ record\.id/);
   assert.match(source, /if \(row\.deleted_at\) delete map\[id\]/);
   assert.match(source, /app: 'cost-trace'/);
@@ -142,8 +143,8 @@ test('CostTrace 远端合并落盘失败时抛错并保留原账本', async () =
   });
   context.window = context;
   context.globalThis = context;
-  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/model.js'), 'utf8'), context);
-  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/sync.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'CostTrace/model.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'CostTrace/sync.js'), 'utf8'), context);
 
   assert.equal(typeof adapter.applyRemote, 'function');
   await assert.rejects(adapter.applyRemote([{
@@ -173,17 +174,17 @@ test('CostTrace 同步在损坏账本上暂停且不注册适配器', () => {
   });
   context.window = context;
   context.globalThis = context;
-  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/model.js'), 'utf8'), context);
-  vm.runInContext(fs.readFileSync(path.join(root, 'CostTrace/sync.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'CostTrace/model.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'CostTrace/sync.js'), 'utf8'), context);
 
   assert.equal(starts, 0);
   assert.equal(statuses.at(-1).detail.state, 'error');
 });
 
 test('CostTrace 移动端提供底部导航、折叠筛选与卡片式明细', () => {
-  const html = fs.readFileSync(path.join(root, 'CostTrace/index.html'), 'utf8');
-  const css = fs.readFileSync(path.join(root, 'CostTrace/styles.css'), 'utf8');
-  const app = fs.readFileSync(path.join(root, 'CostTrace/app.js'), 'utf8');
+  const html = fs.readFileSync(path.join(siteRoot, 'CostTrace/index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(siteRoot, 'CostTrace/styles.css'), 'utf8');
+  const app = fs.readFileSync(path.join(siteRoot, 'CostTrace/app.js'), 'utf8');
 
   assert.match(html, /data-filter-toggle[^>]+aria-label="展开筛选"[^>]+aria-controls="detail-filters"/);
   assert.match(html, /id="detail-filters" data-filters/);

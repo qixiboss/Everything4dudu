@@ -29,7 +29,7 @@ function createClient(remote, writes) {
   };
 }
 
-/* 加载构建后的 app 脚本 + 共享引擎 + words 适配器。默认预置 owner 标记，
+/* 加载 site/ 中的 app 脚本 + 共享引擎 + words 适配器。默认预置 owner 标记，
  * 让激活走纯 applyRows 路径，不弹 confirm 合并对话框。 */
 async function readyAdapter({ remote = [], owner = true } = {}) {
   const localStorage = createStorage();
@@ -49,9 +49,9 @@ async function readyAdapter({ remote = [], owner = true } = {}) {
     getClient: () => createClient(remote, writes),
     onChange() {}
   };
-  loadScript(context, 'shared/sync-store.js');
-  loadScript(context, 'shared/hub-sync.js');
-  loadScript(context, 'integrations/words/hub-sync.js');
+  loadScript(context, 'site/shared/sync-store.js');
+  loadScript(context, 'site/shared/hub-sync.js');
+  loadScript(context, 'site/words/js/hub-sync.js');
   await context.WordTales.LearningProgress.init();
   return { context, writes, progress: context.WordTales.LearningProgress };
 }

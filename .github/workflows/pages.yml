@@ -1,6 +1,6 @@
 name: Deploy unified portal to GitHub Pages
 
-# 推送门户时构建并部署。所有应用源码都在本仓库内，统一由这一条工作流验证和发布。
+# 推送门户时验证并部署 site/ 中的单一静态站点源码。
 on:
   push:
     branches: [master, main]
@@ -27,7 +27,7 @@ jobs:
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v5
-        with: { path: _site }
+        with: { path: site }
   deploy:
     environment:
       name: github-pages

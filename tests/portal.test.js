@@ -5,10 +5,10 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
+const siteRoot = path.join(root, 'site');
 
-/* 共享脚本清单以 integrate.js 为唯一来源,测试在运行时生成期望列表,
- * 新增或删除共享脚本不必同步改这里。 */
-const { sharedScriptTags } = require(path.join(root, 'scripts/integrate.js'));
+/* 共享脚本清单以 site-contract.js 为唯一来源。 */
+const { APP_ROUTES, sharedScriptTags } = require(path.join(root, 'scripts/site-contract.js'));
 
 function storage(initial = {}) {
   const values = new Map(Object.entries(initial));
@@ -62,15 +62,15 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
     getClient: () => client,
     onChange(listener) { authListeners.push(listener); }
   };
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/sync-store.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/sync-store.js'), 'utf8'), context);
   return { context, state, localStorage, writes, authListeners };
 }
 
 test('主页把应用标记为登录后访问且不暴露公开注册入口', () => {
-  ['index.html', '_site/words/index.html', '_site/training/index.html', '_site/exam-schedule/index.html', '_site/CostTrace/index.html', 'changelog/index.html'].forEach((file) => {
-    assert.equal(fs.existsSync(path.join(root, file)), true, file);
+  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html', 'CostTrace/index.html', 'changelog/index.html'].forEach((file) => {
+    assert.equal(fs.existsSync(path.join(siteRoot, file)), true, file);
   });
-  const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const home = fs.readFileSync(path.join(siteRoot, 'index.html'), 'utf8');
   assert.match(home, /href="words\/" data-protected-app="words"/);
   assert.match(home, /href="training\/" data-protected-app="training"/);
   assert.match(home, /href="exam-schedule\/" data-protected-app="exam-schedule"/);
@@ -84,17 +84,17 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /autocomplete="current-password"/);
   assert.doesNotMatch(home, /data-auth-mode="register"|register-password-confirm/);
   assert.match(home, /Content-Security-Policy/);
-  const homeJs = fs.readFileSync(path.join(root, 'shared/home.js'), 'utf8');
-  const homeCss = fs.readFileSync(path.join(root, 'shared/home.css'), 'utf8');
+  const homeJs = fs.readFileSync(path.join(siteRoot, 'shared/home.js'), 'utf8');
+  const homeCss = fs.readFileSync(path.join(siteRoot, 'shared/home.css'), 'utf8');
   assert.match(homeJs, /APP_PAGE_SIZE = 6/);
   assert.match(homeJs, /Math\.ceil\(apps\.length \/ APP_PAGE_SIZE\)/);
   assert.match(homeCss, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(homeCss, /grid-template-rows: repeat\(3, minmax\(0, auto\)\)/);
-  const schedule = fs.readFileSync(path.join(root, '_site/exam-schedule/index.html'), 'utf8');
+  const schedule = fs.readFileSync(path.join(siteRoot, 'exam-schedule/index.html'), 'utf8');
   assert.doesNotMatch(schedule, /srcdoc=|<iframe\b/i);
 
   /* 更新记录是纯手维护的静态页面:共享脚本块之后只有 changelog.js,没有应用级适配器。 */
-  const changelog = fs.readFileSync(path.join(root, 'changelog/index.html'), 'utf8');
+  const changelog = fs.readFileSync(path.join(siteRoot, 'changelog/index.html'), 'utf8');
   const changelogScripts = changelog.split('\n').filter((line) => line.includes('<script defer')).map((line) => line.trim());
   assert.deepEqual(changelogScripts, [
     ...sharedScriptTags(),
@@ -123,7 +123,7 @@ test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除�
     supabase: { createClient(_url, _key, options) { clientOptions = options; return client; } }
   });
   context.window = context;
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-auth.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/hub-auth.js'), 'utf8'), context);
   await context.HubAuth.init();
   await context.HubAuth.signInWithPassword('dudu@example.com', 'password123');
   assert.equal(context.HubAuth.getSession().user.email, 'dudu@example.com');
@@ -136,8 +136,8 @@ test('邮箱密码登录由 Supabase Auth 建立会话，退出后立即清除�
 });
 
 test('每个应用仅在账户验证前锁定，云端同步在后台进行', () => {
-  const gate = fs.readFileSync(path.join(root, 'shared/auth-gate.js'), 'utf8');
-  const css = fs.readFileSync(path.join(root, 'shared/hub.css'), 'utf8');
+  const gate = fs.readFileSync(path.join(siteRoot, 'shared/auth-gate.js'), 'utf8');
+  const css = fs.readFileSync(path.join(siteRoot, 'shared/hub.css'), 'utf8');
   assert.match(gate, /next=' \+ encodeURIComponent\(app\)/);
   assert.match(gate, /hub:sync-status/);
   assert.match(gate, /data-auth-ready/);
@@ -147,8 +147,8 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
   assert.match(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
   ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
-    const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
-    /* 共享脚本必须按 integrate.js 定义的顺序完整出现（登录先于锁定与同步）。 */
+    const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
+    /* 共享脚本必须按 site-contract.js 定义的顺序完整出现（登录先于锁定与同步）。 */
     let previous = -1;
     sharedScriptTags().forEach((tag) => {
       const position = html.indexOf(tag);
@@ -160,8 +160,8 @@ test('每个应用仅在账户验证前锁定，云端同步在后台进行', ()
 });
 
 test('词汇学习先建立登录会话与云端同步，再恢复本地档案', () => {
-  const features = fs.readFileSync(path.join(root, '_site/words/js/features.js'), 'utf8');
-  const wordSync = fs.readFileSync(path.join(root, '_site/words/js/hub-sync.js'), 'utf8');
+  const features = fs.readFileSync(path.join(siteRoot, 'words/js/features.js'), 'utf8');
+  const wordSync = fs.readFileSync(path.join(siteRoot, 'words/js/hub-sync.js'), 'utf8');
   assert.ok(features.indexOf('WordTales.Auth.init()') < features.indexOf('WordTales.LearningProgress.init()'));
   assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.CloudSync.connectProfile()'));
   assert.match(wordSync, /HubAppSync\.start/);
@@ -169,38 +169,42 @@ test('词汇学习先建立登录会话与云端同步，再恢复本地档案',
 });
 
 test('应用页只注入低调的返回主页入口，不渲染门户导航栏', () => {
-  const shell = fs.readFileSync(path.join(root, 'shared/hub-shell.js'), 'utf8');
+  const shell = fs.readFileSync(path.join(siteRoot, 'shared/hub-shell.js'), 'utf8');
   assert.match(shell, /class="hub-home-link"/);
   assert.match(shell, /href="\.\.\/"/);
   assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
   ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
-    const html = fs.readFileSync(path.join(root, '_site', app, 'index.html'), 'utf8');
+    const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
     assert.match(html, /<div id="hub-shell"><\/div>/);
   });
 });
 
-test('所有应用由门户源码统一维护,不再依赖子模块或独立 CI', () => {
+test('site 是唯一的应用源码与发布目录,不再依赖构建注入', () => {
   assert.equal(fs.existsSync(path.join(root, '.gitmodules')), false);
-  ['words', 'training', 'exam-schedule'].forEach((app) => {
-    assert.equal(fs.existsSync(path.join(root, app, '.git')), false, `${app} still has nested git metadata`);
-    assert.equal(fs.existsSync(path.join(root, app, '.github', 'workflows')), false, `${app} still has an app CI workflow`);
+  assert.equal(fs.existsSync(siteRoot), true);
+  Object.values(APP_ROUTES).forEach((route) => {
+    assert.equal(fs.existsSync(path.join(siteRoot, route, 'index.html')), true, `${route} entry is missing`);
+  });
+  ['_site', 'words', 'training', 'exam-schedule', 'CostTrace', 'changelog', 'shared', 'integrations'].forEach((directory) => {
+    assert.equal(fs.existsSync(path.join(root, directory)), false, `${directory} should not be a second runtime source`);
   });
 
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
   assert.doesNotMatch(workflow, /repository_dispatch/);
-  assert.doesNotMatch(workflow, /submodules|gitmodules|checkout.*remote/i);
+  assert.doesNotMatch(workflow, /submodules|gitmodules|checkout.*remote|_site|integrate/i);
   assert.match(workflow, /npm run verify/);
+  assert.match(workflow, /path: site/);
   assert.match(workflow, /group: pages/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
 });
 
-test('GitHub Pages 工作流验证、构建并发布静态站点产物', () => {
+test('GitHub Pages 工作流验证并发布 site 静态源码', () => {
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8');
   assert.match(workflow, /pages: write/);
   assert.match(workflow, /id-token: write/);
-  /* verify 内部先 build 再 test/check,产物是构建后的 _site/。 */
   assert.match(workflow, /npm run verify/);
   assert.doesNotMatch(workflow, /npm run build/);
+  assert.match(workflow, /path: site/);
   assert.match(workflow, /actions\/configure-pages@v6/);
   assert.match(workflow, /actions\/upload-pages-artifact@v5/);
   assert.match(workflow, /actions\/deploy-pages@v5/);
@@ -382,8 +386,8 @@ test('HubAppSync 只在条目变化时上传，并对比远端行避免重复上
     getClient: () => client,
     onChange() {}
   };
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/sync-store.js'), 'utf8'), context);
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/sync-store.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/hub-sync.js'), 'utf8'), context);
 
   const adapter = {
     app: 'training',
@@ -452,8 +456,8 @@ test('HubAppSync 的 applyingRemote 闸门防止远端合并期间的本地写�
     getClient: () => client,
     onChange() {}
   };
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/sync-store.js'), 'utf8'), context);
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/sync-store.js'), 'utf8'), context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/hub-sync.js'), 'utf8'), context);
 
   const adapter = {
     app: 'training',
@@ -489,7 +493,7 @@ test('HubAppSync 等待异步远端落盘失败并把错误传回 SyncStore', as
   });
   harness.context.setInterval = () => 0;
   harness.context.clearInterval = () => {};
-  vm.runInContext(fs.readFileSync(path.join(root, 'shared/hub-sync.js'), 'utf8'), harness.context);
+  vm.runInContext(fs.readFileSync(path.join(siteRoot, 'shared/hub-sync.js'), 'utf8'), harness.context);
 
   harness.context.HubAppSync.start({
     app: 'training',

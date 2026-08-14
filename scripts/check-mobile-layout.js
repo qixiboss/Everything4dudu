@@ -201,8 +201,8 @@ function findChrome() {
 }
 
 function buildHarness(dest) {
-  fs.cpSync(path.join(root, 'CostTrace'), path.join(dest, 'CostTrace'), { recursive: true });
-  fs.cpSync(path.join(root, 'shared'), path.join(dest, 'shared'), { recursive: true });
+  fs.cpSync(path.join(root, 'site', 'CostTrace'), path.join(dest, 'CostTrace'), { recursive: true });
+  fs.cpSync(path.join(root, 'site', 'shared'), path.join(dest, 'shared'), { recursive: true });
   const htmlPath = path.join(dest, 'CostTrace', 'index.html');
   let html = fs.readFileSync(htmlPath, 'utf8');
   html = html.replace(/^\s*<meta http-equiv="Content-Security-Policy"[^>]*>\s*$/m, '');

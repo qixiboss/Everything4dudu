@@ -5,7 +5,7 @@ const { loadLearningApp, loadScript } = require('./helpers/browser-env');
 
 function loadStudyRecord() {
   const context = loadLearningApp();
-  loadScript(context, '_site/words/js/study-record.js');
+  loadScript(context, 'site/words/js/study-record.js');
   return context.WordTales.StudyRecord;
 }
 

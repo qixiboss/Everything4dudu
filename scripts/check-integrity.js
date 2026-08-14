@@ -11,14 +11,13 @@ const vm = require('vm');
  * 的约束集中到一个零依赖脚本里。脚本只读取文件，不修复数据，适合在提交前和
  * GitHub Pages 发布前重复执行。
  */
-/* 应用在构建时从门户内源码整合,校验对象是 _site/ 的构建产物。 */
-const htmlPath = path.resolve(__dirname, '../_site/words/index.html');
+/* site/ 是直接维护并发布的唯一静态站点源码。 */
+const htmlPath = path.resolve(__dirname, '../site/words/index.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 const errors = [];
 
-/* 共享脚本段落以 integrate.js 的 sharedScriptTags() 为唯一来源,
- * 这里只提取 src 路径,避免与构建脚本手动同步。 */
-const sharedScriptSources = require('./integrate.js').sharedScriptTags()
+/* 共享脚本段落以 site-contract.js 为唯一来源。 */
+const sharedScriptSources = require('./site-contract.js').sharedScriptTags()
   .map((tag) => tag.match(/src="([^"]+)"/)[1]);
 
 const expectedScripts = [
