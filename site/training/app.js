@@ -3,6 +3,10 @@
    - 每日计划：前四项 × 4 组 + 跑步/骑行（手动设定时长后记录）
    - 每组正向计时 → 点「开始休息」记录本组 → 休息正向计时
      → 点「完成休息，开始下一组」→ 自动开始下一组
+   - 做不动可「跳过剩余组」：剩余组计数置 0 并标记跳过，
+     直接进入下一个动作的「开始」界面
+   - 会话保存在 train.session：中途退出后回来可接着进度继续
+     （仅当天恢复，恢复后暂停等待手动继续计时）
    - 数据保存在 localStorage
    ============================================================ */
 (function () {
@@ -10,6 +14,7 @@
 
   var SETTINGS_KEY = 'train.settings';
   var LOG_KEY = 'train.log';
+  var SESSION_KEY = 'train.session';
 
   /* ---------- 动作定义 ---------- */
   var BASE_EXERCISES = [
@@ -56,6 +61,42 @@
   }
   function saveLog() {
     localStorage.setItem(LOG_KEY, JSON.stringify(log));
+  }
+
+  /* ---------- 会话（断点续连） ---------- */
+  /* 进行中/休息中计时先冻结进累计值，并同步把进行中组的秒数写回计划 */
+  function saveSession() {
+    if (S.finished) { clearSession(); return; }
+    var a = S.plan && S.exIdx >= 0 ? S.plan[S.exIdx] : null;
+    var setSec = S.setAccum;
+    var planDirty = false;
+    if (S.running && S.setStart != null) setSec = S.setAccum + (Date.now() - S.setStart) / 1000;
+    if (a && !a.cardio && S.setIdx >= 0 && !a.sets[S.setIdx].done) {
+      if (setSec !== a.sets[S.setIdx].sec) {
+        a.sets[S.setIdx].sec = setSec;
+        planDirty = true;
+      }
+    }
+    var restSec = S.restAccum;
+    if (S.resting && S.restStart != null) restSec = S.restAccum + (Date.now() - S.restStart) / 1000;
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        date: S.date,
+        exIdx: S.exIdx,
+        setIdx: S.setIdx,
+        running: S.running,
+        resting: S.resting,
+        paused: S.paused,
+        finished: S.finished,
+        setAccum: setSec,
+        restAccum: restSec,
+        cardioMin: S.cardioMin,
+      }));
+    } catch (e) { /* 忽略存储异常 */ }
+    if (planDirty) saveLog();
+  }
+  function clearSession() {
+    try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* 忽略 */ }
   }
 
   /* ---------- 日期工具 ---------- */
@@ -174,9 +215,52 @@
     return 'run';
   }
 
+  /* 断点续连：仅当会话属于今天、计划仍存在且未完成时恢复。
+     恢复后计时器处于暂停（idle）状态，显示冻结秒数与「继续」按钮。 */
+  function tryRestoreSession() {
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { /* 忽略损坏数据 */ }
+    if (!raw || typeof raw !== 'object') return false;
+    if (raw.finished || raw.date !== todayKey()) { clearSession(); return false; }
+    var entry = log[raw.date];
+    if (!entry || !entry.plan || entry.completedAt) { clearSession(); return false; }
+    S.plan = entry.plan;
+    S.cardioId = normCardio(entry.cardio);
+    S.finished = false;
+    // 位置校验：指向的组必须仍未完成，否则回退到下一个未完成组
+    var restored = false;
+    if (raw.exIdx >= 0 && raw.exIdx < S.plan.length) {
+      var a = S.plan[raw.exIdx];
+      if (a && !a.cardio && raw.setIdx >= 0 && raw.setIdx < a.sets.length && !a.sets[raw.setIdx].done) {
+        S.exIdx = raw.exIdx;
+        S.setIdx = raw.setIdx;
+        S.setAccum = Math.max(a.sets[raw.setIdx].sec, raw.setAccum || 0);
+        restored = true;
+      }
+    }
+    if (!restored) {
+      var f = findNextUndone();
+      if (!f) return false;
+      S.exIdx = f[0];
+      S.setIdx = f[1];
+      S.setAccum = S.plan[f[0]].sets[f[1]].sec;
+    }
+    S.setElapsed = S.setAccum;
+    S.running = false;   // 回来时暂停，点「继续」再计时
+    S.setStart = null;
+    S.resting = false;
+    S.restAccum = 0;
+    S.restElapsed = 0;
+    S.restStart = null;
+    S.paused = raw.paused === true;
+    if (typeof raw.cardioMin === 'number' && raw.cardioMin >= 1) S.cardioMin = raw.cardioMin;
+    return true;
+  }
+
   function initToday() {
     var k = todayKey();
     S.date = k;
+    if (tryRestoreSession()) return;
     if (log[k] && log[k].plan) {
       S.plan = log[k].plan;
       S.cardioId = normCardio(log[k].cardio);
@@ -257,20 +341,22 @@
     var html = '', n = 1;
     for (var i = 0; i < S.plan.length; i++) {
       var a = S.plan[i];
-      var doneN = 0;
-      a.sets.forEach(function (st) { if (st.done) doneN++; });
+      var doneN = 0, skipN = 0;
+      a.sets.forEach(function (st) { if (st.done) doneN++; if (st.skipped) skipN++; });
       var isDone = doneN === a.sets.length;
       var isCur = i === S.exIdx;
       var sub;
       if (a.cardio) {
         sub = isDone ? '✓ 已记录' : '选择跑步或骑行';
       } else {
-        sub = doneN + ' / ' + a.sets.length + ' 组';
+        sub = skipN > 0 ? (doneN - skipN) + ' 完成 · ' + skipN + ' 跳过' : doneN + ' / ' + a.sets.length + ' 组';
       }
       var dots = '';
       if (!a.cardio) {
         dots = a.sets.map(function (st, j) {
-          return '<span class="dot ' + (st.done ? 'done' : '') + (isCur && j === S.setIdx && !st.done ? ' ring' : '') + '"></span>';
+          var cls = st.skipped ? ' skip' : (st.done ? ' done' : '');
+          var ring = isCur && j === S.setIdx && !st.done ? ' ring' : '';
+          return '<span class="dot' + cls + ring + '"></span>';
         }).join('');
       } else if (isDone) {
         dots = '<span class="rail-check">✓</span>';
@@ -342,6 +428,8 @@
     var isIdle = !S.running && !S.resting;
     var timerLabel = S.resting ? '组间休息' : ('第 ' + (S.setIdx + 1) + ' / ' + a.sets.length + ' 组');
     var timerSec = S.resting ? S.restElapsed : S.setElapsed;
+    var skipBtn = '<button class="btn ghost skip" id="btn-skip-remaining">' +
+      '跳过剩余 ' + (a.sets.length - S.setIdx) + ' 组</button>';
 
     var actionHtml;
     if (S.resting) {
@@ -358,11 +446,14 @@
 
     h = '<div class="console-body">' +
       '<p class="status" id="status-line">' + timerLabel + ' · 目标 <b>' + cur.count + '</b> ' + a.unit + '</p>' +
+      '<div class="timer-skip-row">' +
       '<button type="button" class="timer' + (S.running ? ' live' : '') + (S.resting ? ' rest' : '') + '" id="timer-box"' +
       (S.resting ? ' disabled' : '') + ' aria-label="' + (S.resting ? '组间休息计时' : (S.running ? '暂停本组计时' : '开始本组计时')) + '">' +
       (S.running ? '<span class="live-dot blink"></span>' : '') +
       (S.resting ? '<span class="rest-dot"></span>' : '') +
       '<span id="timer">' + fmtHM(timerSec) + '</span></button>' +
+      skipBtn +
+      '</div>' +
       (!S.resting ? '<div class="target-row">目标 <span class="stepper">' +
         '<button type="button" id="step-down">−</button><span class="val" id="target-val">' + cur.count + '</span>' +
         '<button type="button" id="step-up">＋</button></span>' + a.unit + '</div>' : '') +
@@ -388,6 +479,7 @@
         S.setStart = null;
         S.resting = false;
         renderToday();
+        saveSession();
       });
     });
   }
@@ -441,6 +533,8 @@
       if (!S.running && S.resting) return; // 休息中不响应
       toggleSetTimer();
     });
+    var bSkip = $('btn-skip-remaining');
+    if (bSkip) bSkip.addEventListener('click', skipRemainingSets);
     var sd = $('step-down');
     if (sd) sd.addEventListener('click', function () { stepCount(-1); });
     var su = $('step-up');
@@ -448,7 +542,7 @@
   }
 
   function freezeTimers() {
-    if (S.running && S.setStart) {
+    if (S.running && S.setStart != null) {
       S.setAccum += (Date.now() - S.setStart) / 1000;
       S.setStart = null;
       S.setElapsed = S.setAccum;
@@ -459,7 +553,7 @@
         saveLog();
       }
     }
-    if (S.resting && S.restStart) {
+    if (S.resting && S.restStart != null) {
       S.restAccum += (Date.now() - S.restStart) / 1000;
       S.restStart = null;
       S.restElapsed = S.restAccum;
@@ -476,6 +570,7 @@
     }
     renderToday();
     updateTimers();
+    saveSession();
   }
 
   function stepCount(delta) {
@@ -499,6 +594,7 @@
       S.setAccum = 0;
       S.setElapsed = 0;
       renderToday();
+      saveSession();
       return;
     }
     S.setAccum = a.sets[j].sec;
@@ -513,6 +609,31 @@
     S.resting = false;
     renderToday();
     updateTimers();
+    saveSession();
+  }
+
+  /* 跳过当前动作剩余的所有组：剩余组计数置 0 并标记跳过，
+     然后进入下一个动作的「开始」界面（不自动开始计时） */
+  function skipRemainingSets() {
+    var a = S.plan[S.exIdx];
+    if (!a || a.cardio || S.finished) return;
+    freezeTimers();
+    var skipped = 0;
+    for (var j = S.setIdx; j < a.sets.length; j++) {
+      var st = a.sets[j];
+      if (st.done) continue;
+      st.done = true;
+      st.count = 0;
+      st.sec = 0;
+      st.skipped = true;
+      skipped++;
+    }
+    if (!skipped) return;
+    commitToday();
+    var next = findNextUndone();
+    if (!next) { finishDay(); return; }
+    startSet(next[0], next[1], false);
+    toast('已跳过剩余 ' + skipped + ' 组');
   }
 
   /* 点「开始休息」：记录本组时间，进入正向休息计时 */
@@ -540,6 +661,7 @@
     S.restElapsed = 0;
     renderToday();
     updateTimers();
+    saveSession();
   }
 
   /* 点「完成休息，开始下一组」 */
@@ -572,6 +694,7 @@
       S.setAccum = 0;
       S.setElapsed = 0;
       renderToday();
+      saveSession();
       toast('已记录：今天' + cardioOf(id).name);
     }
   }
@@ -589,6 +712,7 @@
     S.paused = false;
     syncPauseUI(false);
     saveLog();
+    clearSession();
     renderToday();
   }
 
@@ -601,7 +725,7 @@
         sum = a.sets[0].done ? '✓ ' + esc(a.name) + (a.sets[0].sec ? ' · ' + fmtHM(a.sets[0].sec) : '') : '未做';
       } else {
         var totalSec = a.sets.reduce(function (s, st) { return s + st.sec; }, 0);
-        sum = a.sets.map(function (st) { return st.count; }).join(' · ') +
+        sum = a.sets.map(function (st) { return st.skipped ? '跳过' : st.count; }).join(' · ') +
           (totalSec > 0 ? '　' + fmtHM(totalSec) : '');
       }
       return '<div class="finish-item"><span><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' +
@@ -644,6 +768,7 @@
       S.exIdx = -1;
       S.setIdx = 0;
       saveLog();
+      clearSession();
       renderToday();
     });
     $('finish-early').style.display = 'none';
@@ -684,15 +809,24 @@
 
   function startTicker() {
     if (tickInterval) return;
+    var lastSessionSave = 0;
     tickInterval = setInterval(function () {
       if (S.finished || S.paused) return;
-      if (S.running && S.setStart) {
+      if (S.running && S.setStart != null) {
         S.setElapsed = S.setAccum + (Date.now() - S.setStart) / 1000;
       }
-      if (S.resting && S.restStart) {
+      if (S.resting && S.restStart != null) {
         S.restElapsed = S.restAccum + (Date.now() - S.restStart) / 1000;
       }
       updateTimers();
+      // 计时运行中每约 2 秒把进行中进度落盘，防退出丢失
+      if (S.running || S.resting) {
+        var now = Date.now();
+        if (now - lastSessionSave >= 2000) {
+          lastSessionSave = now;
+          saveSession();
+        }
+      }
     }, 250);
   }
 
@@ -719,6 +853,7 @@
     }
     syncPauseUI(S.paused);
     renderToday();
+    saveSession();
   }
 
   /* ---------- 热力图 ---------- */
@@ -840,8 +975,9 @@
     } else {
       var acts = e.plan.map(function (a) {
         var dn = a.sets.filter(function (st) { return st.done; }).length;
+        var sk = a.sets.filter(function (st) { return st.skipped; }).length;
         if (a.cardio) return esc(a.name) + (a.sets[0].done && a.sets[0].sec ? ' ✓ ' + fmtHM(a.sets[0].sec) : ' ✓');
-        return esc(a.name) + ' ' + dn + ' 组';
+        return esc(a.name) + ' ' + dn + ' 组' + (sk ? '（跳过' + sk + '）' : '');
       }).join(' · ');
       body = '<div class="tt-title">' + title + '</div><div>' + fmtDuration(sec) + (e.completedAt ? ' · 完成' : ' · 未完') + '</div>' +
         (acts ? '<div class="tt-sub">' + acts + '</div>' : '');
@@ -884,8 +1020,9 @@
       var sec = entrySec(k);
       var acts = e.plan ? e.plan.map(function (a) {
         var dn = a.sets.filter(function (st) { return st.done; }).length;
+        var sk = a.sets.filter(function (st) { return st.skipped; }).length;
         if (a.cardio) return esc(a.name) + (a.sets[0].done ? ' ✓' : ' 未做');
-        return esc(a.name) + ' ' + dn + '/' + a.sets.length + ' 组';
+        return esc(a.name) + ' ' + dn + '/' + a.sets.length + ' 组' + (sk ? '（跳过' + sk + '）' : '');
       }).join('，') : '';
       var dist = e.distKm != null ? ' · ' + e.distKm + 'km' : '';
       var detail = e.plan ? e.plan.map(function (a) {
@@ -895,7 +1032,7 @@
         }
         return a.sets.map(function (st, j) {
           return '<div class="dex"><span class="nm">' + esc(a.name) + ' 第 ' + (j + 1) + ' 组</span>' +
-            '<span class="st">' + st.count + ' ' + a.unit + (st.done ? ' · ' + fmtHM(st.sec) : ' · 未做') + '</span></div>';
+            '<span class="st">' + (st.skipped ? '跳过' : st.count + ' ' + a.unit + (st.done ? ' · ' + fmtHM(st.sec) : ' · 未做')) + '</span></div>';
         }).join('');
       }).join('') : '';
       return '<div class="hist-item"><details><summary><div class="hist-main">' +
@@ -1006,6 +1143,9 @@
       e.preventDefault();
       togglePause();
     });
+    // 退出页面/切后台时把进行中的计时与位置冻结保存，回来可继续
+    window.addEventListener('pagehide', saveSession);
+    window.addEventListener('beforeunload', saveSession);
   }
 
   /* ---------- 启动 ---------- */
@@ -1014,6 +1154,8 @@
     initToday();
     wireGlobal();
     renderToday();
+    if (!S.finished && allDone()) finishDay();
+    if (S.paused && !S.finished) syncPauseUI(true);
     startTicker();
   }
 

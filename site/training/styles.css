@@ -218,6 +218,10 @@ button{
 .btn.danger:hover{border-color:var(--signal)}
 .btn.small{height:36px;padding:0 14px;font-size:13px;border-radius:10px}
 .btn-row{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+/* 计时器 + 右侧「跳过剩余组」按钮 */
+.timer-skip-row{display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap}
+.timer-skip-row .btn.skip{min-width:0;height:42px;padding:0 16px;font-size:13.5px;color:var(--sub)}
+.timer-skip-row .btn.skip:hover{color:var(--signal);border-color:rgba(224,59,39,.45)}
 
 /* 训练卡片（左栏 → 手机上在控制台下方） */
 .rail{display:flex;flex-direction:column;gap:8px}
@@ -254,9 +258,11 @@ button{
 .dots{display:flex;gap:5px}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--empty);border:1px solid var(--line);flex:none}
 .dot.done{background:var(--done);border-color:var(--done)}
+.dot.skip{background:transparent;border:1.5px dashed var(--sub);opacity:.55}
 .dot.ring{border:2px solid var(--signal);background:transparent}
 .rail-card.active .dot{background:rgba(246,245,242,.22);border-color:transparent}
 .rail-card.active .dot.done{background:var(--done);border-color:var(--done)}
+.rail-card.active .dot.skip{background:transparent;border-color:rgba(246,245,242,.5);opacity:1}
 .rail-card.active .dot.ring{border-color:var(--signal);background:transparent}
 
 /* 完成卡片 */
