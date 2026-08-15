@@ -55,7 +55,7 @@ test('PortalSync 建立门户会话后只注册分条同步并显示账号状态
   assert.equal(sync.adapter.app, 'words');
 
   const entry = context.WordTales.Data.getAllEntries()[0];
-  await context.WordTales.LearningProgress.rateWord(entry.id, 'Good', {}, 'portal-good');
+  context.WordTales.LearningProgress.trackWord(entry.id, 'card');
   assert.equal(sync.adapter.items().some((item) => item.item_key === 'word:' + entry.id), false);
   await context.WordTales.LearningProgress.setStarred(entry.id, true, 'manual');
   assert.equal(sync.adapter.items().some((item) => item.item_key === 'word:' + entry.id), true);

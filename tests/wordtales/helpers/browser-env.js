@@ -187,7 +187,6 @@ function loadScript(context, relativePath) {
 function loadLearningApp(options = {}) {
   const context = createBrowserContext(options);
   /* site/ 是直接维护并发布的门户应用源码。 */
-  loadScript(context, 'site/words/vendor/ts-fsrs/index.umd.js');
   loadScript(context, 'site/words/js/namespace.js');
   loadScript(context, 'site/words/js/data.js');
   loadScript(context, 'site/words/js/learning-progress-v2.js');

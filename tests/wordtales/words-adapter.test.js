@@ -65,7 +65,7 @@ test('只同步星标词与打卡列：未标记词和 meta 等前缀不上传',
   context.WordTales.PortalSync.start();
   await wait();
   await progress.setStarred(starred, true, 'manual');
-  await progress.rateWord(plain, 'Good', {}, 'adapter-good');
+  progress.trackWord(plain, 'card');
   await progress.setColumnCompleted('s1col1', '2026-08-09', true);
 
   context.WordTales.PortalSync.queue();

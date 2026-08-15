@@ -30,7 +30,7 @@ Browser scripts are ES5-style IIFEs without a bundler. Keep source files readabl
 
 ## Tests and deployment
 
-`tests/portal.test.js` checks routes, authentication boundaries, shared runtime order, deployment configuration, and migrations. `tests/wordtales/` executes the integrated WordTales code from `site/` in a browser-like VM. `scripts/check-integrity.js` validates WordTales assets, corpus, audio cues, script order, and FSRS behavior.
+`tests/portal.test.js` checks routes, authentication boundaries, shared runtime order, deployment configuration, and migrations. `tests/wordtales/` executes the integrated WordTales code from `site/` in a browser-like VM. `scripts/check-integrity.js` validates WordTales assets, corpus, audio cues, and script order.
 
 The Pages workflow runs `npm run verify` and uploads `site/`. All routes must stay relative so deployment under `/Everything4dudu/` continues to work. Do not add an external app checkout, an app-specific CI workflow, or an alternate deployment directory.
 

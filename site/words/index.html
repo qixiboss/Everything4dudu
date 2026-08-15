@@ -40,10 +40,11 @@
   <div class="changelog-version">
     <h3>v3.7 <span class="cv-badge minor">小版本</span></h3>
     <div class="cv-date">2026-08-15</div>
-    <div class="cv-desc"><strong>同步范围更清晰，代码结构更易维护。</strong>星标词与栏目完成记录继续跟随门户账号跨设备同步，FSRS 复习历史保留在当前设备；阅读、游戏、抄写、解析等功能拆分为独立模块，现有学习体验和本地档案保持不变。</div>
+    <div class="cv-desc"><strong>学习档案瘦身，代码结构更易维护。</strong>游戏分类直接更新星标，移除未被复习流程使用的 FSRS 调度与历史数据；星标词和栏目完成记录继续跟随门户账号跨设备同步。</div>
     <ul>
       <li>星标词与每日栏目完成记录按条目同步，减少无关数据覆盖</li>
-      <li>FSRS 复习历史继续保存在当前设备，避免跨设备进度相互干扰</li>
+      <li>游戏中的“比较认识 / 不太认识”直接对应取消 / 添加星标</li>
+      <li>移除未使用的 FSRS 调度器、复习历史和相关本地存储</li>
       <li>统一门户登录与同步入口，登录状态校验在后台完成</li>
       <li>拆分阅读、游戏、抄写、解析、进度与导航模块，方便后续迭代</li>
     </ul>
@@ -243,8 +244,6 @@
 <p>
 <span class="tip-icon">学习建议：</span>建议先通读短文，根据上下文推测加粗彩色词的含义，再对照上方词卡复习。每篇短文反复阅读 2–3 遍，有助于在语境中牢固记忆单词。点击顶部按钮可在第一份至第八份之间切换，第八份为更新日志。</p>
 </footer>
-
-<script defer src="vendor/ts-fsrs/index.umd.js?v=5.4.1"></script>
 
 <!-- 门户运行时：统一登录、路由保护、跨端同步与返回主页。此处是直接维护的源码。 -->
 <script defer src="../shared/vendor/supabase.js"></script>

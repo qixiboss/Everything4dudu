@@ -21,7 +21,6 @@ const sharedScriptSources = require('./site-contract.js').sharedScriptTags()
   .map((tag) => tag.match(/src="([^"]+)"/)[1]);
 
 const expectedScripts = [
-  'vendor/ts-fsrs/index.umd.js?v=5.4.1',
   ...sharedScriptSources,
   'js/namespace.js',
   'js/data.js',
@@ -300,38 +299,6 @@ try {
   }
 } catch (error) {
   errors.push(`Unable to verify canonical Data APIs: ${error.message}`);
-}
-
-try {
-  const fsrsSource = fs.readFileSync(path.resolve(path.dirname(htmlPath), 'vendor/ts-fsrs/index.umd.js'), 'utf8');
-  const sandbox = {};
-  vm.createContext(sandbox);
-  new vm.Script(fsrsSource).runInContext(sandbox);
-  if (!sandbox.FSRS || !/FSRS-6\.0/.test(String(sandbox.FSRS.FSRSVersion))) {
-    errors.push('Bundled ts-fsrs does not report FSRS-6.0.');
-  } else {
-    const scheduler = sandbox.FSRS.fsrs({
-      request_retention: 0.9,
-      maximum_interval: 36500,
-      enable_fuzz: false,
-      enable_short_term: false,
-      learning_steps: [],
-      relearning_steps: []
-    });
-    const now = new Date('2026-08-05T12:00:00.000Z');
-    const intervals = ['Again', 'Hard', 'Good'].map((rating) => {
-      return scheduler.next(
-        sandbox.FSRS.createEmptyCard(now),
-        now,
-        sandbox.FSRS.Rating[rating]
-      ).card.scheduled_days;
-    });
-    if (!(intervals[0] >= 1 && intervals[0] < intervals[1] && intervals[1] < intervals[2])) {
-      errors.push(`Expected distinct Again < Hard < Good intervals, found ${intervals.join(', ')}.`);
-    }
-  }
-} catch (error) {
-  errors.push(`Unable to verify bundled FSRS: ${error.message}`);
 }
 
 // 汇总全部错误后一次性退出，维护者不必反复修一个、跑一次。

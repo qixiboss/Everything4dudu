@@ -1,13 +1,12 @@
 /* ============================================================
  * Module: LearningProgress v2
- * 规范词条、FSRS-6 三档评分、统一星标、栏目完成记录与旧档案迁移。
+ * 规范词条、统一星标、栏目完成记录与旧档案迁移。
  * ============================================================ */
 WordTales.LearningProgress = (function() {
   var STORAGE_KEY = 'wordtales.learning.v1';
   var MIGRATION_KEY = 'wordtales.learning.v2-migrated';
   var DB_NAME = 'wordtales-learning';
-  var DB_VERSION = 1;
-  var MAX_SUBMISSIONS = 400;
+  var DB_VERSION = 2;
   var data = null;
   var database = null;
   var persistenceMode = 'localStorage';
@@ -18,28 +17,18 @@ WordTales.LearningProgress = (function() {
   var columnIndex = Object.create(null);
   var paragraphIndex = Object.create(null);
 
-  var scheduler = window.FSRS && window.FSRS.fsrs ? window.FSRS.fsrs({
-    request_retention: 0.9,
-    maximum_interval: 36500,
-    enable_fuzz: false,
-    enable_short_term: false,
-    learning_steps: [],
-    relearning_steps: []
-  }) : null;
-
   function nowIso() { return new Date().toISOString(); }
   function dayKey(date) {
     var d = date || new Date();
     return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
   }
-  function addDays(date, days) { return new Date(date.getTime() + days * 86400000); }
   function validDate(value) {
     var date = value ? new Date(value) : null;
     return date && !isNaN(date.getTime()) ? date : null;
   }
   function freshData() {
     return {
-      version: 2,
+      version: 3,
       createdAt: nowIso(),
       updatedAt: nowIso(),
       words: {},
@@ -47,46 +36,7 @@ WordTales.LearningProgress = (function() {
       analyses: {},
       days: {},
       columnCompletions: {},
-      reminders: { lastShown: '', notifications: false },
-      processedSubmissions: [],
-      events: []
-    };
-  }
-  function emptyFsrsCard(at) {
-    var now = at || new Date();
-    if (window.FSRS && window.FSRS.createEmptyCard) return serializeCard(window.FSRS.createEmptyCard(now));
-    return {
-      due: now.toISOString(), stability: 0, difficulty: 0, elapsed_days: 0,
-      scheduled_days: 0, reps: 0, lapses: 0, learning_steps: 0, state: 0, last_review: null
-    };
-  }
-  function serializeCard(card) {
-    return {
-      due: validDate(card.due) ? new Date(card.due).toISOString() : nowIso(),
-      stability: Number(card.stability) || 0,
-      difficulty: Number(card.difficulty) || 0,
-      elapsed_days: Number(card.elapsed_days) || 0,
-      scheduled_days: Number(card.scheduled_days) || 0,
-      reps: Number(card.reps) || 0,
-      lapses: Number(card.lapses) || 0,
-      learning_steps: Number(card.learning_steps) || 0,
-      state: Number(card.state) || 0,
-      last_review: validDate(card.last_review) ? new Date(card.last_review).toISOString() : null
-    };
-  }
-  function reviveCard(card) {
-    var value = card || emptyFsrsCard(new Date());
-    return {
-      due: validDate(value.due) || new Date(),
-      stability: Number(value.stability) || 0,
-      difficulty: Number(value.difficulty) || 0,
-      elapsed_days: Number(value.elapsed_days) || 0,
-      scheduled_days: Number(value.scheduled_days) || 0,
-      reps: Number(value.reps) || 0,
-      lapses: Number(value.lapses) || 0,
-      learning_steps: Number(value.learning_steps) || 0,
-      state: Number(value.state) || 0,
-      last_review: validDate(value.last_review)
+      reminders: { lastShown: '', notifications: false }
     };
   }
   function createRecord(entryId, at) {
@@ -96,47 +46,27 @@ WordTales.LearningProgress = (function() {
       entryId: entryId,
       firstSeenAt: timestamp,
       lastSeenAt: timestamp,
-      lastReviewedAt: '',
-      nextReviewAt: '',
-      lastResult: '',
-      reviewCount: 0,
-      lapseCount: 0,
-      successStreak: 0,
       clickCount: 0,
       cardFlipCount: 0,
       isStarred: false,
       starredAt: '',
       starReason: '',
-      sourceOccurrenceId: entry ? entry.primaryOccurrenceId : entryId,
-      fsrsCard: emptyFsrsCard(at || new Date())
+      sourceOccurrenceId: entry ? entry.primaryOccurrenceId : entryId
     };
   }
   function normalizeRecord(entryId, record) {
-    var result = Object.assign(createRecord(entryId, validDate(record.firstSeenAt || record.firstSeen) || new Date()), record || {});
-    result.entryId = entryId;
-    result.firstSeenAt = result.firstSeenAt || result.firstSeen || nowIso();
-    result.lastSeenAt = result.lastSeenAt || result.lastSeen || result.firstSeenAt;
-    result.lastReviewedAt = result.lastReviewedAt || result.lastReview || '';
-    result.nextReviewAt = result.nextReviewAt || result.nextReview || '';
-    result.reviewCount = Number(result.reviewCount) || 0;
-    result.lapseCount = Number(result.lapseCount != null ? result.lapseCount : result.lapses) || 0;
-    result.successStreak = Number(result.successStreak) || 0;
-    result.clickCount = Number(result.clickCount) || 0;
-    result.cardFlipCount = Number(result.cardFlipCount) || 0;
-    result.isStarred = !!result.isStarred;
-    result.fsrsCard = serializeCard(result.fsrsCard || {
-      due: result.nextReviewAt || nowIso(),
-      stability: result.stabilityDays || result.intervalDays || 1,
-      difficulty: result.difficulty || 5,
-      elapsed_days: result.intervalDays || 0,
-      scheduled_days: result.intervalDays || 1,
-      reps: result.reviewCount || 0,
-      lapses: result.lapseCount || 0,
-      learning_steps: 0,
-      state: result.reviewCount || result.nextReviewAt ? (window.FSRS ? window.FSRS.State.Review : 2) : (window.FSRS ? window.FSRS.State.Learning : 1),
-      last_review: result.lastReviewedAt || null
-    });
-    if (!result.nextReviewAt && result.fsrsCard.reps > 0) result.nextReviewAt = result.fsrsCard.due;
+    var source = record || {};
+    var result = createRecord(entryId, validDate(source.firstSeenAt || source.firstSeen) || new Date());
+    result.firstSeenAt = source.firstSeenAt || source.firstSeen || result.firstSeenAt;
+    result.lastSeenAt = source.lastSeenAt || source.lastSeen || result.firstSeenAt;
+    result.clickCount = Number(source.clickCount) || 0;
+    result.cardFlipCount = Number(source.cardFlipCount) || 0;
+    result.isStarred = !!source.isStarred;
+    result.starredAt = result.isStarred ? (source.starredAt || source.lastSeenAt || source.lastSeen || result.lastSeenAt) : '';
+    result.starReason = result.isStarred ? (source.starReason || 'legacy') : '';
+    result.sourceOccurrenceId = WordTales.Data.getOccurrence(source.sourceOccurrenceId)
+      ? source.sourceOccurrenceId
+      : result.sourceOccurrenceId;
     return result;
   }
   function chooseEarlier(a, b) {
@@ -154,30 +84,16 @@ WordTales.LearningProgress = (function() {
   function mergeLegacyRecord(target, incoming) {
     target.firstSeenAt = chooseEarlier(target.firstSeenAt, incoming.firstSeenAt);
     target.lastSeenAt = chooseLater(target.lastSeenAt, incoming.lastSeenAt);
-    target.lastReviewedAt = chooseLater(target.lastReviewedAt, incoming.lastReviewedAt);
-    target.nextReviewAt = chooseEarlier(target.nextReviewAt, incoming.nextReviewAt);
-    target.reviewCount += incoming.reviewCount;
-    target.lapseCount += incoming.lapseCount;
     target.clickCount += incoming.clickCount;
     target.cardFlipCount += incoming.cardFlipCount;
-    target.successStreak = Math.min(target.successStreak || Infinity, incoming.successStreak || 0);
-    if (!isFinite(target.successStreak)) target.successStreak = 0;
     target.isStarred = target.isStarred || incoming.isStarred;
     if (incoming.isStarred) {
       target.starredAt = chooseLater(target.starredAt, incoming.starredAt || incoming.lastSeenAt);
       target.starReason = incoming.starReason || 'legacy';
     }
-    var targetLatest = validDate(target.lastReviewedAt || target.lastSeenAt);
-    var incomingLatest = validDate(incoming.lastReviewedAt || incoming.lastSeenAt);
-    if (incomingLatest && (!targetLatest || incomingLatest >= targetLatest)) target.lastResult = incoming.lastResult || incoming.lastAction || target.lastResult;
-    target.fsrsCard.stability = Math.min(target.fsrsCard.stability || Infinity, incoming.fsrsCard.stability || Infinity);
-    if (!isFinite(target.fsrsCard.stability)) target.fsrsCard.stability = 1;
-    target.fsrsCard.difficulty = Math.max(target.fsrsCard.difficulty || 0, incoming.fsrsCard.difficulty || 0);
-    target.fsrsCard.reps = target.reviewCount;
-    target.fsrsCard.lapses = target.lapseCount;
-    target.fsrsCard.due = target.nextReviewAt || target.fsrsCard.due;
-    target.fsrsCard.last_review = target.lastReviewedAt || target.fsrsCard.last_review;
-    target.fsrsCard.state = target.reviewCount ? (window.FSRS ? window.FSRS.State.Review : 2) : (window.FSRS ? window.FSRS.State.Learning : 1);
+    if (validDate(incoming.lastSeenAt) >= validDate(target.lastSeenAt)) {
+      target.sourceOccurrenceId = incoming.sourceOccurrenceId || target.sourceOccurrenceId;
+    }
   }
   function completionDayKey(value) {
     if (value == null) return dayKey();
@@ -205,20 +121,35 @@ WordTales.LearningProgress = (function() {
     });
     return normalized;
   }
+  function normalizeDays(candidate) {
+    var normalized = {};
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) return normalized;
+    Object.keys(candidate).forEach(function(dateKey) {
+      if (completionDayKey(dateKey) !== dateKey) return;
+      var source = candidate[dateKey];
+      if (!source || typeof source !== 'object' || Array.isArray(source)) return;
+      var day = {
+        wordClicks: Number(source.wordClicks) || 0,
+        cardFlips: Number(source.cardFlips) || 0,
+        articles: Number(source.articles) || 0,
+        analyses: Number(source.analyses) || 0
+      };
+      if (day.wordClicks || day.cardFlips || day.articles || day.analyses) normalized[dateKey] = day;
+    });
+    return normalized;
+  }
   function migrateCandidate(candidate) {
-    if (!candidate || (candidate.version !== 1 && candidate.version !== 2)) return freshData();
+    if (!candidate || [1, 2, 3].indexOf(candidate.version) < 0) return freshData();
     var store = freshData();
     store.createdAt = candidate.createdAt || store.createdAt;
     /* 旧档案没有更新时间时保持“未知”，避免每次迁移都伪造一个最新时间并覆盖 IndexedDB。 */
     store.updatedAt = candidate.updatedAt || candidate.createdAt || '';
     store.articles = candidate.articles || {};
     store.analyses = candidate.analyses || {};
-    store.days = candidate.days || {};
+    store.days = normalizeDays(candidate.days);
     store.columnCompletions = normalizeColumnCompletions(candidate.columnCompletions);
     store.reminders = candidate.reminders || store.reminders;
     store.starMigrationV2 = !!candidate.starMigrationV2;
-    store.processedSubmissions = Array.isArray(candidate.processedSubmissions) ? candidate.processedSubmissions.slice(-MAX_SUBMISSIONS) : [];
-    store.events = Array.isArray(candidate.events) ? candidate.events.slice() : [];
     Object.keys(candidate.words || {}).forEach(function(oldId) {
       var entryId = WordTales.Data.resolveEntryId(oldId);
       if (!WordTales.Data.getEntry(entryId)) return;
@@ -262,12 +193,7 @@ WordTales.LearningProgress = (function() {
       request.onupgradeneeded = function() {
         var db = request.result;
         if (!db.objectStoreNames.contains('profiles')) db.createObjectStore('profiles', { keyPath: 'id' });
-        if (!db.objectStoreNames.contains('events')) {
-          var events = db.createObjectStore('events', { keyPath: 'id', autoIncrement: true });
-          events.createIndex('day', 'day', { unique: false });
-          events.createIndex('type', 'type', { unique: false });
-          events.createIndex('at', 'at', { unique: false });
-        }
+        if (db.objectStoreNames.contains('events')) db.deleteObjectStore('events');
       };
       request.onsuccess = function() { database = request.result; resolve(database); };
       request.onerror = function() { reject(request.error || new Error('Unable to open IndexedDB')); };
@@ -321,27 +247,6 @@ WordTales.LearningProgress = (function() {
       return Promise.resolve(fallbackSaved);
     }
   }
-  function commitReview(event) {
-    load().updatedAt = nowIso();
-    mirrorLegacyStars();
-    if (!database || persistenceMode !== 'indexedDB') {
-      var fallbackSaved = saveFallback();
-      if (fallbackSaved) schedulePortalSync();
-      return Promise.resolve(fallbackSaved);
-    }
-    return new Promise(function(resolve, reject) {
-      var tx;
-      try { tx = database.transaction(['profiles', 'events'], 'readwrite'); } catch (e) { reject(e); return; }
-      tx.objectStore('profiles').put({ id: 'current', updatedAt: load().updatedAt, data: snapshot() });
-      tx.objectStore('events').add(event);
-      tx.oncomplete = function() { schedulePortalSync(); resolve(true); };
-      tx.onerror = function() { reject(tx.error || new Error('Review commit failed')); };
-      tx.onabort = function() { reject(tx.error || new Error('Review commit aborted')); };
-    }).catch(function() {
-      persistenceMode = 'localStorage';
-      return saveFallback();
-    });
-  }
   function hydrate() {
     var fallback = loadFallback();
     return openDatabase().then(function(db) {
@@ -369,10 +274,7 @@ WordTales.LearningProgress = (function() {
   function ensureDay() {
     var key = dayKey();
     var days = load().days;
-    if (!days[key]) days[key] = { wordClicks: 0, cardFlips: 0, good: 0, hard: 0, again: 0, known: 0, unfamiliar: 0, articles: 0, analyses: 0 };
-    days[key].good = Number(days[key].good) || 0;
-    days[key].hard = Number(days[key].hard) || 0;
-    days[key].again = Number(days[key].again) || 0;
+    if (!days[key]) days[key] = { wordClicks: 0, cardFlips: 0, articles: 0, analyses: 0 };
     return days[key];
   }
   function buildIndexes() {
@@ -406,11 +308,6 @@ WordTales.LearningProgress = (function() {
       record.isStarred = true;
       record.starredAt = record.starredAt || nowIso();
       record.starReason = record.starReason || 'legacy';
-      if (!record.nextReviewAt) {
-        record.nextReviewAt = nowIso();
-        record.fsrsCard.due = record.nextReviewAt;
-        record.fsrsCard.state = window.FSRS ? window.FSRS.State.Relearning : 3;
-      }
     });
     store.starMigrationV2 = true;
     try { localStorage.setItem(MIGRATION_KEY, '1'); } catch (e) {}
@@ -425,65 +322,6 @@ WordTales.LearningProgress = (function() {
     });
     try { localStorage.setItem('starredWords', JSON.stringify(words)); } catch (e) {}
   }
-  function ratingValue(rating) {
-    if (!window.FSRS) return 0;
-    if (rating === 'Good') return window.FSRS.Rating.Good;
-    if (rating === 'Hard') return window.FSRS.Rating.Hard;
-    return window.FSRS.Rating.Again;
-  }
-  function rateWord(id, rating, meta, submissionId) {
-    if (['Good', 'Hard', 'Again'].indexOf(rating) < 0) return Promise.reject(new TypeError('Unsupported learning rating: ' + rating));
-    if (!ready) return new Promise(function(resolve, reject) { pending.push(function() { rateWord(id, rating, meta, submissionId).then(resolve, reject); }); });
-    var entryId = WordTales.Data.resolveEntryId(id);
-    var entry = WordTales.Data.getEntry(entryId);
-    if (!entry) return Promise.resolve(null);
-    var store = load();
-    if (submissionId && store.processedSubmissions.indexOf(submissionId) >= 0) return Promise.resolve(store.words[entryId] || null);
-    var now = new Date();
-    var record = ensureRecord(entryId, now);
-    var currentCard = reviveCard(record.fsrsCard);
-    var output;
-    if (scheduler) output = scheduler.next(currentCard, now, ratingValue(rating));
-    else {
-      var interval = rating === 'Good' ? Math.max(3, (currentCard.scheduled_days || 1) * 2.2) : rating === 'Hard' ? Math.max(1, (currentCard.scheduled_days || 1) * 1.3) : 1;
-      output = { card: Object.assign(currentCard, { due: addDays(now, interval), scheduled_days: interval, stability: interval, difficulty: rating === 'Again' ? 8 : rating === 'Hard' ? 6 : 4, reps: currentCard.reps + 1, lapses: currentCard.lapses + (rating === 'Again' ? 1 : 0), state: rating === 'Again' ? 3 : 2, last_review: now }) };
-    }
-    record.fsrsCard = serializeCard(output.card);
-    record.lastSeenAt = now.toISOString();
-    record.lastReviewedAt = now.toISOString();
-    record.nextReviewAt = record.fsrsCard.due;
-    record.lastResult = rating;
-    record.reviewCount++;
-    record.sourceOccurrenceId = meta && meta.occurrenceId ? meta.occurrenceId : record.sourceOccurrenceId;
-    if (rating === 'Again') {
-      record.lapseCount++;
-      record.successStreak = 0;
-      record.isStarred = true;
-      record.starredAt = now.toISOString();
-      record.starReason = 'again';
-    } else {
-      record.successStreak++;
-      record.isStarred = false;
-      record.starredAt = '';
-      record.starReason = '';
-    }
-    var today = ensureDay();
-    today[rating.toLowerCase()]++;
-    if (rating === 'Again') today.unfamiliar = (today.unfamiliar || 0) + 1;
-    else today.known = (today.known || 0) + 1;
-    if (submissionId) {
-      store.processedSubmissions.push(submissionId);
-      if (store.processedSubmissions.length > MAX_SUBMISSIONS) store.processedSubmissions.splice(0, store.processedSubmissions.length - MAX_SUBMISSIONS);
-    }
-    var event = { at: now.toISOString(), day: dayKey(now), type: 'word_rating', targetId: entryId, meta: Object.assign({}, meta || {}, { rating: rating, submissionId: submissionId || '' }) };
-    store.events.push(event);
-    return commitReview(event).then(function(saved) {
-      if (WordTales.Progress && WordTales.Progress.refresh) WordTales.Progress.refresh();
-      var value = getEntryState(entryId);
-      value.saved = saved !== false;
-      return value;
-    });
-  }
   function exposeWord(id, action, meta) {
     var entryId = WordTales.Data.resolveEntryId(id);
     var record = ensureRecord(entryId, new Date());
@@ -492,25 +330,20 @@ WordTales.LearningProgress = (function() {
     record.lastSeenAt = now.toISOString();
     if (action === 'click') { record.clickCount++; ensureDay().wordClicks++; }
     if (action === 'card') { record.cardFlipCount++; ensureDay().cardFlips++; }
-    if (!record.nextReviewAt) {
-      record.nextReviewAt = addDays(now, 1).toISOString();
-      record.fsrsCard.due = record.nextReviewAt;
-      record.fsrsCard.stability = Math.max(1, record.fsrsCard.stability || 0);
-      record.fsrsCard.difficulty = Math.max(5, record.fsrsCard.difficulty || 0);
-      record.fsrsCard.state = window.FSRS ? window.FSRS.State.Learning : 1;
-    }
     if (meta && meta.occurrenceId) record.sourceOccurrenceId = meta.occurrenceId;
     saveSoon();
     return record;
   }
   function trackWord(id, action, meta) {
     if (!ready) { pending.push(function() { trackWord(id, action, meta); }); return; }
-    if (action === 'known' || action === 'review') return rateWord(id, 'Good', meta, 'legacy-' + Date.now() + '-' + Math.random());
-    if (action === 'unknown') return rateWord(id, 'Again', meta, 'legacy-' + Date.now() + '-' + Math.random());
     return exposeWord(id, action, meta);
   }
   function setStarred(id, starred, reason) {
-    var record = ensureRecord(id, new Date());
+    var entryId = WordTales.Data.resolveEntryId(id);
+    if (!WordTales.Data.getEntry(entryId)) return;
+    var record = load().words[entryId];
+    if (!record && !starred) return;
+    if (!record) record = ensureRecord(entryId, new Date());
     if (!record) return;
     record.isStarred = !!starred;
     record.starredAt = starred ? nowIso() : '';
@@ -521,61 +354,7 @@ WordTales.LearningProgress = (function() {
   function getEntryState(id) {
     var entryId = WordTales.Data.resolveEntryId(id);
     var record = load().words[entryId];
-    if (!record) return null;
-    var value = Object.assign({}, record);
-    value.fsrsCard = Object.assign({}, record.fsrsCard);
-    value.learningState = getLearningState(record);
-    value.retrievability = recallProbability(entryId);
-    return value;
-  }
-  function getLearningState(record) {
-    if (!record || !record.reviewCount) return record ? 'learning' : 'new';
-    if (record.lastResult === 'Again' || record.fsrsCard.state === (window.FSRS ? window.FSRS.State.Relearning : 3)) return 'relearning';
-    if (record.fsrsCard.state === (window.FSRS ? window.FSRS.State.Review : 2) && record.fsrsCard.stability >= 90) return 'mastered';
-    return 'review';
-  }
-  function recallProbability(id, at) {
-    var record = load().words[WordTales.Data.resolveEntryId(id)];
-    if (!record || !record.lastSeenAt) return null;
-    if (scheduler && record.fsrsCard && record.fsrsCard.stability > 0) {
-      try { return Number(scheduler.get_retrievability(reviveCard(record.fsrsCard), at || new Date(), false)); } catch (e) {}
-    }
-    var anchor = validDate(record.lastReviewedAt || record.lastSeenAt);
-    var elapsed = anchor ? Math.max(0, ((at || new Date()).getTime() - anchor.getTime()) / 86400000) : 0;
-    return Math.max(0, Math.min(1, Math.exp(-elapsed / Math.max(.4, record.fsrsCard.stability || 1))));
-  }
-  function memoryState(id, at) {
-    var record = load().words[WordTales.Data.resolveEntryId(id)];
-    if (!record) return 'gray';
-    var now = at || new Date();
-    var due = validDate(record.nextReviewAt);
-    var probability = recallProbability(id, now);
-    if ((due && due <= now) || record.lastResult === 'Again') return 'red';
-    if ((due && due.getTime() - now.getTime() <= 1.5 * 86400000) || probability < .72) return 'yellow';
-    return 'green';
-  }
-  function occurrenceForRecord(entry, record) {
-    return WordTales.Data.getOccurrence(record && record.sourceOccurrenceId) || WordTales.Data.getOccurrence(entry.primaryOccurrenceId) || entry.occurrences[0];
-  }
-  function getDueEntries(at) {
-    var now = at || new Date();
-    return WordTales.Data.getAllEntries().map(function(entry) {
-      var record = load().words[entry.id];
-      if (!record || !record.nextReviewAt || new Date(record.nextReviewAt) > now) return null;
-      var occurrence = occurrenceForRecord(entry, record);
-      return { entry: entry, record: record, occurrence: occurrence, word: occurrence.word, set: occurrence.set, column: occurrence.column };
-    }).filter(Boolean).sort(function(a, b) {
-      var overdueA = now.getTime() - new Date(a.record.nextReviewAt).getTime();
-      var overdueB = now.getTime() - new Date(b.record.nextReviewAt).getTime();
-      if (overdueA !== overdueB) return overdueB - overdueA;
-      if (a.record.lapseCount !== b.record.lapseCount) return b.record.lapseCount - a.record.lapseCount;
-      var recallA = recallProbability(a.entry.id, now); var recallB = recallProbability(b.entry.id, now);
-      if (recallA !== recallB) return recallA - recallB;
-      if (a.record.fsrsCard.difficulty !== b.record.fsrsCard.difficulty) return b.record.fsrsCard.difficulty - a.record.fsrsCard.difficulty;
-      var lastA = validDate(a.record.lastReviewedAt || a.record.lastSeenAt); var lastB = validDate(b.record.lastReviewedAt || b.record.lastSeenAt);
-      if (lastA && lastB && lastA.getTime() !== lastB.getTime()) return lastA - lastB;
-      return a.entry.sourceOrder - b.entry.sourceOrder;
-    });
+    return record ? Object.assign({}, record) : null;
   }
   function getStarredEntryIds() {
     return Object.keys(load().words).filter(function(id) { return !!load().words[id].isStarred && !!WordTales.Data.getEntry(id); });
@@ -648,7 +427,10 @@ WordTales.LearningProgress = (function() {
   function init() {
     buildIndexes(); load();
     return hydrate().then(function() {
-      migrateLegacyStars(); ready = true;
+      migrateLegacyStars();
+      /* 用瘦身后的 v3 档案覆盖 localStorage，彻底移除旧 FSRS 字段与复习历史。 */
+      saveFallback();
+      ready = true;
       var queued = pending.slice(); pending = []; queued.forEach(function(operation) { operation(); }); observeArticles();
       window.addEventListener('pagehide', function() { if (saveTimer) clearTimeout(saveTimer); writeProfileNow().catch(function() {}); });
       return api;
@@ -659,16 +441,12 @@ WordTales.LearningProgress = (function() {
     trackWord: trackWord,
     trackArticle: trackArticle,
     trackAnalysis: trackAnalysis,
-    rateWord: rateWord,
-    getDueEntries: getDueEntries,
     getEntryState: getEntryState,
     getStarredEntryIds: getStarredEntryIds,
     setStarred: setStarred,
     getCompletedColumnIds: getCompletedColumnIds,
     isColumnCompleted: isColumnCompleted,
     setColumnCompleted: setColumnCompleted,
-    recallProbability: recallProbability,
-    memoryState: memoryState,
     getData: function() { return load(); },
     getDayKey: dayKey,
     isReady: function() { return ready; },

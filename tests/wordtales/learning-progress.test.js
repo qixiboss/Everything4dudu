@@ -11,85 +11,34 @@ async function readyProgress(initialStorage = {}) {
   return { context, localStorage, data: context.WordTales.Data, progress: context.WordTales.LearningProgress };
 }
 
-test('Again、Hard 和 Good 分别更新复习状态与生词状态', async () => {
-  const { data, progress } = await readyProgress();
-  const [againEntry, hardEntry, goodEntry] = data.getAllEntries();
-
-  const again = await progress.rateWord(againEntry.id, 'Again', {}, 'again-1');
-  const hard = await progress.rateWord(hardEntry.id, 'Hard', {}, 'hard-1');
-  const good = await progress.rateWord(goodEntry.id, 'Good', {}, 'good-1');
-
-  assert.equal(again.lastResult, 'Again');
-  assert.equal(again.reviewCount, 1);
-  assert.equal(again.lapseCount, 1);
-  assert.equal(again.successStreak, 0);
-  assert.equal(again.isStarred, true);
-  assert.equal(hard.lastResult, 'Hard');
-  assert.equal(hard.successStreak, 1);
-  assert.equal(hard.isStarred, false);
-  assert.equal(good.lastResult, 'Good');
-  assert.equal(good.successStreak, 1);
-  assert.equal(good.isStarred, false);
-
-  const day = progress.getData().days[progress.getDayKey()];
-  assert.equal(day.again, 1);
-  assert.equal(day.hard, 1);
-  assert.equal(day.good, 1);
-  assert.equal(day.unfamiliar, 1);
-  assert.equal(day.known, 2);
-});
-
-test('重复 submission ID 不会造成二次调度或重复事件', async () => {
-  const { data, progress } = await readyProgress();
-  const entry = data.getAllEntries()[0];
-
-  await progress.rateWord(entry.id, 'Good', {}, 'same-submission');
-  const before = progress.getEntryState(entry.id);
-  const eventCount = progress.getData().events.length;
-  const duplicate = await progress.rateWord(entry.id, 'Again', {}, 'same-submission');
-
-  assert.equal(duplicate.reviewCount, before.reviewCount);
-  assert.equal(duplicate.lastResult, 'Good');
-  assert.equal(duplicate.nextReviewAt, before.nextReviewAt);
-  assert.equal(progress.getData().events.length, eventCount);
-  assert.equal(progress.getData().days[progress.getDayKey()].again, 0);
-});
-
-test('出现项 ID 统一写入规范词条，别名不会产生第二份档案', async () => {
+test('星标支持添加与取消，出现项 ID 统一写入规范词条', async () => {
   const { progress } = await readyProgress();
   const primaryId = 's1col1-radiate';
   const aliasId = 's6col2-radiate';
 
-  await progress.rateWord(aliasId, 'Hard', { occurrenceId: aliasId }, 'alias-rating');
+  progress.setStarred(aliasId, true, 'game');
 
-  assert.equal(progress.getEntryState(primaryId).reviewCount, 1);
+  assert.equal(progress.getEntryState(primaryId).isStarred, true);
   assert.equal(progress.getEntryState(aliasId).entryId, primaryId);
   assert.deepEqual(Object.keys(progress.getData().words), [primaryId]);
-  assert.equal(progress.getData().words[primaryId].sourceOccurrenceId, aliasId);
+  progress.setStarred(primaryId, false);
+  assert.equal(progress.getEntryState(aliasId).isStarred, false);
 });
 
-test('评分接口拒绝无效评分，并安全忽略未知词条', async () => {
-  const { progress } = await readyProgress();
-
-  await assert.rejects(progress.rateWord('s1col1-radiate', 'Easy'), /Unsupported learning rating/);
-  assert.equal(await progress.rateWord('missing-entry', 'Good', {}, 'missing'), null);
-  assert.equal(progress.getData().events.length, 0);
-});
-
-test('到期队列排除未来词条并优先返回逾期更久的词条', async () => {
+test('词卡浏览只保存交互计数，不再生成 FSRS 调度或复习历史', async () => {
   const { data, progress } = await readyProgress();
-  const [olderEntry, newerEntry, futureEntry] = data.getAllEntries();
-  await progress.rateWord(olderEntry.id, 'Good', {}, 'due-old');
-  await progress.rateWord(newerEntry.id, 'Good', {}, 'due-new');
-  await progress.rateWord(futureEntry.id, 'Good', {}, 'due-future');
+  const entry = data.getAllEntries()[0];
 
-  const now = new Date();
-  progress.getData().words[olderEntry.id].nextReviewAt = new Date(now.getTime() - 3 * 86400000).toISOString();
-  progress.getData().words[newerEntry.id].nextReviewAt = new Date(now.getTime() - 86400000).toISOString();
-  progress.getData().words[futureEntry.id].nextReviewAt = new Date(now.getTime() + 86400000).toISOString();
+  progress.trackWord(entry.id, 'click', { occurrenceId: entry.primaryOccurrenceId });
+  progress.trackWord(entry.id, 'card', { occurrenceId: entry.primaryOccurrenceId });
 
-  const dueIds = Array.from(progress.getDueEntries(now), (item) => item.entry.id);
-  assert.deepEqual(dueIds, [olderEntry.id, newerEntry.id]);
+  const record = progress.getEntryState(entry.id);
+  assert.equal(record.clickCount, 1);
+  assert.equal(record.cardFlipCount, 1);
+  ['fsrsCard', 'nextReviewAt', 'lastReviewedAt', 'lastResult', 'reviewCount', 'lapseCount']
+    .forEach((field) => assert.equal(Object.hasOwn(record, field), false));
+  assert.equal(Object.hasOwn(progress.getData(), 'events'), false);
+  assert.equal(Object.hasOwn(progress.getData(), 'processedSubmissions'), false);
 });
 
 test('栏目完成记录按本地日期和栏目隔离，并可以取消', async () => {
@@ -166,13 +115,12 @@ test('完成记录迁移仅保留真实日期、已知栏目和布尔 true', asy
   );
 });
 
-test('无效完成记录安全失败，并且不会改动 FSRS 与当日统计', async () => {
+test('无效完成记录安全失败，并且不会改动星标与浏览统计', async () => {
   const { data, progress } = await readyProgress();
   const entry = data.getAllEntries()[0];
-  await progress.rateWord(entry.id, 'Good', {}, 'record-independence');
+  progress.trackWord(entry.id, 'card', { occurrenceId: entry.primaryOccurrenceId });
   const wordsBefore = JSON.stringify(progress.getData().words);
   const daysBefore = JSON.stringify(progress.getData().days);
-  const eventsBefore = JSON.stringify(progress.getData().events);
 
   assert.equal((await progress.setColumnCompleted('missing-column', '2026-08-09', true)).saved, false);
   assert.equal((await progress.setColumnCompleted('s1col1', '2026-02-30', true)).saved, false);
@@ -185,9 +133,7 @@ test('无效完成记录安全失败，并且不会改动 FSRS 与当日统计',
   assert.equal(duplicate.unchanged, true);
   assert.equal(JSON.stringify(progress.getData().words), wordsBefore);
   assert.equal(JSON.stringify(progress.getData().days), daysBefore);
-  assert.equal(JSON.stringify(progress.getData().events), eventsBefore);
 
-  await progress.rateWord(data.getAllEntries()[1].id, 'Hard', {}, 'rating-after-record');
   progress.setStarred(data.getAllEntries()[2].id, true, 'test');
   assert.equal(progress.isColumnCompleted('s1col1', '2026-08-09'), true);
 });
@@ -197,7 +143,7 @@ test('日期键使用本地日历日，不会被 UTC 日期偏移', async () => 
   assert.equal(progress.getDayKey(new Date(2026, 7, 9, 23, 59, 59)), '2026-08-09');
 });
 
-test('v1 档案迁移会幂等合并别名记录并保留关键统计', async () => {
+test('旧档案迁移会合并别名并只保留仍使用的星标与浏览数据', async () => {
   const primaryId = 's1col1-radiate';
   const aliasId = 's6col2-radiate';
   const legacyProfile = {
@@ -222,9 +168,14 @@ test('v1 档案迁移会幂等合并别名记录并保留关键统计', async ()
         isStarred: true,
         starredAt: '2025-01-25T00:00:00.000Z'
       }
-    }
+    },
+    days: {
+      '2025-01-25': { wordClicks: 4, cardFlips: 2, good: 3, hard: 1, again: 2, known: 4, unfamiliar: 2 }
+    },
+    processedSubmissions: ['legacy-rating'],
+    events: [{ type: 'word_rating', targetId: primaryId }]
   };
-  const { progress } = await readyProgress({
+  const { localStorage, progress } = await readyProgress({
     'wordtales.learning.v1': JSON.stringify(legacyProfile),
     'wordtales.learning.v2-migrated': '1'
   });
@@ -233,9 +184,18 @@ test('v1 档案迁移会幂等合并别名记录并保留关键统计', async ()
   assert.deepEqual(Object.keys(progress.getData().words), [primaryId]);
   assert.equal(record.firstSeenAt, '2025-01-05T00:00:00.000Z');
   assert.equal(record.lastSeenAt, '2025-01-25T00:00:00.000Z');
-  assert.equal(record.reviewCount, 5);
-  assert.equal(record.lapseCount, 3);
-  assert.equal(record.successStreak, 1);
   assert.equal(record.isStarred, true);
+  assert.equal(Object.hasOwn(record, 'reviewCount'), false);
+  assert.equal(Object.hasOwn(record, 'lapseCount'), false);
+  assert.equal(Object.hasOwn(record, 'fsrsCard'), false);
+  assert.deepEqual(JSON.parse(JSON.stringify(progress.getData().days)), {
+    '2025-01-25': { wordClicks: 4, cardFlips: 2, articles: 0, analyses: 0 }
+  });
+  assert.equal(Object.hasOwn(progress.getData(), 'events'), false);
+  assert.equal(Object.hasOwn(progress.getData(), 'processedSubmissions'), false);
+  const persisted = JSON.parse(localStorage.getItem('wordtales.learning.v1'));
+  assert.equal(persisted.version, 3);
+  assert.equal(Object.hasOwn(persisted.words[primaryId], 'fsrsCard'), false);
+  assert.equal(Object.hasOwn(persisted, 'events'), false);
   assert.deepEqual(JSON.parse(JSON.stringify(progress.getData().columnCompletions)), {});
 });

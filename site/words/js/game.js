@@ -424,8 +424,8 @@ parentDz.classList.add('empty');
 
 function dropCard(card, targetDz, sourceDz) {
 /*
- * 每个投放区只展示最近一张卡；旧卡移除但其学习结果已持久化。
- * 已投放卡可以跨框改判；同框放回不重复记学习事件，也不增加收集计数。
+ * 每个投放区只展示最近一张卡；旧卡移除但其星标结果已持久化。
+ * 已投放卡可以跨框改判；同框放回不重复更新星标，也不增加收集计数。
  */
 var previousClassification = card.dataset.classification || '';
 var nextClassification = targetDz.classList.contains('unfamiliar') ? 'unfamiliar' : 'familiar';
@@ -453,16 +453,6 @@ if (idx >= 0) floatCards.splice(idx, 1);
 
 var word = card.dataset.word || '';
 var isUnfamiliar = nextClassification === 'unfamiliar';
-if (card.dataset.vocabId && previousClassification !== nextClassification) {
-var trackMeta = {
-columnId: _gameSection ? _gameSection.id : '',
-occurrenceId: card.dataset.vocabId || ''
-};
-if (previousClassification) {
-trackMeta.reclassifiedFrom = previousClassification === 'unfamiliar' ? 'unknown' : 'known';
-}
-WordTales.LearningProgress.trackWord(card.dataset.vocabId, isUnfamiliar ? 'unknown' : 'known', trackMeta);
-}
 card.dataset.classification = nextClassification;
 card.setAttribute(
 'aria-label',
@@ -470,7 +460,7 @@ word + '，当前为' + (isUnfamiliar ? '不太认识' : '比较认识') +
 '；可拖到另一个框重新分类，按左方向键标记为比较认识，按右方向键标记为不太认识，按回车翻面'
 );
 if (isUnfamiliar) {
-toggleStarWord(word, true, card.dataset.vocabId);
+if (previousClassification !== nextClassification) toggleStarWord(word, true, card.dataset.vocabId);
 var existingStar = card.querySelector('.game-star');
 if (!existingStar) {
 var star = document.createElement('span');
@@ -479,7 +469,7 @@ star.textContent = '\u2605';
 card.appendChild(star);
 }
 } else {
-toggleStarWord(word, false, card.dataset.vocabId);
+if (previousClassification !== nextClassification) toggleStarWord(word, false, card.dataset.vocabId);
 var existingStar = card.querySelector('.game-star');
 if (existingStar) existingStar.remove();
 }
@@ -554,4 +544,3 @@ start: function(sectionOrId) { startGame(resolveSection(sectionOrId)); },
 end: endGame
 };
 })();
-
