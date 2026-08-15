@@ -99,6 +99,9 @@ button { -webkit-tap-highlight-color: transparent; }
 /* 每页固定为两列三行；第七个应用起由脚本自动放入下一页。 */
 .app-pager {
   margin-top: 36px;
+  /* 悬浮栏不占文档流高度：padding-top 给 hover 上浮留出裁剪余量，padding-bottom 为悬浮栏预留垂直空间。 */
+  padding-top: 8px;
+  padding-bottom: calc(max(20px, env(safe-area-inset-bottom)) + 79px);
   overflow: hidden;
   outline: none;
 }
@@ -366,7 +369,7 @@ button { -webkit-tap-highlight-color: transparent; }
   .status-bar { display: none; }
   .home-header { padding-top: clamp(12px, 3.4vh, 30px); }
   .hero-clock { font-size: clamp(58px, 17.5vw, 74px); }
-  .app-pager { margin-top: clamp(24px, 4vh, 36px); }
+  .app-pager { margin-top: clamp(24px, 4vh, 36px); padding-bottom: 0; }
   .app-grid { column-gap: 24px; row-gap: 18px; }
   .home-dock { position: relative; inset: auto; margin-top: auto; }
   .login-sheet { width: 100%; }
