@@ -284,6 +284,7 @@ function loadScript(context, relativePath) {
 /* site/ 是直接维护并发布的门户应用源码。 */
 function loadTrainingApp(options = {}) {
   const context = createBrowserContext(options);
+  loadScript(context, 'site/training/model.js');
   loadScript(context, 'site/training/app.js');
   return context;
 }

@@ -22,8 +22,9 @@ Node >= 22 is required. There is intentionally no `npm run build`: static files 
 - `site/index.html` and `site/shared/home.*` provide the mobile-style portal and login dialog.
 - `site/words/`, `site/training/`, `site/exam-schedule/`, `site/CostTrace/`, and `site/changelog/` are complete static applications with direct `index.html` entries.
 - `site/shared/` provides the shared Supabase client, authentication, app route guard, local-first synchronization engine, and return-to-home shell.
-- Each application keeps its synchronization adapter beside its own code: `site/words/js/hub-sync.js`, `site/training/hub-sync.js`, and `site/exam-schedule/hub-sync.js`.
-- `scripts/site-contract.js` is the authoritative contract for portal routes and the shared-script sequence. Keep it aligned with application HTML when adding or reordering shared runtime scripts.
+- Each synchronized application keeps its storage adapter beside its own code; WordTales combines that adapter with account status in `portal-sync.js`.
+- WordTales splits reading, games, copy practice, analysis, and cards by responsibility while preserving the `WordTales.*` module facade.
+- `scripts/site-contract.js` is the authoritative contract for portal routes and the authentication-only and sync-enabled shared-script sequences. Keep it aligned with application HTML when adding or reordering shared runtime scripts.
 
 Browser scripts are ES5-style IIFEs without a bundler. Keep source files readable and split by responsibility; do not compress or combine them merely to reduce file count.
 

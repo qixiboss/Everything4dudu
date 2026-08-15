@@ -38,6 +38,13 @@ class ClassList {
     names.forEach((name) => this.values.delete(name));
   }
 
+  toggle(name, force) {
+    const enabled = force === undefined ? !this.values.has(name) : force;
+    if (enabled) this.values.add(name);
+    else this.values.delete(name);
+    return enabled;
+  }
+
   contains(name) {
     return this.values.has(name);
   }

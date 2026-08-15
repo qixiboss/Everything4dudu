@@ -51,7 +51,7 @@ async function readyAdapter({ remote = [], owner = true } = {}) {
   };
   loadScript(context, 'site/shared/sync-store.js');
   loadScript(context, 'site/shared/hub-sync.js');
-  loadScript(context, 'site/words/js/hub-sync.js');
+  loadScript(context, 'site/words/js/portal-sync.js');
   await context.WordTales.LearningProgress.init();
   return { context, writes, progress: context.WordTales.LearningProgress };
 }
@@ -62,13 +62,13 @@ test('只同步星标词与打卡列：未标记词和 meta 等前缀不上传',
   const starred = entries[0].id;
   const plain = entries[1].id;
 
-  context.WordTales.HubProfileSync.start();
+  context.WordTales.PortalSync.start();
   await wait();
   await progress.setStarred(starred, true, 'manual');
   await progress.rateWord(plain, 'Good', {}, 'adapter-good');
   await progress.setColumnCompleted('s1col1', '2026-08-09', true);
 
-  context.WordTales.HubProfileSync.queue();
+  context.WordTales.PortalSync.queue();
   await context.HubSync.flush('words');
 
   const keys = writes.map((row) => row.item_key);
@@ -83,10 +83,10 @@ test('取消星标会软删除云端行', async () => {
   const { context, writes, progress } = await readyAdapter();
   const entry = context.WordTales.Data.getAllEntries()[0].id;
 
-  context.WordTales.HubProfileSync.start();
+  context.WordTales.PortalSync.start();
   await wait();
   await progress.setStarred(entry, true, 'manual');
-  context.WordTales.HubProfileSync.queue();
+  context.WordTales.PortalSync.queue();
   await context.HubSync.flush('words');
 
   const uploaded = writes.find((row) => row.item_key === 'word:' + entry);
@@ -95,7 +95,7 @@ test('取消星标会软删除云端行', async () => {
 
   writes.length = 0;
   await progress.setStarred(entry, false, '');
-  context.WordTales.HubProfileSync.queue();
+  context.WordTales.PortalSync.queue();
   await context.HubSync.flush('words');
 
   const deleted = writes.find((row) => row.item_key === 'word:' + entry);
@@ -114,7 +114,7 @@ test('远端 deleted 行删除本地词条记录，article/meta 等前缀被忽�
   );
 
   await progress.setStarred(entry, true, 'manual');
-  context.WordTales.HubProfileSync.start();
+  context.WordTales.PortalSync.start();
   await wait();
 
   assert.equal(progress.getData().words[entry], undefined);

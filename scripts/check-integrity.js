@@ -24,14 +24,18 @@ const expectedScripts = [
   'vendor/ts-fsrs/index.umd.js?v=5.4.1',
   ...sharedScriptSources,
   'js/namespace.js',
-  'js/supabase-config.js',
-  'js/auth.js',
   'js/data.js',
   'js/renderer.js',
   'js/learning-progress-v2.js',
-  'js/cloud-sync.js',
-  'js/hub-sync.js',
+  'js/portal-sync.js',
   'js/study-record.js',
+  'js/feature-modal-navigation.js',
+  'js/reader.js',
+  'js/progress-ui.js',
+  'js/game.js',
+  'js/copy-practice.js',
+  'js/analysis-cards.js',
+  'js/app.js',
   'js/features.js'
 ];
 const scriptTags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];

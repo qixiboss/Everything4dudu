@@ -12,55 +12,25 @@
 (function () {
   'use strict';
 
-  var SETTINGS_KEY = 'train.settings';
-  var LOG_KEY = 'train.log';
-  var SESSION_KEY = 'train.session';
-
-  /* ---------- 动作定义 ---------- */
-  var BASE_EXERCISES = [
-    { id: 'pushup',  name: '俯卧撑',   unit: '个', target: 20 },
-    { id: 'abwheel', name: '健腹轮',   unit: '个', target: 10 },
-    { id: 'hanglegg',name: '悬挂举腿', unit: '个', target: 10 },
-    { id: 'pullup',  name: '引体向上', unit: '个', target: 8 },
-  ];
-  var CARDIO_LIST = [
-    { id: 'run',  name: '跑步', emoji: '🏃' },
-    { id: 'ride', name: '骑行', emoji: '🚴' },
-  ];
-  function cardioOf(id) {
-    for (var i = 0; i < CARDIO_LIST.length; i++) {
-      if (CARDIO_LIST[i].id === id) return CARDIO_LIST[i];
-    }
-    return CARDIO_LIST[0];
-  }
+  var Model = window.TrainingModel;
+  var BASE_EXERCISES = Model.BASE_EXERCISES;
+  var CARDIO_LIST = Model.CARDIO_LIST;
+  var cardioOf = Model.cardioOf;
 
   /* ---------- 存储 ---------- */
-  var settings = {
-    targets: { pushup: 20, abwheel: 10, hanglegg: 10, pullup: 8 },
-    autoAlt: false,      // 有氧自动轮换（默认建议上次的反向）
-    restSeconds: 60,     // 组间建议休息时长
-  };
-  var log = {};          // { '2026-08-10': {...} }
+  var settings = Model.defaultSettings();
+  var log = {};
 
   function load() {
-    try {
-      var s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
-      if (s) {
-        settings.targets = Object.assign(settings.targets, s.targets || {});
-        if (typeof s.autoAlt === 'boolean') settings.autoAlt = s.autoAlt;
-        if (Number.isInteger(s.restSeconds) && s.restSeconds >= 1 && s.restSeconds <= 600) {
-          settings.restSeconds = s.restSeconds;
-        }
-      }
-      var l = JSON.parse(localStorage.getItem(LOG_KEY));
-      if (l && typeof l === 'object') log = l;
-    } catch (e) { /* 忽略损坏数据 */ }
+    var stored = Model.load(localStorage);
+    settings = stored.settings;
+    log = stored.log;
   }
   function saveSettings() {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    Model.writeSettings(localStorage, settings);
   }
   function saveLog() {
-    localStorage.setItem(LOG_KEY, JSON.stringify(log));
+    Model.writeLog(localStorage, log);
   }
 
   /* ---------- 会话（断点续连） ---------- */
@@ -80,7 +50,7 @@
     var restSec = S.restAccum;
     if (S.resting && S.restStart != null) restSec = S.restAccum + (Date.now() - S.restStart) / 1000;
     try {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({
+      Model.writeSession(localStorage, {
         date: S.date,
         exIdx: S.exIdx,
         setIdx: S.setIdx,
@@ -91,51 +61,27 @@
         setAccum: setSec,
         restAccum: restSec,
         cardioMin: S.cardioMin,
-      }));
+      });
     } catch (e) { /* 忽略存储异常 */ }
     if (planDirty) saveLog();
   }
   function clearSession() {
-    try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* 忽略 */ }
+    Model.clearSession(localStorage);
   }
 
   /* ---------- 日期工具 ---------- */
-  function dayKey(d) {
-    var x = d || new Date();
-    return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
-  }
+  var dayKey = Model.dayKey;
   function todayKey() { return dayKey(); }
-  function isToday(k) { return k === todayKey(); }
-  function fmtHM(sec) {
-    sec = Math.max(0, Math.floor(sec));
-    var m = Math.floor(sec / 60), s = sec % 60;
-    return m + ':' + String(s).padStart(2, '0');
-  }
-  function fmtDuration(sec) {
-    sec = Math.round(sec);
-    if (sec < 60) return sec + ' 秒';
-    var m = Math.floor(sec / 60);
-    if (m < 60) return m + ' 分钟';
-    return Math.floor(m / 60) + ' 小时 ' + (m % 60) + ' 分';
-  }
-  function fmtShort(sec) {
-    sec = Math.round(sec);
-    if (sec <= 0) return '—';
-    if (sec < 60) return sec + '秒';
-    var m = Math.floor(sec / 60);
-    if (m < 60) return m + '分';
-    return Math.floor(m / 60) + '时' + (m % 60) + '分';
-  }
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  function isToday(key) { return key === todayKey(); }
+  var fmtHM = Model.fmtHM;
+  var fmtDuration = Model.fmtDuration;
+  var fmtShort = Model.fmtShort;
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
     });
   }
-  var WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
-  function weekdayName(k) {
-    var d = new Date(k + 'T00:00:00');
-    return isNaN(d) ? '' : '周' + WEEKDAYS[d.getDay()];
-  }
+  var weekdayName = Model.weekdayName;
 
   /* ---------- 会话状态 ---------- */
   var S = {
@@ -159,24 +105,7 @@
 
   /* ---------- 计划 ---------- */
   function buildPlan() {
-    var acts = BASE_EXERCISES.map(function (e) {
-      return {
-        id: e.id, name: e.name, unit: e.unit,
-        target: settings.targets[e.id] || e.target,
-        sets: [
-          { done: false, count: settings.targets[e.id] || e.target, sec: 0 },
-          { done: false, count: settings.targets[e.id] || e.target, sec: 0 },
-          { done: false, count: settings.targets[e.id] || e.target, sec: 0 },
-          { done: false, count: settings.targets[e.id] || e.target, sec: 0 },
-        ],
-      };
-    });
-    acts.push({
-      id: S.cardioId, name: cardioOf(S.cardioId).name, unit: '', target: 0,
-      sets: [{ done: false, count: 0, sec: 0 }],
-      cardio: true,
-    });
-    return acts;
+    return Model.buildPlan(settings, S.cardioId);
   }
 
   function ensureToday() {
@@ -195,65 +124,32 @@
   function todayEntry() { return log[S.date || todayKey()]; }
 
   /* 兼容旧数据：cardio 字段可能是 0/1 或 'run'/'ride' */
-  function normCardio(v) {
-    if (v === 0) return 'run';
-    if (v === 1) return 'ride';
-    if (v === 'run' || v === 'ride') return v;
-    return 'run';
-  }
-
+  var normCardio = Model.normCardio;
   function pickCardio() {
-    // 最近一次有记录的训练里选了哪种有氧，就轮换成另一个
-    var keys = Object.keys(log).sort();
-    for (var i = keys.length - 1; i >= 0; i--) {
-      var e = log[keys[i]];
-      if (e && e.cardio != null && e.plan && e.plan.some(function (a) { return a.cardio; })) {
-        var last = normCardio(e.cardio);
-        return last === 'run' ? 'ride' : 'run';
-      }
-    }
-    return 'run';
+    return Model.pickCardio(log);
   }
 
   /* 断点续连：仅当会话属于今天、计划仍存在且未完成时恢复。
      恢复后计时器处于暂停（idle）状态，显示冻结秒数与「继续」按钮。 */
   function tryRestoreSession() {
-    var raw = null;
-    try { raw = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { /* 忽略损坏数据 */ }
-    if (!raw || typeof raw !== 'object') return false;
-    if (raw.finished || raw.date !== todayKey()) { clearSession(); return false; }
-    var entry = log[raw.date];
-    if (!entry || !entry.plan || entry.completedAt) { clearSession(); return false; }
-    S.plan = entry.plan;
-    S.cardioId = normCardio(entry.cardio);
+    var restored = Model.restoreSession(Model.readSession(localStorage), log, todayKey());
+    if (restored.shouldClear) clearSession();
+    if (!restored.value) return false;
+    S.plan = restored.value.plan;
+    S.cardioId = restored.value.cardioId;
     S.finished = false;
-    // 位置校验：指向的组必须仍未完成，否则回退到下一个未完成组
-    var restored = false;
-    if (raw.exIdx >= 0 && raw.exIdx < S.plan.length) {
-      var a = S.plan[raw.exIdx];
-      if (a && !a.cardio && raw.setIdx >= 0 && raw.setIdx < a.sets.length && !a.sets[raw.setIdx].done) {
-        S.exIdx = raw.exIdx;
-        S.setIdx = raw.setIdx;
-        S.setAccum = Math.max(a.sets[raw.setIdx].sec, raw.setAccum || 0);
-        restored = true;
-      }
-    }
-    if (!restored) {
-      var f = findNextUndone();
-      if (!f) return false;
-      S.exIdx = f[0];
-      S.setIdx = f[1];
-      S.setAccum = S.plan[f[0]].sets[f[1]].sec;
-    }
+    S.exIdx = restored.value.exIdx;
+    S.setIdx = restored.value.setIdx;
+    S.setAccum = restored.value.setAccum;
     S.setElapsed = S.setAccum;
-    S.running = false;   // 回来时暂停，点「继续」再计时
+    S.running = false;
     S.setStart = null;
     S.resting = false;
     S.restAccum = 0;
     S.restElapsed = 0;
     S.restStart = null;
-    S.paused = raw.paused === true;
-    if (typeof raw.cardioMin === 'number' && raw.cardioMin >= 1) S.cardioMin = raw.cardioMin;
+    S.paused = restored.value.paused;
+    S.cardioMin = restored.value.cardioMin;
     return true;
   }
 
@@ -291,18 +187,10 @@
   }
 
   function findNextUndone() {
-    for (var i = 0; i < S.plan.length; i++) {
-      var a = S.plan[i];
-      for (var j = 0; j < a.sets.length; j++) {
-        if (!a.sets[j].done) return [i, j];
-      }
-    }
-    return null;
+    return Model.findNextUndone(S.plan);
   }
   function allDone() {
-    return S.plan.every(function (a) {
-      return a.sets.every(function (st) { return st.done; });
-    });
+    return Model.allDone(S.plan);
   }
   function firstUndoneSet(i) {
     var sets = S.plan[i].sets;
@@ -915,46 +803,25 @@
   }
 
   function entrySec(k) {
-    var e = log[k];
-    if (!e || !e.plan) return 0;
-    return e.plan.reduce(function (s, a) {
-      return s + a.sets.reduce(function (x, st) { return x + st.sec; }, 0);
-    }, 0);
+    return Model.entrySec(log[k]);
   }
-  /* 这一天是否有真实训练内容（任一组完成或做过有氧） */
   function entryHasContent(k) {
-    var e = log[k];
-    if (!e || !e.plan) return false;
-    return e.plan.some(function (a) {
-      return a.sets.some(function (st) { return st.done; });
-    });
+    return Model.entryHasContent(log[k]);
   }
   function contentKeys() {
-    return Object.keys(log).filter(entryHasContent);
+    return Model.summarize(log, Date.now()).contentKeys;
   }
   function totalAllSec() {
-    return Object.keys(log).reduce(function (s, k) { return s + entrySec(k); }, 0);
+    return Model.summarize(log, Date.now()).totalSeconds;
   }
   function weekSec() {
-    var now = Date.now();
-    return Object.keys(log).reduce(function (s, k) {
-      var d = new Date(k + 'T00:00:00');
-      return s + (now - d < 7 * 86400000 ? entrySec(k) : 0);
-    }, 0);
+    return Model.summarize(log, Date.now()).weekSeconds;
   }
   function monthDays() {
-    var now = Date.now();
-    return Object.keys(log).filter(function (k) {
-      return now - new Date(k + 'T00:00:00') < 30 * 86400000;
-    }).length;
+    return Model.summarize(log, Date.now()).monthDays;
   }
   function cardioCount() {
-    var n = 0;
-    Object.keys(log).forEach(function (k) {
-      var e = log[k];
-      if (e && e.plan && e.plan.some(function (a) { return a.cardio && a.sets[0].done; })) n++;
-    });
-    return n;
+    return Model.summarize(log, Date.now()).cardioCount;
   }
   function statTile(v, k) {
     return '<div class="stat"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>';

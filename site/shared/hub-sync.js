@@ -7,10 +7,8 @@
  *   applyRemote(rows): void | Promise      merge remote rows into local state
  *   resetLocal(): void                     clear local state (account switch)
  *
- * Polling replaces event-based hooks, so the same file works for apps with
- * and without their own change notifications. Every remote application
- * (words, training, exam-schedule) receives a generated copy of this file;
- * the shared script lives here so the portal's integrity checks can read it. */
+ * Polling replaces event-based hooks, so the same shared runtime works with
+ * each application's small storage adapter. */
 (function () {
   'use strict';
   var POLL_MS = 800;
@@ -88,7 +86,7 @@
     }
     return true;
   }
-  /* Run one scan immediately; used by legacy CloudSync upload cycles and tests. */
+  /* Run one scan immediately after an application persists local changes. */
   function queue(adapter) { scan(adapter); }
   window.HubAppSync = {
     start: start,

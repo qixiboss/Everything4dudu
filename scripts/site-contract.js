@@ -13,18 +13,24 @@ const APP_ROUTES = Object.freeze({
   'cost-trace': 'CostTrace/'
 });
 
-const SHARED_SCRIPT_TAGS = Object.freeze([
+const AUTH_SCRIPT_TAGS = Object.freeze([
   '<script defer src="../shared/vendor/supabase.js"></script>',
   '<script defer src="../shared/config.js"></script>',
   '<script defer src="../shared/hub-auth.js"></script>',
   '<script defer src="../shared/auth-gate.js"></script>',
+  '<script defer src="../shared/hub-shell.js"></script>'
+]);
+
+const SYNC_SCRIPT_TAGS = Object.freeze([
+  ...AUTH_SCRIPT_TAGS.slice(0, -1),
   '<script defer src="../shared/sync-store.js"></script>',
   '<script defer src="../shared/hub-sync.js"></script>',
   '<script defer src="../shared/hub-shell.js"></script>'
 ]);
 
-function sharedScriptTags() {
-  return [...SHARED_SCRIPT_TAGS];
-}
+function authScriptTags() { return [...AUTH_SCRIPT_TAGS]; }
+function syncScriptTags() { return [...SYNC_SCRIPT_TAGS]; }
+/* Backward-compatible name used by the WordTales integrity checker. */
+function sharedScriptTags() { return syncScriptTags(); }
 
-module.exports = { APP_ROUTES, sharedScriptTags };
+module.exports = { APP_ROUTES, authScriptTags, syncScriptTags, sharedScriptTags };

@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const siteRoot = path.join(root, 'site');
 
 /* 共享脚本清单以 site-contract.js 为唯一来源。 */
-const { APP_ROUTES, sharedScriptTags } = require(path.join(root, 'scripts/site-contract.js'));
+const { APP_ROUTES, authScriptTags, syncScriptTags } = require(path.join(root, 'scripts/site-contract.js'));
 
 function storage(initial = {}) {
   const values = new Map(Object.entries(initial));
@@ -97,7 +97,7 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   const changelog = fs.readFileSync(path.join(siteRoot, 'changelog/index.html'), 'utf8');
   const changelogScripts = changelog.split('\n').filter((line) => line.includes('<script defer')).map((line) => line.trim());
   assert.deepEqual(changelogScripts, [
-    ...sharedScriptTags(),
+    ...authScriptTags(),
     '<script defer src="changelog.js"></script>'
   ]);
 });
@@ -147,16 +147,40 @@ test('应用页面不被验证遮罩阻塞，无会话时仍跳回门户登录',
   assert.doesNotMatch(css, /visibility:\s*hidden/);
   assert.doesNotMatch(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
-  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'CostTrace'].forEach((app) => {
     const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
     /* 共享脚本必须按 site-contract.js 定义的顺序完整出现（登录先于锁定与同步）。 */
     let previous = -1;
-    sharedScriptTags().forEach((tag) => {
+    syncScriptTags().forEach((tag) => {
       const position = html.indexOf(tag);
       assert.ok(position > previous, `${app} is missing or misordering ${tag}`);
       previous = position;
     });
     assert.match(html, /Content-Security-Policy/);
+  });
+  const changelog = fs.readFileSync(path.join(siteRoot, 'changelog/index.html'), 'utf8');
+  let previous = -1;
+  authScriptTags().forEach((tag) => {
+    const position = changelog.indexOf(tag);
+    assert.ok(position > previous, `changelog is missing or misordering ${tag}`);
+    previous = position;
+  });
+  assert.doesNotMatch(changelog, /shared\/(?:sync-store|hub-sync)\.js/);
+});
+
+test('所有应用页面引用的本地脚本和样式均存在', () => {
+  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
+    const entry = path.join(siteRoot, app, 'index.html');
+    const html = fs.readFileSync(entry, 'utf8');
+    const references = [
+      ...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi),
+      ...html.matchAll(/<link\b[^>]*\bhref=["']([^"']+)["']/gi)
+    ].map((match) => match[1]).filter((reference) => !/^(?:[a-z]+:|\/\/|data:|#)/i.test(reference));
+    references.forEach((reference) => {
+      const target = path.resolve(path.dirname(entry), reference.split(/[?#]/)[0]);
+      assert.equal(fs.existsSync(target), true, `${app} references missing asset ${reference}`);
+      assert.equal(fs.statSync(target).isFile(), true, `${app} asset is not a file: ${reference}`);
+    });
   });
 });
 
@@ -203,10 +227,10 @@ test('验证不可用但本机存有会话缓存时留在本地模式，无缓�
 });
 
 test('词汇学习先建立登录会话与云端同步，再恢复本地档案', () => {
-  const features = fs.readFileSync(path.join(siteRoot, 'words/js/features.js'), 'utf8');
-  const wordSync = fs.readFileSync(path.join(siteRoot, 'words/js/hub-sync.js'), 'utf8');
-  assert.ok(features.indexOf('WordTales.Auth.init()') < features.indexOf('WordTales.LearningProgress.init()'));
-  assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.CloudSync.connectProfile()'));
+  const features = fs.readFileSync(path.join(siteRoot, 'words/js/app.js'), 'utf8');
+  const wordSync = fs.readFileSync(path.join(siteRoot, 'words/js/portal-sync.js'), 'utf8');
+  assert.ok(features.indexOf('WordTales.PortalSync.init()') < features.indexOf('WordTales.LearningProgress.init()'));
+  assert.ok(features.indexOf('WordTales.LearningProgress.init()') < features.indexOf('WordTales.PortalSync.start()'));
   assert.match(wordSync, /HubAppSync\.start/);
   assert.doesNotMatch(wordSync, /location\.reload/);
 });

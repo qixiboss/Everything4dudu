@@ -242,8 +242,8 @@ WordTales.LearningProgress = (function() {
   function snapshot() {
     return JSON.parse(JSON.stringify(load()));
   }
-  function scheduleCloudSync() {
-    if (WordTales.CloudSync && WordTales.CloudSync.schedule) WordTales.CloudSync.schedule();
+  function schedulePortalSync() {
+    if (WordTales.PortalSync && WordTales.PortalSync.schedule) WordTales.PortalSync.schedule();
   }
   function load() {
     if (!data) data = loadFallback();
@@ -291,11 +291,11 @@ WordTales.LearningProgress = (function() {
   function saveSoon() {
     load().updatedAt = nowIso();
     mirrorLegacyStars();
-    if (persistenceMode !== 'indexedDB' || !database) { saveFallback(); scheduleCloudSync(); return; }
+    if (persistenceMode !== 'indexedDB' || !database) { saveFallback(); schedulePortalSync(); return; }
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function() {
       saveTimer = null;
-      writeProfileNow().then(scheduleCloudSync).catch(function() { persistenceMode = 'localStorage'; saveFallback(); scheduleCloudSync(); });
+      writeProfileNow().then(schedulePortalSync).catch(function() { persistenceMode = 'localStorage'; saveFallback(); schedulePortalSync(); });
     }, 180);
   }
   function saveProfileNow() {
@@ -304,20 +304,20 @@ WordTales.LearningProgress = (function() {
     if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
     if (!database || persistenceMode !== 'indexedDB') {
       var fallbackSaved = saveFallback();
-      if (fallbackSaved) scheduleCloudSync();
+      if (fallbackSaved) schedulePortalSync();
       return Promise.resolve(fallbackSaved);
     }
     try {
-      return writeProfileNow().then(function() { scheduleCloudSync(); return true; }).catch(function() {
+      return writeProfileNow().then(function() { schedulePortalSync(); return true; }).catch(function() {
         persistenceMode = 'localStorage';
         var saved = saveFallback();
-        if (saved) scheduleCloudSync();
+        if (saved) schedulePortalSync();
         return saved;
       });
     } catch (e) {
       persistenceMode = 'localStorage';
       var fallbackSaved = saveFallback();
-      if (fallbackSaved) scheduleCloudSync();
+      if (fallbackSaved) schedulePortalSync();
       return Promise.resolve(fallbackSaved);
     }
   }
@@ -326,7 +326,7 @@ WordTales.LearningProgress = (function() {
     mirrorLegacyStars();
     if (!database || persistenceMode !== 'indexedDB') {
       var fallbackSaved = saveFallback();
-      if (fallbackSaved) scheduleCloudSync();
+      if (fallbackSaved) schedulePortalSync();
       return Promise.resolve(fallbackSaved);
     }
     return new Promise(function(resolve, reject) {
@@ -334,7 +334,7 @@ WordTales.LearningProgress = (function() {
       try { tx = database.transaction(['profiles', 'events'], 'readwrite'); } catch (e) { reject(e); return; }
       tx.objectStore('profiles').put({ id: 'current', updatedAt: load().updatedAt, data: snapshot() });
       tx.objectStore('events').add(event);
-      tx.oncomplete = function() { scheduleCloudSync(); resolve(true); };
+      tx.oncomplete = function() { schedulePortalSync(); resolve(true); };
       tx.onerror = function() { reject(tx.error || new Error('Review commit failed')); };
       tx.onabort = function() { reject(tx.error || new Error('Review commit aborted')); };
     }).catch(function() {

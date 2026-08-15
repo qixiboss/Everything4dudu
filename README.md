@@ -14,7 +14,7 @@ supabase/   # 数据库迁移
 docs/       # 历史应用资料，仅供参考，不参与发布或 CI
 ```
 
-`site/` 内的 `/`、`/words/`、`/training/`、`/exam-schedule/`、`/CostTrace/` 和 `/changelog/` 都是直接可发布的静态页面。不要再生成、提交或编辑 `_site/`。
+`site/` 内的 `/`、`/words/`、`/training/`、`/exam-schedule/`、`/CostTrace/` 和 `/changelog/` 都是直接可发布的静态页面。功能应用加载认证与同步运行时；只读更新日志只加载认证与返回主页外壳。不要再生成、提交或编辑 `_site/`。
 
 ## 本地查看与验证
 
@@ -30,7 +30,7 @@ npm run check   # 词汇语料、资源和脚本完整性检查
 npm run verify  # test + check，CI 发布前的完整验证
 ```
 
-开发时直接修改 `site/` 中对应的页面、脚本或样式。共享认证、同步和返回主页逻辑位于 `site/shared/`；每个应用自己的同步适配器和运行脚本保留在该应用目录中。共享脚本顺序由 `scripts/site-contract.js` 约束。
+开发时直接修改 `site/` 中对应的页面、脚本或样式。共享认证、同步和返回主页逻辑位于 `site/shared/`；每个应用自己的同步适配器和运行脚本保留在该应用目录中。考研日程与训练将数据模型和 DOM 控制器分开，WordTales 的阅读、游戏、抄写与卡片功能也按职责维护。共享脚本顺序由 `scripts/site-contract.js` 约束。
 
 ## 部署
 
