@@ -104,3 +104,11 @@ test('考研页面只引用外部应用资源且不再加载未使用的 Floatin
   assert.doesNotMatch(html, /FloatingUIDOM|@floating-ui|data-tooltip/);
   assert.doesNotMatch(html, /<style>/);
 });
+
+test('考研页面复用模型时间线过滤并响应同步数据变更事件', () => {
+  const app = fs.readFileSync(path.join(root, 'site/exam-schedule/app.js'), 'utf8');
+  assert.match(app, /Model\.timelineDays\(days,selected,/);
+  assert.match(app, /addEventListener\('exam-schedule:data-change'/);
+  assert.match(app, /state=Model\.readState\(localStorage,console\);renderAll\(\);renderTimeline\(\)/);
+  assert.doesNotMatch(app, /days\.slice\(from,from\+7\)/);
+});

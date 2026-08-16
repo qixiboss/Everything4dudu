@@ -118,6 +118,25 @@ test('跳过剩余组：剩余组计数置 0、标记跳过，并进入下一动
   assert.equal(s.resting, false);
 });
 
+test('休息中跳过文案只统计未完成组，当前动作最后一组完成后不显示死按钮', (t) => {
+  const storage = createStorage();
+  const doc = createDocument();
+  const context = bootApp({ storage, doc });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+
+  click(doc, 'btn-start');
+  click(doc, 'btn-to-rest');
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('跳过剩余 3 组'));
+
+  for (let set = 1; set < 4; set += 1) {
+    click(doc, 'btn-rest-done');
+    click(doc, 'btn-to-rest');
+  }
+  assert.ok(rendered(doc, 'btn-rest-done'));
+  assert.ok(!rendered(doc, 'btn-skip-remaining'));
+});
+
 test('跳过最后一个剩余组：当日结束并清除会话', (t) => {
   // 只剩引体向上第 4 组未完成
   const plan = [
@@ -203,6 +222,32 @@ test('断点续连：重新打开后恢复为暂停的「继续」界面，不�
   assert.ok(log[DAY].plan[0].sets[0].sec > 64);
 });
 
+test('断点续连：休息中退出后恢复休息界面，秒数冻结且会话保留', (t) => {
+  const storage = createStorage();
+  const firstDoc = createDocument();
+  const firstContext = bootApp({ storage, doc: firstDoc, clockStart: 0 });
+  firstDoc.dispatchDOMContentLoaded();
+  click(firstDoc, 'btn-start');
+  firstContext.clock.advance(5000);
+  click(firstDoc, 'btn-to-rest');
+  firstContext.clock.advance(12000);
+  firstContext.dispatchWindow('pagehide');
+  firstContext.clearTimers();
+
+  const doc = createDocument();
+  const context = bootApp({ storage, doc, clockStart: 100000 });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+
+  assert.ok(rendered(doc, 'btn-rest-done'));
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('0:12'));
+  assert.equal(readSession(storage).resting, true);
+  assert.ok(readSession(storage).restAccum >= 12 && readSession(storage).restAccum < 13);
+  context.clock.advance(10000);
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('0:12'));
+  assert.notEqual(storage.getItem('train.session'), null);
+});
+
 test('断点续连：暂停中退出，恢复后保持暂停标记', (t) => {
   const plan = basePlan({ done0: 1 });
   const storage = createStorage({ 'train.log': JSON.stringify({ [DAY]: makeLog(plan) }) });
@@ -284,4 +329,87 @@ test('提前结束训练（finishDay）后会话被清除', (t) => {
   assert.equal(log[DAY].endedEarly, true);
   assert.equal(storage.getItem('train.session'), null);
   assert.ok(rendered(doc, 'btn-new-session')); // 完成卡
+});
+
+test('热力图与设置对话框在浏览器 API stub 下可完成 smoke 渲染', (t) => {
+  const doc = createDocument([
+    '<button id="tab-today" class="tab active" data-view="today"></button>',
+    '<button id="tab-heat" class="tab" data-view="heat"></button>',
+    '<button id="tab-history" class="tab" data-view="history"></button>'
+  ].join(''));
+  const context = bootApp({ storage: createStorage(), doc });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+
+  click(doc, 'tab-heat');
+  assert.equal(doc.getElementById('heat-grid').children.length, 35);
+
+  click(doc, 'btn-settings');
+  assert.equal(doc.getElementById('dlg-settings').open, true);
+  click(doc, 'set-cancel');
+  assert.equal(doc.getElementById('dlg-settings').open, false);
+});
+
+test('训练同步事件在闲置时重载计划，组计时进行中不打断', (t) => {
+  const storage = createStorage();
+  const doc = createDocument();
+  const context = bootApp({ storage, doc });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+
+  const syncedPlan = basePlan({ done0: 1 });
+  storage.setItem('train.log', JSON.stringify({ [DAY]: makeLog(syncedPlan) }));
+  context.dispatchEvent(new context.CustomEvent('training:data-change'));
+  click(doc, 'btn-start');
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('第 2 / 4 组'));
+  assert.ok(rendered(doc, 'btn-to-rest'));
+
+  const replacementPlan = basePlan({ done0: 4 });
+  const remoteDay = '2026-01-02';
+  storage.setItem('train.log', JSON.stringify({
+    [DAY]: makeLog(replacementPlan),
+    [remoteDay]: { date: remoteDay, plan: basePlan({ done0: 2 }), cardio: 'run', completedAt: null }
+  }));
+  context.dispatchEvent(new context.CustomEvent('training:data-change'));
+  assert.ok(rendered(doc, 'btn-to-rest'));
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('第 2 / 4 组'));
+  context.dispatchWindow('pagehide');
+  assert.ok(readLog(storage)[remoteDay], '计时保存不应覆盖远端新增的历史日期');
+});
+
+test('训练进行中遇到同步重置时继续显示，但不把旧账号日志写回', (t) => {
+  const storage = createStorage();
+  const doc = createDocument();
+  const context = bootApp({ storage, doc });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+  click(doc, 'btn-start');
+
+  storage.removeItem('train.log');
+  storage.removeItem('train.session');
+  context.dispatchEvent(new context.CustomEvent('training:data-change', { detail: { reset: true } }));
+  assert.ok(rendered(doc, 'btn-to-rest'));
+  context.clock.advance(5000);
+  context.dispatchWindow('pagehide');
+  assert.equal(storage.getItem('train.log'), null);
+  assert.equal(storage.getItem('train.session'), null);
+});
+
+test('非今日视图收到同步事件后，切回今日显示新计划', (t) => {
+  const storage = createStorage();
+  const doc = createDocument([
+    '<button id="tab-today" class="tab active" data-view="today"></button>',
+    '<button id="tab-heat" class="tab" data-view="heat"></button>',
+    '<button id="tab-history" class="tab" data-view="history"></button>'
+  ].join(''));
+  const context = bootApp({ storage, doc });
+  t.after(() => context.clearTimers());
+  doc.dispatchDOMContentLoaded();
+  click(doc, 'tab-heat');
+
+  storage.setItem('train.log', JSON.stringify({ [DAY]: makeLog(basePlan({ done0: 1 })) }));
+  context.dispatchEvent(new context.CustomEvent('training:data-change'));
+  click(doc, 'tab-today');
+  click(doc, 'btn-start');
+  assert.ok(doc.getElementById('today-body').innerHTML.includes('第 2 / 4 组'));
 });

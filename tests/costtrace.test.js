@@ -119,10 +119,11 @@ test('XLSX 导出包含工作表、类型化日期金额、冻结首行与自动
 
 test('CostTrace 同步适配器使用 transaction 键并处理远端墓碑', () => {
   const source = fs.readFileSync(path.join(siteRoot, 'CostTrace/sync.js'), 'utf8');
-  assert.match(source, /item_key: 'transaction:' \+ record\.id/);
+  assert.equal(Model.STORAGE_KEY, 'costtrace.transactions.v1');
+  assert.match(source, /var STORAGE_KEY = Model\.STORAGE_KEY/);
+  assert.match(source, /item_key: ITEM_PREFIX \+ record\.id/);
   assert.match(source, /if \(row\.deleted_at\) delete map\[id\]/);
   assert.match(source, /app: 'cost-trace'/);
-  assert.match(source, /costtrace\.transactions\.v1/);
 });
 
 test('CostTrace 远端合并落盘失败时抛错并保留原账本', async () => {

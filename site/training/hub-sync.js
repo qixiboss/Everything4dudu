@@ -4,31 +4,43 @@
  * preferences and never leave the browser. */
 (function () {
   'use strict';
-  var LOG_KEY = 'train.log';
+  var DAY_PREFIX = 'day:';
+  var LOG_KEY = null;
 
-  function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; } }
+  function readLog() {
+    try {
+      var value = JSON.parse(localStorage.getItem(LOG_KEY));
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    } catch (_) { return {}; }
+  }
+  function notifyChange(reset) {
+    window.dispatchEvent(new CustomEvent('training:data-change', { detail: { reset: reset === true } }));
+  }
   function items() {
-    var log = read(LOG_KEY, {});
-    return Object.keys(log).map(function (day) { return { item_key: 'day:' + day, payload: log[day] }; });
+    var log = readLog();
+    return Object.keys(log).map(function (day) { return { item_key: DAY_PREFIX + day, payload: log[day] }; });
   }
   function resetLocal() {
     localStorage.removeItem(LOG_KEY);
-    if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    localStorage.removeItem(window.TrainingModel.KEYS.session);
+    notifyChange(true);
   }
   function applyRemote(rows) {
-    var log = read(LOG_KEY, {}), changed = false;
+    var log = readLog(), changed = false;
     rows.forEach(function (row) {
-      if (row.item_key.indexOf('day:') === 0) {
-        var day = row.item_key.slice(4);
+      if (row.item_key.indexOf(DAY_PREFIX) === 0) {
+        var day = row.item_key.slice(DAY_PREFIX.length);
         if (row.deleted_at && Object.prototype.hasOwnProperty.call(log, day)) { delete log[day]; changed = true; }
         else if (!row.deleted_at && JSON.stringify(log[day]) !== JSON.stringify(row.payload)) { log[day] = row.payload; changed = true; }
       }
     });
     if (!changed) return;
     localStorage.setItem(LOG_KEY, JSON.stringify(log));
-    if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 50);
+    notifyChange(false);
   }
   function start() {
+    if (!window.HubAppSync || !window.TrainingModel) return;
+    LOG_KEY = window.TrainingModel.KEYS.log;
     window.HubAppSync.start({
       app: 'training',
       items: items,
@@ -36,6 +48,6 @@
       resetLocal: resetLocal
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
+  if (document.readyState === 'complete') start();
+  else document.addEventListener('DOMContentLoaded', start);
 })();

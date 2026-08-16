@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   var Model = window.CostTraceModel;
-  var STORAGE_KEY = 'costtrace.transactions.v1';
+  var STORAGE_KEY = Model.STORAGE_KEY;
   var PAGE_SIZE = 20;
   var CATEGORY_COLORS = ['#6c78d4', '#ec7d88', '#48b59e', '#d99d55', '#8a67bd', '#8491a8'];
   var records = [];

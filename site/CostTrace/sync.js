@@ -1,17 +1,19 @@
 /* CostTrace sync adapter: one local transaction maps to transaction:<id>. */
 (function () {
   'use strict';
-  var STORAGE_KEY = 'costtrace.transactions.v1';
+  var Model = window.CostTraceModel;
+  var STORAGE_KEY = Model.STORAGE_KEY;
+  var ITEM_PREFIX = 'transaction:';
 
   function readRecords() {
-    return window.CostTraceModel.parseStoredRecords(localStorage.getItem(STORAGE_KEY));
+    return Model.parseStoredRecords(localStorage.getItem(STORAGE_KEY));
   }
   function writeRecords(records) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(window.CostTraceModel.sortRecords(records)));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Model.sortRecords(records)));
     window.dispatchEvent(new CustomEvent('costtrace:data-change'));
   }
   function items() {
-    return readRecords().map(function (record) { return { item_key: 'transaction:' + record.id, payload: record }; });
+    return readRecords().map(function (record) { return { item_key: ITEM_PREFIX + record.id, payload: record }; });
   }
   function withStorageLock(callback) {
     if (window.navigator && window.navigator.locks && typeof window.navigator.locks.request === 'function') {
@@ -24,11 +26,11 @@
       var map = {};
       readRecords().forEach(function (record) { map[record.id] = record; });
       rows.forEach(function (row) {
-        if (row.item_key.indexOf('transaction:') !== 0) return;
-        var id = row.item_key.slice('transaction:'.length);
+        if (row.item_key.indexOf(ITEM_PREFIX) !== 0) return;
+        var id = row.item_key.slice(ITEM_PREFIX.length);
         if (row.deleted_at) delete map[id];
         else {
-          var record = window.CostTraceModel.normalizeRecord(Object.assign({}, row.payload, { id: id }));
+          var record = Model.normalizeRecord(Object.assign({}, row.payload, { id: id }));
           if (record) map[id] = record;
         }
       });
@@ -42,7 +44,7 @@
     });
   }
   function start() {
-    if (!window.HubAppSync || !window.CostTraceModel) return;
+    if (!window.HubAppSync || !Model) return;
     try {
       window.HubAppSync.start({ app: 'cost-trace', items: items, applyRemote: applyRemote, resetLocal: resetLocal });
     } catch (error) {

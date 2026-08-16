@@ -6,6 +6,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
+  var STORAGE_KEY = 'costtrace.transactions.v1';
   var TYPES = ['expense', 'income'];
   var EXPENSE_CATEGORIES = ['衣', '食', '住', '行', '玩', '其他'];
   var INCOME_CATEGORIES = ['工资', '奖金', '一次性收入', '其他'];
@@ -140,6 +141,7 @@
   }
 
   return {
+    STORAGE_KEY: STORAGE_KEY,
     TYPES: TYPES.slice(),
     EXPENSE_CATEGORIES: EXPENSE_CATEGORIES.slice(),
     INCOME_CATEGORIES: INCOME_CATEGORIES.slice(),

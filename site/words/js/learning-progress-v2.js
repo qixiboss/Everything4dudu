@@ -35,8 +35,7 @@ WordTales.LearningProgress = (function() {
       articles: {},
       analyses: {},
       days: {},
-      columnCompletions: {},
-      reminders: { lastShown: '', notifications: false }
+      columnCompletions: {}
     };
   }
   function createRecord(entryId, at) {
@@ -148,7 +147,6 @@ WordTales.LearningProgress = (function() {
     store.analyses = candidate.analyses || {};
     store.days = normalizeDays(candidate.days);
     store.columnCompletions = normalizeColumnCompletions(candidate.columnCompletions);
-    store.reminders = candidate.reminders || store.reminders;
     store.starMigrationV2 = !!candidate.starMigrationV2;
     Object.keys(candidate.words || {}).forEach(function(oldId) {
       var entryId = WordTales.Data.resolveEntryId(oldId);
@@ -450,7 +448,6 @@ WordTales.LearningProgress = (function() {
     getData: function() { return load(); },
     getDayKey: dayKey,
     isReady: function() { return ready; },
-    getPersistenceMode: function() { return persistenceMode; },
     replaceData: replaceData
   };
   return api;

@@ -71,6 +71,10 @@ class ElementStub {
     this.type = '';
     this.value = '';
     this.checked = false;
+    this.hidden = false;
+    this.open = false;
+    this.offsetWidth = 0;
+    this.offsetHeight = 0;
     this._innerHTML = '';
   }
 
@@ -129,6 +133,23 @@ class ElementStub {
     (this.listeners[type] ||= []).push(listener);
   }
 
+  dispatchEvent(event) {
+    (this.listeners[event.type] || []).slice().forEach((listener) => listener.call(this, event));
+    return true;
+  }
+
+  getBoundingClientRect() {
+    return { top: 0, right: 0, bottom: 0, left: 0, width: 0, height: 0 };
+  }
+
+  showModal() {
+    this.open = true;
+  }
+
+  close() {
+    this.open = false;
+  }
+
   /* 支持应用实际用到的选择器：.class、#id、:not(:disabled)。
      html 片段中的 class="…" 出现次数即为匹配元素个数。 */
   querySelectorAll(selector) {
@@ -142,18 +163,17 @@ class ElementStub {
     }
     if (!classes.length) return [];
     const html = this._innerHTML;
-    const re = /class="([^"]*)"/g;
+    const re = /<([a-z][\w-]*)\b([^>]*)>/gi;
     const out = [];
     let m;
     while ((m = re.exec(html))) {
-      const clsSet = m[1].split(/\s+/);
+      const classMatch = m[2].match(/\bclass="([^"]*)"/);
+      const clsSet = classMatch ? classMatch[1].split(/\s+/) : [];
       if (!classes.every((c) => clsSet.includes(c))) continue;
-      if (excludeDisabled) {
-        const before = html.slice(0, m.index);
-        const openTag = before.slice(before.lastIndexOf('<'));
-        if (/\sdisabled(\s|>|=)/.test(openTag)) continue;
-      }
-      out.push(new ElementStub('div', this.doc));
+      if (excludeDisabled && /\sdisabled(?:\s|=|$)/.test(m[2])) continue;
+      const element = new ElementStub(m[1], this.doc);
+      applyAttributes(element, m[2]);
+      out.push(element);
     }
     return out;
   }
@@ -163,29 +183,61 @@ class ElementStub {
   }
 }
 
-function createDocument() {
+function applyAttributes(element, source) {
+  const re = /([:\w-]+)(?:="([^"]*)")?/g;
+  let match;
+  while ((match = re.exec(source))) {
+    const name = match[1];
+    const value = match[2] === undefined ? '' : match[2];
+    if (name === 'class') element.className = value;
+    else if (name === 'disabled') element.disabled = true;
+    else if (name.startsWith('data-')) {
+      const key = name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      element.dataset[key] = value;
+    } else {
+      element.attributes[name] = value;
+      if (name === 'id') element.id = value;
+      if (name === 'value') element.value = value;
+    }
+  }
+}
+
+function createDocument(initialHtml = '') {
   const byId = new Map();
+  const elements = [];
   const domReady = [];
+  const listeners = {};
   const doc = {
     activeElement: null,
     body: new ElementStub('body', null),
-    _registerId(id) {
-      if (!byId.has(id)) byId.set(id, new ElementStub('div', doc));
+    _registerId(id, element) {
+      if (!byId.has(id)) byId.set(id, element || new ElementStub('div', doc));
+      return byId.get(id);
     },
     _indexHtml(html) {
-      const re = /id="([^"]+)"/g;
+      const re = /<([a-z][\w-]*)\b([^>]*)>/gi;
       let m;
-      while ((m = re.exec(html))) this._registerId(m[1]);
+      while ((m = re.exec(html))) {
+        const idMatch = m[2].match(/\bid="([^"]+)"/);
+        let element = idMatch && byId.get(idMatch[1]);
+        if (!element) {
+          element = new ElementStub(m[1], doc);
+          elements.push(element);
+        }
+        applyAttributes(element, m[2]);
+        if (idMatch) this._registerId(idMatch[1], element);
+      }
     },
     getElementById(id) {
       if (!byId.has(id)) byId.set(id, new ElementStub('div', doc));
       return byId.get(id);
     },
-    querySelectorAll() {
-      return [];
+    querySelectorAll(selector) {
+      const match = String(selector).match(/^\.([\w-]+)$/);
+      return match ? elements.filter((element) => element.classList.contains(match[1])) : [];
     },
-    querySelector() {
-      return null;
+    querySelector(selector) {
+      return this.querySelectorAll(selector)[0] || null;
     },
     createElement(tagName) {
       return new ElementStub(tagName, doc);
@@ -197,12 +249,18 @@ function createDocument() {
     },
     addEventListener(type, listener) {
       if (type === 'DOMContentLoaded') domReady.push(listener);
+      else (listeners[type] ||= []).push(listener);
+    },
+    dispatchEvent(event) {
+      (listeners[event.type] || []).slice().forEach((listener) => listener.call(doc, event));
+      return true;
     },
     dispatchDOMContentLoaded() {
       domReady.slice().forEach((fn) => fn());
     }
   };
   doc.body.doc = doc;
+  if (initialHtml) doc._indexHtml(String(initialHtml));
   return doc;
 }
 
@@ -235,6 +293,10 @@ function createBrowserContext(options = {}) {
     Date: FakeDate,
     Intl,
     Promise,
+    CustomEvent: function CustomEvent(type, init) {
+      this.type = type;
+      this.detail = init && init.detail;
+    },
     setTimeout(fn, ms) {
       const id = setTimeout(fn, ms);
       timers.timeouts.add(id);
@@ -258,12 +320,19 @@ function createBrowserContext(options = {}) {
 
   context.window = context;
   context.self = context;
+  context.innerWidth = 1024;
+  context.innerHeight = 768;
+  context.matchMedia = () => ({ matches: false });
   const winListeners = {};
   context.addEventListener = (type, fn) => {
     (winListeners[type] ||= []).push(fn);
   };
   context.dispatchWindow = (type) => {
     (winListeners[type] || []).slice().forEach((fn) => fn());
+  };
+  context.dispatchEvent = (event) => {
+    (winListeners[event.type] || []).slice().forEach((fn) => fn(event));
+    return true;
   };
   context.clearTimers = () => {
     timers.intervals.forEach((id) => clearInterval(id));

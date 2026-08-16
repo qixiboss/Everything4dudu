@@ -82,6 +82,26 @@ test('TrainingModel 验证断点会话并回退到下一个未完成组', () => 
   assert.equal(subject.restoreSession({ date: '2026-08-15' }, {}, '2026-08-15').shouldClear, true);
 });
 
+test('TrainingModel 恢复休息状态时前进到下一未完成组并校验休息秒数', () => {
+  const subject = model();
+  const plan = subject.buildPlan(subject.defaultSettings(), 'run');
+  plan[0].sets[0].done = true;
+  const log = { '2026-08-15': planEntry(plan) };
+  const restored = subject.restoreSession({
+    date: '2026-08-15', exIdx: 0, setIdx: 0, resting: true, restAccum: 42.5
+  }, log, '2026-08-15');
+
+  assert.equal(restored.value.exIdx, 0);
+  assert.equal(restored.value.setIdx, 1);
+  assert.equal(restored.value.resting, true);
+  assert.equal(restored.value.restAccum, 42.5);
+
+  const invalid = subject.restoreSession({
+    date: '2026-08-15', exIdx: 0, setIdx: 0, resting: true, restAccum: -1
+  }, log, '2026-08-15');
+  assert.equal(invalid.value.restAccum, 0);
+});
+
 test('TrainingModel 汇总总时长、近七天、训练日和有氧次数', () => {
   const subject = model();
   const recentPlan = subject.buildPlan(subject.defaultSettings(), 'run');

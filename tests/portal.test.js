@@ -235,6 +235,62 @@ test('词汇学习先建立登录会话与云端同步，再恢复本地档案',
   assert.doesNotMatch(wordSync, /location\.reload/);
 });
 
+test('训练与考研同步适配器复用模型存储键并用数据事件替代整页刷新', () => {
+  function loadAdapter(modelPath, adapterPath, initialStorage) {
+    let adapter;
+    let reloads = 0;
+    const events = [];
+    const domReady = [];
+    const context = vm.createContext({
+      console,
+      localStorage: storage(initialStorage),
+      document: {
+        readyState: 'interactive',
+        addEventListener(type, listener) { if (type === 'DOMContentLoaded') domReady.push(listener); }
+      },
+      location: { reload() { reloads += 1; } },
+      CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; },
+      dispatchEvent(event) { events.push(event.type); },
+      HubAppSync: { start(value) { adapter = value; return true; } }
+    });
+    context.window = context;
+    /* 按页面真实顺序：适配器先执行，model 后执行，最后才触发 DOMContentLoaded。 */
+    vm.runInContext(fs.readFileSync(path.join(siteRoot, adapterPath), 'utf8'), context);
+    vm.runInContext(fs.readFileSync(path.join(siteRoot, modelPath), 'utf8'), context);
+    domReady.forEach((listener) => listener());
+    return { adapter, context, events, reloads: () => reloads };
+  }
+
+  const training = loadAdapter('training/model.js', 'training/hub-sync.js', {
+    'train.log': JSON.stringify({ '2026-08-15': { date: '2026-08-15' } }),
+    'train.session': JSON.stringify({ date: '2026-08-15' })
+  });
+  assert.equal(training.adapter.items()[0].item_key, 'day:2026-08-15');
+  training.adapter.applyRemote([{ item_key: 'day:2026-08-16', payload: { date: '2026-08-16' }, deleted_at: null }]);
+  assert.equal(training.events.at(-1), 'training:data-change');
+  training.adapter.resetLocal();
+  assert.equal(training.events.at(-1), 'training:data-change');
+  assert.equal(training.context.localStorage.getItem('train.session'), null);
+  assert.equal(training.reloads(), 0);
+
+  const exam = loadAdapter('exam-schedule/model.js', 'exam-schedule/hub-sync.js', {
+    'kaoyan-first-round-state-v4': JSON.stringify({ completed: { old: 10 }, rested: { 4: true } })
+  });
+  assert.equal(exam.adapter.items()[0].item_key, 'task:old');
+  exam.adapter.applyRemote([{ item_key: 'task:new', payload: { completedAt: 20 }, deleted_at: null }]);
+  assert.equal(exam.events.at(-1), 'exam-schedule:data-change');
+  assert.equal(JSON.parse(exam.context.localStorage.getItem(exam.context.ExamScheduleModel.STORAGE_KEY)).rested[4], true);
+  exam.adapter.resetLocal();
+  assert.equal(exam.events.at(-1), 'exam-schedule:data-change');
+  assert.equal(exam.reloads(), 0);
+
+  const trainingSource = fs.readFileSync(path.join(siteRoot, 'training/hub-sync.js'), 'utf8');
+  const examSource = fs.readFileSync(path.join(siteRoot, 'exam-schedule/hub-sync.js'), 'utf8');
+  assert.match(trainingSource, /window\.TrainingModel\.KEYS\.log/);
+  assert.match(examSource, /STORAGE_KEY = Model\.STORAGE_KEY/);
+  assert.doesNotMatch(trainingSource + examSource, /location\.reload/);
+});
+
 test('应用页只注入低调的返回主页入口，不渲染门户导航栏', () => {
   const shell = fs.readFileSync(path.join(siteRoot, 'shared/hub-shell.js'), 'utf8');
   assert.match(shell, /class="hub-home-link"/);

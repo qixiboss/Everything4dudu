@@ -20,6 +20,8 @@
   /* ---------- 存储 ---------- */
   var settings = Model.defaultSettings();
   var log = {};
+  var persistenceSuspended = false;
+  var syncReloadPending = false;
 
   function load() {
     var stored = Model.load(localStorage);
@@ -30,12 +32,14 @@
     Model.writeSettings(localStorage, settings);
   }
   function saveLog() {
+    if (persistenceSuspended) return;
     Model.writeLog(localStorage, log);
   }
 
   /* ---------- 会话（断点续连） ---------- */
   /* 进行中/休息中计时先冻结进累计值，并同步把进行中组的秒数写回计划 */
   function saveSession() {
+    if (persistenceSuspended) { clearSession(); return; }
     if (S.finished) { clearSession(); return; }
     var a = S.plan && S.exIdx >= 0 ? S.plan[S.exIdx] : null;
     var setSec = S.setAccum;
@@ -144,9 +148,9 @@
     S.setElapsed = S.setAccum;
     S.running = false;
     S.setStart = null;
-    S.resting = false;
-    S.restAccum = 0;
-    S.restElapsed = 0;
+    S.resting = restored.value.resting;
+    S.restAccum = restored.value.restAccum;
+    S.restElapsed = S.restAccum;
     S.restStart = null;
     S.paused = restored.value.paused;
     S.cardioMin = restored.value.cardioMin;
@@ -316,8 +320,12 @@
     var isIdle = !S.running && !S.resting;
     var timerLabel = S.resting ? '组间休息' : ('第 ' + (S.setIdx + 1) + ' / ' + a.sets.length + ' 组');
     var timerSec = S.resting ? S.restElapsed : S.setElapsed;
-    var skipBtn = '<button class="btn ghost skip" id="btn-skip-remaining">' +
-      '跳过剩余 ' + (a.sets.length - S.setIdx) + ' 组</button>';
+    // 剩余组数按未完成口径统计：休息中当前组已 done，不能计入（与 skipRemainingSets 一致）
+    var remainingSets = 0;
+    for (var rj = S.setIdx; rj < a.sets.length; rj++) if (!a.sets[rj].done) remainingSets++;
+    var skipBtn = remainingSets > 0
+      ? '<button class="btn ghost skip" id="btn-skip-remaining">跳过剩余 ' + remainingSets + ' 组</button>'
+      : '';
 
     var actionHtml;
     if (S.resting) {
@@ -699,6 +707,10 @@
     if (tickInterval) return;
     var lastSessionSave = 0;
     tickInterval = setInterval(function () {
+      if (syncReloadPending && !S.running && !S.resting) {
+        applySyncedDataChange();
+        return;
+      }
       if (S.finished || S.paused) return;
       if (S.running && S.setStart != null) {
         S.setElapsed = S.setAccum + (Date.now() - S.setStart) / 1000;
@@ -977,14 +989,24 @@
   }
 
   /* ---------- 全局事件 ---------- */
+  var currentView = 'today';
+
+  function renderCurrentView() {
+    if (currentView === 'heat') renderHeat();
+    else if (currentView === 'history') renderHistory();
+    else renderToday();
+  }
+
   function wireGlobal() {
     document.querySelectorAll('.tab').forEach(function (b) {
       b.addEventListener('click', function () {
         var v = b.dataset.view;
+        currentView = v;
         document.querySelectorAll('.tab').forEach(function (x) { x.classList.toggle('active', x === b); });
         ['today', 'heat', 'history'].forEach(function (id) {
           $('view-' + id).hidden = id !== v;
         });
+        if (v === 'today') renderToday();
         if (v === 'heat') renderHeat();
         if (v === 'history') renderHistory();
       });
@@ -1013,6 +1035,35 @@
     // 退出页面/切后台时把进行中的计时与位置冻结保存，回来可继续
     window.addEventListener('pagehide', saveSession);
     window.addEventListener('beforeunload', saveSession);
+    window.addEventListener('training:data-change', function (event) {
+      if (S.running || S.resting) {
+        if (event.detail && event.detail.reset) {
+          persistenceSuspended = true;
+          syncReloadPending = true;
+          clearSession();
+          return;
+        }
+        if (persistenceSuspended) return;
+        var activeEntry = S.date ? log[S.date] : null;
+        var stored = Model.load(localStorage);
+        settings = stored.settings;
+        log = stored.log;
+        if (activeEntry) log[S.date] = activeEntry;
+        return;
+      }
+      applySyncedDataChange();
+    });
+  }
+
+  function applySyncedDataChange() {
+    persistenceSuspended = false;
+    syncReloadPending = false;
+    load();
+    initToday();
+    renderToday();
+    if (!S.finished && allDone()) finishDay();
+    if (currentView !== 'today') renderCurrentView();
+    if (S.paused && !S.finished) syncPauseUI(true);
   }
 
   /* ---------- 启动 ---------- */

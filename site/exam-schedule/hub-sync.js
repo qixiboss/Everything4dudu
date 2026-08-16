@@ -3,31 +3,39 @@
  * annotate the UI and have no scheduling effect). */
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kaoyan-first-round-state-v4';
+  var ITEM_PREFIX = 'task:';
+  var Model = null;
+  var STORAGE_KEY = null;
 
-  function state() { try { var value = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; return { completed: value.completed || {}, rested: value.rested || {} }; } catch (_) { return { completed: {}, rested: {} }; } }
+  function state() { return Model.readState(localStorage, console); }
+  function notifyChange() {
+    window.dispatchEvent(new CustomEvent('exam-schedule:data-change'));
+  }
   function items() {
     var value = state();
-    return Object.keys(value.completed).map(function (id) { return { item_key: 'task:' + id, payload: { completedAt: Number(value.completed[id]) || Date.now() } }; });
+    return Object.keys(value.completed).map(function (id) { return { item_key: ITEM_PREFIX + id, payload: { completedAt: Number(value.completed[id]) || Date.now() } }; });
   }
   function resetLocal() {
     localStorage.removeItem(STORAGE_KEY);
-    if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 0);
+    notifyChange();
   }
   function applyRemote(rows) {
     var value = state(), changed = false;
     rows.forEach(function (row) {
-      if (row.item_key.indexOf('task:') === 0) {
-        var id = row.item_key.slice(5), at = Number(row.payload && row.payload.completedAt) || Date.now();
+      if (row.item_key.indexOf(ITEM_PREFIX) === 0) {
+        var id = row.item_key.slice(ITEM_PREFIX.length), at = Number(row.payload && row.payload.completedAt) || Date.now();
         if (row.deleted_at && Object.prototype.hasOwnProperty.call(value.completed, id)) { delete value.completed[id]; changed = true; }
         else if (!row.deleted_at && value.completed[id] !== at) { value.completed[id] = at; changed = true; }
       }
     });
     if (!changed) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-    if (window.location && typeof window.location.reload === 'function') window.setTimeout(function () { window.location.reload(); }, 50);
+    notifyChange();
   }
   function start() {
+    if (!window.HubAppSync || !window.ExamScheduleModel) return;
+    Model = window.ExamScheduleModel;
+    STORAGE_KEY = Model.STORAGE_KEY;
     window.HubAppSync.start({
       app: 'exam-schedule',
       items: items,
@@ -35,6 +43,6 @@
       resetLocal: resetLocal
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
+  if (document.readyState === 'complete') start();
+  else document.addEventListener('DOMContentLoaded', start);
 })();

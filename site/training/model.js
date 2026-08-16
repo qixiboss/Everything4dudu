@@ -159,7 +159,12 @@
     var plan = entry.plan;
     var position = null;
     var setAccum = 0;
-    if (raw.exIdx >= 0 && raw.exIdx < plan.length) {
+    var resting = raw.resting === true;
+    if (resting) {
+      position = findNextUndone(plan);
+      if (!position) return { value: null, shouldClear: false };
+      setAccum = plan[position[0]].sets[position[1]].sec;
+    } else if (raw.exIdx >= 0 && raw.exIdx < plan.length) {
       var activity = plan[raw.exIdx];
       if (activity && !activity.cardio && raw.setIdx >= 0 && raw.setIdx < activity.sets.length && !activity.sets[raw.setIdx].done) {
         position = [raw.exIdx, raw.setIdx];
@@ -179,6 +184,8 @@
         exIdx: position[0],
         setIdx: position[1],
         setAccum: setAccum,
+        resting: resting,
+        restAccum: typeof raw.restAccum === 'number' && isFinite(raw.restAccum) && raw.restAccum >= 0 ? raw.restAccum : 0,
         paused: raw.paused === true,
         cardioMin: typeof raw.cardioMin === 'number' && raw.cardioMin >= 1 ? raw.cardioMin : 30
       }

@@ -7,6 +7,8 @@ WordTales.PortalSync = (function () {
   var started = false;
   var status = 'local';
   var authMount = null;
+  var WORD_PREFIX = 'word:';
+  var COLUMN_PREFIX = 'column:';
 
   function session() {
     return window.HubAuth && window.HubAuth.getSession ? window.HubAuth.getSession() : null;
@@ -54,13 +56,13 @@ WordTales.PortalSync = (function () {
     var items = [];
     Object.keys(profile.words || {}).forEach(function (id) {
       if (profile.words[id] && profile.words[id].isStarred) {
-        items.push({ item_key: 'word:' + id, payload: profile.words[id] });
+        items.push({ item_key: WORD_PREFIX + id, payload: profile.words[id] });
       }
     });
     Object.keys(profile.columnCompletions || {}).forEach(function (date) {
       Object.keys(profile.columnCompletions[date] || {}).forEach(function (column) {
         if (profile.columnCompletions[date][column] === true) {
-          items.push({ item_key: 'column:' + date + ':' + column, payload: { completed: true } });
+          items.push({ item_key: COLUMN_PREFIX + date + ':' + column, payload: { completed: true } });
         }
       });
     });
@@ -73,14 +75,14 @@ WordTales.PortalSync = (function () {
     rows.forEach(function (row) {
       var key = row.item_key;
       var value = row.payload || {};
-      if (key.indexOf('word:') === 0) {
-        var id = key.slice(5);
+      if (key.indexOf(WORD_PREFIX) === 0) {
+        var id = key.slice(WORD_PREFIX.length);
         if (row.deleted_at) delete profile.words[id];
         else profile.words[id] = value;
-      } else if (key.indexOf('column:') === 0) {
-        var parts = key.split(':');
-        var date = parts[1];
-        var column = parts.slice(2).join(':');
+      } else if (key.indexOf(COLUMN_PREFIX) === 0) {
+        var parts = key.slice(COLUMN_PREFIX.length).split(':');
+        var date = parts[0];
+        var column = parts.slice(1).join(':');
         if (!profile.columnCompletions[date]) profile.columnCompletions[date] = {};
         if (row.deleted_at) delete profile.columnCompletions[date][column];
         else profile.columnCompletions[date][column] = true;
