@@ -26,6 +26,7 @@ WordTales.Renderer = (function() {
     var words = column.words.map(function(word) {
       return '<div class="vocab-card" data-vocab-id="' + escapeHtml(word.id) + '">' +
         '<span class="vw">' + escapeHtml(word.word) + '</span>' +
+        (word.phonetic ? '<span class="vf">' + escapeHtml(word.phonetic) + '</span>' : '') +
         '<span class="vp">' + escapeHtml(word.pos) + '</span>' +
         '<span class="vm">' + escapeHtml(word.meaning) + '</span>' +
         '<button type="button" class="vocab-card-star" aria-pressed="false" aria-label="标记为不太认识" title="标记为不太认识">★</button>' +

@@ -163,6 +163,7 @@ function initFlipCards(root) {
 (root || document).querySelectorAll('.vocab-card').forEach(function(card){
 if (card.querySelector('.card-inner')) return;
 var vw = card.querySelector('.vw');
+var vf = card.querySelector('.vf');
 var vp = card.querySelector('.vp');
 var vm = card.querySelector('.vm');
 var star = card.querySelector('.vocab-card-star');
@@ -175,6 +176,7 @@ front.appendChild(vw.cloneNode(true));
 var back = document.createElement('div');
 back.className = 'card-face card-back';
 back.appendChild(vw.cloneNode(true));
+if (vf) back.appendChild(vf.cloneNode(true));
 if (vp) back.appendChild(vp.cloneNode(true));
 if (vm) {
 var line = document.createElement('div');

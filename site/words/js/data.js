@@ -30,222 +30,259 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s1col1-proximity",
+            "phonetic": "/pɹɑkˈsɪ.mɪ.ti/",
             "word": "proximity",
             "pos": "n.",
             "meaning": "接近；邻近"
           },
           {
             "id": "s1col1-barren",
+            "phonetic": "/ˈbæɹən/",
             "word": "barren",
             "pos": "adj.",
             "meaning": "贫瘠的；荒芜的"
           },
           {
             "id": "s1col1-radiate",
+            "phonetic": "/ˈɹeɪdi.ət/",
             "word": "radiate",
             "pos": "v.",
             "meaning": "辐射；散发"
           },
           {
             "id": "s1col1-craftsmanship",
+            "phonetic": "/ˈkræftsmənʃɪp/",
             "word": "craftsmanship",
             "pos": "n.",
             "meaning": "手艺；工艺"
           },
           {
             "id": "s1col1-testify",
+            "phonetic": "/ˈtɛstɪfaɪ/",
             "word": "testify",
             "pos": "v.",
             "meaning": "作证；证明"
           },
           {
             "id": "s1col1-sentiment",
+            "phonetic": "/ˈsɛn.tɪ.mənt/",
             "word": "sentiment",
             "pos": "n.",
             "meaning": "情绪；意见"
           },
           {
             "id": "s1col1-intimidate",
+            "phonetic": "/ɪnˈtɪmɪdeɪt/",
             "word": "intimidate",
             "pos": "v.",
             "meaning": "恐吓；威慑"
           },
           {
             "id": "s1col1-supposedly",
+            "phonetic": "/səˈpoʊzɪdli/",
             "word": "supposedly",
             "pos": "adv.",
             "meaning": "据称；据说"
           },
           {
             "id": "s1col1-managerial",
+            "phonetic": "/ˌmænəˈdʒɪriəl/",
             "word": "managerial",
             "pos": "adj.",
             "meaning": "管理的；经理的"
           },
           {
             "id": "s1col1-retailer",
+            "phonetic": "/ˈriːteɪlər/",
             "word": "retailer",
             "pos": "n.",
             "meaning": "零售商"
           },
           {
             "id": "s1col1-elite",
+            "phonetic": "/eɪˈliːt/",
             "word": "elite",
             "pos": "n.",
             "meaning": "精英；精英阶层"
           },
           {
             "id": "s1col1-deficit",
+            "phonetic": "/ˈdɛfɪsɪt/",
             "word": "deficit",
             "pos": "n.",
             "meaning": "赤字；逆差"
           },
           {
             "id": "s1col1-supplement",
+            "phonetic": "/ˈsʌpləmənt/",
             "word": "supplement",
             "pos": "n./v.",
             "meaning": "补充物；增补"
           },
           {
             "id": "s1col1-graphic",
+            "phonetic": "/ˈɡɹæfɪk/",
             "word": "graphic",
             "pos": "adj.",
             "meaning": "图形的；生动的"
           },
           {
             "id": "s1col1-bilingual",
+            "phonetic": "/baɪˈlɪŋ.ɡju.əl/",
             "word": "bilingual",
             "pos": "adj.",
             "meaning": "双语的"
           },
           {
             "id": "s1col1-momentum",
+            "phonetic": "/ˌmoʊˈmɛntəm/",
             "word": "momentum",
             "pos": "n.",
             "meaning": "动力；势头"
           },
           {
             "id": "s1col1-debris",
+            "phonetic": "/dəˈbɹiː/",
             "word": "debris",
             "pos": "n.",
             "meaning": "碎片；残骸"
           },
           {
             "id": "s1col1-deposit",
+            "phonetic": "/dɨˈpɑzɪt/",
             "word": "deposit",
             "pos": "n./v.",
             "meaning": "押金；存款"
           },
           {
             "id": "s1col1-expertise",
+            "phonetic": "/ˌɛkspɚˈtiːs/",
             "word": "expertise",
             "pos": "n.",
             "meaning": "专长；专业知识"
           },
           {
             "id": "s1col1-coast",
+            "phonetic": "/koʊst/",
             "word": "coast",
             "pos": "n.",
             "meaning": "海岸"
           },
           {
             "id": "s1col1-memorandum",
+            "phonetic": "/ˌmeməˈrændəm/",
             "word": "memorandum",
             "pos": "n.",
             "meaning": "备忘录"
           },
           {
             "id": "s1col1-dietary",
+            "phonetic": "/ˈdaɪətɹi/",
             "word": "dietary",
             "pos": "adj.",
             "meaning": "饮食的"
           },
           {
             "id": "s1col1-exotic",
+            "phonetic": "/ɪɡˈzɒtɪk/",
             "word": "exotic",
             "pos": "adj.",
             "meaning": "异国的；奇异的"
           },
           {
             "id": "s1col1-modify",
+            "phonetic": "/ˈmɑdɪfaɪ/",
             "word": "modify",
             "pos": "v.",
             "meaning": "修改；调整"
           },
           {
             "id": "s1col1-solitude",
+            "phonetic": "/ˈsɑlɪˌtud/",
             "word": "solitude",
             "pos": "n.",
             "meaning": "独处；孤独"
           },
           {
             "id": "s1col1-isolated",
+            "phonetic": "/ˈaɪsəleɪtɪd/",
             "word": "isolated",
             "pos": "adj.",
             "meaning": "孤立的；偏僻的"
           },
           {
             "id": "s1col1-variable",
+            "phonetic": "/ˈvæɹ.i.ə.bl̩/",
             "word": "variable",
             "pos": "adj./n.",
             "meaning": "可变的；变量"
           },
           {
             "id": "s1col1-shelter",
+            "phonetic": "/ˈʃɛltɚ/",
             "word": "shelter",
             "pos": "n./v.",
             "meaning": "庇护；避难所"
           },
           {
             "id": "s1col1-subtle",
+            "phonetic": "/ˈsʌt(ə)l/",
             "word": "subtle",
             "pos": "adj.",
             "meaning": "微妙的；细微的"
           },
           {
             "id": "s1col1-interpersonal",
+            "phonetic": "/ˌɪntərˈpɜːrsən(ə)l/",
             "word": "interpersonal",
             "pos": "adj.",
             "meaning": "人际的"
           },
           {
             "id": "s1col1-intensive",
+            "phonetic": "/ɪnˈtɛnsɪv/",
             "word": "intensive",
             "pos": "adj.",
             "meaning": "密集的；强化的"
           },
           {
             "id": "s1col1-profitable",
+            "phonetic": "/ˈpɹɑfɪtəbl̩/",
             "word": "profitable",
             "pos": "adj.",
             "meaning": "有利可图的"
           },
           {
             "id": "s1col1-pit",
+            "phonetic": "/ˈpɪt/",
             "word": "pit",
             "pos": "n.",
             "meaning": "坑；深渊"
           },
           {
             "id": "s1col1-convert",
+            "phonetic": "/ˈkɑn.vəɹt/",
             "word": "convert",
             "pos": "v.",
             "meaning": "转换；改变"
           },
           {
             "id": "s1col1-bind",
+            "phonetic": "/baɪnd/",
             "word": "bind",
             "pos": "v.",
             "meaning": "捆绑；约束"
           },
           {
             "id": "s1col1-scooter",
+            "phonetic": "/ˈskuːtə(ɹ)/",
             "word": "scooter",
             "pos": "n.",
             "meaning": "踏板车；小型摩托车"
           },
           {
             "id": "s1col1-skyscraper",
+            "phonetic": "/ˈskaɪˌskɹeɪp.ə(ɹ)/",
             "word": "skyscraper",
             "pos": "n.",
             "meaning": "摩天大楼"
@@ -539,210 +576,245 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s1col2-alumnus",
+            "phonetic": "/əˈlʌmnəs/",
             "word": "alumnus",
             "pos": "n.",
             "meaning": "校友"
           },
           {
             "id": "s1col2-tribe",
+            "phonetic": "/tɹaɪb/",
             "word": "tribe",
             "pos": "n.",
             "meaning": "部落；族"
           },
           {
             "id": "s1col2-irate",
+            "phonetic": "/aɪˈɹeɪt/",
             "word": "irate",
             "pos": "adj.",
             "meaning": "愤怒的"
           },
           {
             "id": "s1col2-algorithm",
+            "phonetic": "/ˈælɡəˌɹɪðm̩/",
             "word": "algorithm",
             "pos": "n.",
             "meaning": "算法"
           },
           {
             "id": "s1col2-parliament",
+            "phonetic": "/ˈpɑɹləmənt/",
             "word": "parliament",
             "pos": "n.",
             "meaning": "议会；国会"
           },
           {
             "id": "s1col2-irritated",
+            "phonetic": "/ˈɪɹɪteɪtɪd/",
             "word": "irritated",
             "pos": "adj.",
             "meaning": "恼怒的；发炎的"
           },
           {
             "id": "s1col2-expansion",
+            "phonetic": "/ɪkˈspænʃən/",
             "word": "expansion",
             "pos": "n.",
             "meaning": "扩张；膨胀"
           },
           {
             "id": "s1col2-autonomy",
+            "phonetic": "/ɔˈtɑnəmi/",
             "word": "autonomy",
             "pos": "n.",
             "meaning": "自治；自主权"
           },
           {
             "id": "s1col2-dependent",
+            "phonetic": "/dɪˈpɛndənt/",
             "word": "dependent",
             "pos": "adj.",
             "meaning": "依赖的"
           },
           {
             "id": "s1col2-array",
+            "phonetic": "/əˈɹeɪ/",
             "word": "array",
             "pos": "n.",
             "meaning": "一系列；阵列"
           },
           {
             "id": "s1col2-sanctuary",
+            "phonetic": "/ˈsæŋktjʊəɹi/",
             "word": "sanctuary",
             "pos": "n.",
             "meaning": "避难所；圣所"
           },
           {
             "id": "s1col2-consensus",
+            "phonetic": "/kənˈsensəs/",
             "word": "consensus",
             "pos": "n.",
             "meaning": "共识；一致"
           },
           {
             "id": "s1col2-census",
+            "phonetic": "/ˈsɛnsəs/",
             "word": "census",
             "pos": "n.",
             "meaning": "人口普查"
           },
           {
             "id": "s1col2-hypothesis",
+            "phonetic": "/haɪˈpɑː.θə.sɪs/",
             "word": "hypothesis",
             "pos": "n.",
             "meaning": "假设；假说"
           },
           {
             "id": "s1col2-portray",
+            "phonetic": "/pɔɹˈtɹeɪ/",
             "word": "portray",
             "pos": "v.",
             "meaning": "描绘；扮演"
           },
           {
             "id": "s1col2-exceed",
+            "phonetic": "/ɪkˈsiːd/",
             "word": "exceed",
             "pos": "v.",
             "meaning": "超过；超出"
           },
           {
             "id": "s1col2-herd",
+            "phonetic": "/hɝd/",
             "word": "herd",
             "pos": "n.",
             "meaning": "兽群；牧群"
           },
           {
             "id": "s1col2-entrepreneur",
+            "phonetic": "/ˌɑn.trə.prəˈnɝ/",
             "word": "entrepreneur",
             "pos": "n.",
             "meaning": "企业家"
           },
           {
             "id": "s1col2-rear",
+            "phonetic": "/ɹiɹ/",
             "word": "rear",
             "pos": "n./v.",
             "meaning": "后部；抚养"
           },
           {
             "id": "s1col2-monarch",
+            "phonetic": "/ˈmɑnɑɹk/",
             "word": "monarch",
             "pos": "n.",
             "meaning": "君主"
           },
           {
             "id": "s1col2-payroll",
+            "phonetic": "/ˈpeɪɹəʊl/",
             "word": "payroll",
             "pos": "n.",
             "meaning": "工资名单；薪金总额"
           },
           {
             "id": "s1col2-quota",
+            "phonetic": "/ˈkwoʊtə/",
             "word": "quota",
             "pos": "n.",
             "meaning": "配额；定额"
           },
           {
             "id": "s1col2-compensate",
+            "phonetic": "/ˈkɑm.pənˌseɪt/",
             "word": "compensate",
             "pos": "v.",
             "meaning": "补偿；赔偿"
           },
           {
             "id": "s1col2-bizarre",
+            "phonetic": "/bəˈzɑɹ/",
             "word": "bizarre",
             "pos": "adj.",
             "meaning": "奇异的；古怪的"
           },
           {
             "id": "s1col2-multiply",
+            "phonetic": "/ˈmʌltɪplaɪ/",
             "word": "multiply",
             "pos": "v.",
             "meaning": "乘；繁殖；增加"
           },
           {
             "id": "s1col2-correlate",
+            "phonetic": "/ˈkɒɹələt/",
             "word": "correlate",
             "pos": "v.",
             "meaning": "相关；关联"
           },
           {
             "id": "s1col2-foster",
+            "phonetic": "/ˈfɑstɚ/",
             "word": "foster",
             "pos": "v.",
             "meaning": "培养；促进"
           },
           {
             "id": "s1col2-genetically",
+            "phonetic": "/dʒəˈnetɪkli/",
             "word": "genetically",
             "pos": "adv.",
             "meaning": "基因上地"
           },
           {
             "id": "s1col2-mineral",
+            "phonetic": "/ˈmɪ.nəɹ.əl/",
             "word": "mineral",
             "pos": "n.",
             "meaning": "矿物"
           },
           {
             "id": "s1col2-scheme",
+            "phonetic": "/skiːm/",
             "word": "scheme",
             "pos": "n./v.",
             "meaning": "计划；图谋"
           },
           {
             "id": "s1col2-simultaneously",
+            "phonetic": "/ˌsɪməlˈteɪnɪəsli/",
             "word": "simultaneously",
             "pos": "adv.",
             "meaning": "同时地"
           },
           {
             "id": "s1col2-invention",
+            "phonetic": "/ɪnˈvɛnʃən/",
             "word": "invention",
             "pos": "n.",
             "meaning": "发明"
           },
           {
             "id": "s1col2-dean",
+            "phonetic": "/diːn/",
             "word": "dean",
             "pos": "n.",
             "meaning": "院长；教务长"
           },
           {
             "id": "s1col2-supervisor",
+            "phonetic": "/ˈsuːpɚˌvaɪzɚ/",
             "word": "supervisor",
             "pos": "n.",
             "meaning": "主管；导师"
           },
           {
             "id": "s1col2-deck",
+            "phonetic": "/dɛk/",
             "word": "deck",
             "pos": "n.",
             "meaning": "甲板；层面"
@@ -1021,192 +1093,224 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s1col3-gross",
+            "phonetic": "/ɡɹoʊs/",
             "word": "gross",
             "pos": "adj.",
             "meaning": "总的；严重的"
           },
           {
             "id": "s1col3-owe",
+            "phonetic": "/oʊ/",
             "word": "owe",
             "pos": "v.",
             "meaning": "欠；归功于"
           },
           {
             "id": "s1col3-trigger",
+            "phonetic": "/ˈtɹɪɡə/",
             "word": "trigger",
             "pos": "v.",
             "meaning": "触发；引发"
           },
           {
             "id": "s1col3-abundant",
+            "phonetic": "/əˈbn̩.dn̩t/",
             "word": "abundant",
             "pos": "adj.",
             "meaning": "丰富的；充裕的"
           },
           {
             "id": "s1col3-adverse",
+            "phonetic": "/ədˈvɜ(ɹ)s/",
             "word": "adverse",
             "pos": "adj.",
             "meaning": "不利的；相反的"
           },
           {
             "id": "s1col3-prolong",
+            "phonetic": "/pɹoʊˈlɑŋ/",
             "word": "prolong",
             "pos": "v.",
             "meaning": "延长；拖延"
           },
           {
             "id": "s1col3-epidemic",
+            "phonetic": "/ˌɛpɪˈdɛmɪk/",
             "word": "epidemic",
             "pos": "n.",
             "meaning": "流行病；传染病"
           },
           {
             "id": "s1col3-prestigious",
+            "phonetic": "/pɹə-/",
             "word": "prestigious",
             "pos": "adj.",
             "meaning": "有声望的"
           },
           {
             "id": "s1col3-predator",
+            "phonetic": "/ˈpɹɛd.ə.təɹ/",
             "word": "predator",
             "pos": "n.",
             "meaning": "捕食者"
           },
           {
             "id": "s1col3-polar",
+            "phonetic": "/ˈpəʊ̯lə(ɹ)/",
             "word": "polar",
             "pos": "adj.",
             "meaning": "极地的；两极的"
           },
           {
             "id": "s1col3-antibiotic",
+            "phonetic": "/ˌæn.taɪ.baɪˈɒt.ɪk/",
             "word": "antibiotic",
             "pos": "n.",
             "meaning": "抗生素"
           },
           {
             "id": "s1col3-ladder",
+            "phonetic": "/ˈlædɚ/",
             "word": "ladder",
             "pos": "n.",
             "meaning": "梯子"
           },
           {
             "id": "s1col3-stimulus",
+            "phonetic": "/ˈstɪm.jə.ləs/",
             "word": "stimulus",
             "pos": "n.",
             "meaning": "刺激；激励"
           },
           {
             "id": "s1col3-intolerance",
+            "phonetic": "/ɪnˈtɑːlərəns/",
             "word": "intolerance",
             "pos": "n.",
             "meaning": "不宽容；偏执"
           },
           {
             "id": "s1col3-harsh",
+            "phonetic": "/hɑːʃ/",
             "word": "harsh",
             "pos": "adj.",
             "meaning": "严酷的；刺耳的"
           },
           {
             "id": "s1col3-dismiss",
+            "phonetic": "/dɪsˈmɪs/",
             "word": "dismiss",
             "pos": "v.",
             "meaning": "驳回；不予理会"
           },
           {
             "id": "s1col3-accustomed",
+            "phonetic": "/ə.ˈkʌs.təmd/",
             "word": "accustomed",
             "pos": "adj.",
             "meaning": "习惯的"
           },
           {
             "id": "s1col3-interpretation",
+            "phonetic": "/ɪntəpɹəˈteɪʃən/",
             "word": "interpretation",
             "pos": "n.",
             "meaning": "解释；诠释"
           },
           {
             "id": "s1col3-exert",
+            "phonetic": "/ɪɡˈzɝt/",
             "word": "exert",
             "pos": "v.",
             "meaning": "施加；努力"
           },
           {
             "id": "s1col3-devise",
+            "phonetic": "/dɪˈvaɪz/",
             "word": "devise",
             "pos": "v.",
             "meaning": "设计；发明"
           },
           {
             "id": "s1col3-subsidy",
+            "phonetic": "/ˈsʌbsɨdi/",
             "word": "subsidy",
             "pos": "n.",
             "meaning": "补贴；津贴"
           },
           {
             "id": "s1col3-cater",
+            "phonetic": "/ˈkeɪdɚ/",
             "word": "cater",
             "pos": "v.",
             "meaning": "迎合；提供饮食"
           },
           {
             "id": "s1col3-surgeon",
+            "phonetic": "/ˈsɜːdʒən/",
             "word": "surgeon",
             "pos": "n.",
             "meaning": "外科医生"
           },
           {
             "id": "s1col3-resilience",
+            "phonetic": "/ɹə.zɪl.ɪ.əns/",
             "word": "resilience",
             "pos": "n.",
             "meaning": "韧性；恢复力"
           },
           {
             "id": "s1col3-resurrection",
+            "phonetic": "/ɹɛzəˈɹɛkʃn̩/",
             "word": "resurrection",
             "pos": "n.",
             "meaning": "复活；复兴"
           },
           {
             "id": "s1col3-tenant",
+            "phonetic": "/ˈtɛ.nənt/",
             "word": "tenant",
             "pos": "n.",
             "meaning": "租户；佃户"
           },
           {
             "id": "s1col3-dropout",
+            "phonetic": "/ˈdrɑːpaʊt/",
             "word": "dropout",
             "pos": "n.",
             "meaning": "辍学者"
           },
           {
             "id": "s1col3-lever",
+            "phonetic": "/ˈlɛ.vɚ/",
             "word": "lever",
             "pos": "n.",
             "meaning": "杠杆"
           },
           {
             "id": "s1col3-outsource",
+            "phonetic": "/ˈaʊtˌsɔɹs/",
             "word": "outsource",
             "pos": "v.",
             "meaning": "外包"
           },
           {
             "id": "s1col3-scenario",
+            "phonetic": "/sɪˈnæɹioʊ/",
             "word": "scenario",
             "pos": "n.",
             "meaning": "设想；情景"
           },
           {
             "id": "s1col3-deteriorate",
+            "phonetic": "/dɪˈtɪəɹɪəɹeɪt/",
             "word": "deteriorate",
             "pos": "v.",
             "meaning": "恶化"
           },
           {
             "id": "s1col3-depleted",
+            "phonetic": "/dɪˈpliːtəd/",
             "word": "depleted",
             "pos": "adj.",
             "meaning": "耗尽的；枯竭的"
@@ -1469,162 +1573,189 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s1col4-agenda",
+            "phonetic": "/əˈdʒɛn.də/",
             "word": "agenda",
             "pos": "n.",
             "meaning": "议程；事项"
           },
           {
             "id": "s1col4-tactic",
+            "phonetic": "/ˈtæktɪk/",
             "word": "tactic",
             "pos": "n.",
             "meaning": "战术；策略"
           },
           {
             "id": "s1col4-threshold",
+            "phonetic": "/ˈθɹɛʃ(h)oʊld/",
             "word": "threshold",
             "pos": "n.",
             "meaning": "门槛；界限"
           },
           {
             "id": "s1col4-substitute",
+            "phonetic": "/ˈsʌbstɪtjut/",
             "word": "substitute",
             "pos": "n./v.",
             "meaning": "替代品；替代"
           },
           {
             "id": "s1col4-prospective",
+            "phonetic": "/pɹəˈspɛktɪv/",
             "word": "prospective",
             "pos": "adj.",
             "meaning": "预期的；潜在的"
           },
           {
             "id": "s1col4-livestock",
+            "phonetic": "/ˈlaɪvstɒk/",
             "word": "livestock",
             "pos": "n.",
             "meaning": "牲畜"
           },
           {
             "id": "s1col4-aspirin",
+            "phonetic": "/ˈæspɪɹɪn/",
             "word": "aspirin",
             "pos": "n.",
             "meaning": "阿司匹林"
           },
           {
             "id": "s1col4-signify",
+            "phonetic": "/ˈsɪɡnɪfaɪ/",
             "word": "signify",
             "pos": "v.",
             "meaning": "表示；意味着"
           },
           {
             "id": "s1col4-fiscal",
+            "phonetic": "/ˈfɪskəl/",
             "word": "fiscal",
             "pos": "adj.",
             "meaning": "财政的"
           },
           {
             "id": "s1col4-fixture",
+            "phonetic": "/ˈfɪkstʃɚ/",
             "word": "fixture",
             "pos": "n.",
             "meaning": "固定物；常驻事物"
           },
           {
             "id": "s1col4-deterioration",
+            "phonetic": "/dɪˌtɪəɹɪəˈɹeɪʃən/",
             "word": "deterioration",
             "pos": "n.",
             "meaning": "恶化；退化"
           },
           {
             "id": "s1col4-degradation",
+            "phonetic": "/ˌdɛɡɹəˈdeɪʃən/",
             "word": "degradation",
             "pos": "n.",
             "meaning": "退化；降级"
           },
           {
             "id": "s1col4-recreation",
+            "phonetic": "/ɹɛkɹiˈeɪʃən/",
             "word": "recreation",
             "pos": "n.",
             "meaning": "娱乐；消遣"
           },
           {
             "id": "s1col4-depict",
+            "phonetic": "/dɪˈpɪkt/",
             "word": "depict",
             "pos": "v.",
             "meaning": "描绘"
           },
           {
             "id": "s1col4-affluent",
+            "phonetic": "/ˈæf.lu.ənt/",
             "word": "affluent",
             "pos": "adj.",
             "meaning": "富裕的"
           },
           {
             "id": "s1col4-testimony",
+            "phonetic": "/ˈtɛstɪmoʊni/",
             "word": "testimony",
             "pos": "n.",
             "meaning": "证词；证据"
           },
           {
             "id": "s1col4-exceptional",
+            "phonetic": "/ɪkˈsɛpʃənəl/",
             "word": "exceptional",
             "pos": "adj.",
             "meaning": "杰出的；异常的"
           },
           {
             "id": "s1col4-ideology",
+            "phonetic": "/aɪ.di.ˈɑl.ə.d͡ʒi/",
             "word": "ideology",
             "pos": "n.",
             "meaning": "意识形态"
           },
           {
             "id": "s1col4-profile",
+            "phonetic": "/ˈpɹəʊfaɪl/",
             "word": "profile",
             "pos": "n.",
             "meaning": "形象；侧面"
           },
           {
             "id": "s1col4-indulge",
+            "phonetic": "/ɪnˈdʌldʒ/",
             "word": "indulge",
             "pos": "v.",
             "meaning": "纵容；沉溺"
           },
           {
             "id": "s1col4-bias",
+            "phonetic": "/ˈbaɪəs/",
             "word": "bias",
             "pos": "n.",
             "meaning": "偏见；偏心"
           },
           {
             "id": "s1col4-indispensable",
+            "phonetic": "/ɪndɪˈspɛnsəbəl/",
             "word": "indispensable",
             "pos": "adj.",
             "meaning": "不可或缺的"
           },
           {
             "id": "s1col4-steep",
+            "phonetic": "/stiːp/",
             "word": "steep",
             "pos": "adj.",
             "meaning": "陡峭的；急剧的"
           },
           {
             "id": "s1col4-acre",
+            "phonetic": "/ˈeɪ.kɚ/",
             "word": "acre",
             "pos": "n.",
             "meaning": "英亩"
           },
           {
             "id": "s1col4-confine",
+            "phonetic": "/ˈkɒnfaɪn/",
             "word": "confine",
             "pos": "v.",
             "meaning": "限制；禁闭"
           },
           {
             "id": "s1col4-slash",
+            "phonetic": "/slaʃ/",
             "word": "slash",
             "pos": "v.",
             "meaning": "大幅削减；砍"
           },
           {
             "id": "s1col4-intimate",
+            "phonetic": "/ˈɪn.tɪ.mət/",
             "word": "intimate",
             "pos": "adj.",
             "meaning": "亲密的；私下的"
@@ -1870,150 +2001,175 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s2col1-municipal",
+            "phonetic": "/mjuˈnɪsɪpəl/",
             "word": "municipal",
             "pos": "adj.",
             "meaning": "市政的；地方的"
           },
           {
             "id": "s2col1-realm",
+            "phonetic": "/ɹɛlm/",
             "word": "realm",
             "pos": "n.",
             "meaning": "领域；范围"
           },
           {
             "id": "s2col1-handicapped",
+            "phonetic": "/ˈhændikæpt/",
             "word": "handicapped",
             "pos": "adj.",
             "meaning": "残疾的；有障碍的"
           },
           {
             "id": "s2col1-relentless",
+            "phonetic": "/ɹɪˈlɛntləs/",
             "word": "relentless",
             "pos": "adj.",
             "meaning": "不懈的；残酷的"
           },
           {
             "id": "s2col1-quest",
+            "phonetic": "/kwɛst/",
             "word": "quest",
             "pos": "n.",
             "meaning": "探索；寻求"
           },
           {
             "id": "s2col1-postpone",
+            "phonetic": "/poʊstˈpoʊn/",
             "word": "postpone",
             "pos": "v.",
             "meaning": "推迟；延期"
           },
           {
             "id": "s2col1-wipe",
+            "phonetic": "/waɪp/",
             "word": "wipe",
             "pos": "v.",
             "meaning": "擦拭；消除"
           },
           {
             "id": "s2col1-deficiency",
+            "phonetic": "/dɪˈfɪʃənsi/",
             "word": "deficiency",
             "pos": "n.",
             "meaning": "缺乏；不足"
           },
           {
             "id": "s2col1-mortality",
+            "phonetic": "/mɔɹˈtælɪti/",
             "word": "mortality",
             "pos": "n.",
             "meaning": "死亡率；必死性"
           },
           {
             "id": "s2col1-intensity",
+            "phonetic": "/ɪnˈtɛnsɪti/",
             "word": "intensity",
             "pos": "n.",
             "meaning": "强烈；强度"
           },
           {
             "id": "s2col1-domain",
+            "phonetic": "/dəʊˈmeɪn/",
             "word": "domain",
             "pos": "n.",
             "meaning": "领域；领地"
           },
           {
             "id": "s2col1-era",
+            "phonetic": "/ˈɛɹ.ə/",
             "word": "era",
             "pos": "n.",
             "meaning": "时代；年代"
           },
           {
             "id": "s2col1-occasional",
+            "phonetic": "/əˈkeɪʒ(ə)nəl/",
             "word": "occasional",
             "pos": "adj.",
             "meaning": "偶尔的；不时的"
           },
           {
             "id": "s2col1-chord",
+            "phonetic": "/kɔɹd/",
             "word": "chord",
             "pos": "n.",
             "meaning": "和弦；弦"
           },
           {
             "id": "s2col1-ignorance",
+            "phonetic": "/ˈɪɡnəɹəns/",
             "word": "ignorance",
             "pos": "n.",
             "meaning": "无知；愚昧"
           },
           {
             "id": "s2col1-laborious",
+            "phonetic": "/ləˈbɔːɹiəs/",
             "word": "laborious",
             "pos": "adj.",
             "meaning": "费力的；艰苦的"
           },
           {
             "id": "s2col1-disclose",
+            "phonetic": "/dɪsˈkləʊz/",
             "word": "disclose",
             "pos": "v.",
             "meaning": "揭露；透露"
           },
           {
             "id": "s2col1-suppress",
+            "phonetic": "/səˈpɹɛs/",
             "word": "suppress",
             "pos": "v.",
             "meaning": "压制；抑制"
           },
           {
             "id": "s2col1-plough",
+            "phonetic": "/plaʊ/",
             "word": "plough",
             "pos": "v.",
             "meaning": "犁地；艰难前行"
           },
           {
             "id": "s2col1-hermitage",
+            "phonetic": "/ˈhɜːrmɪtɪdʒ/",
             "word": "hermitage",
             "pos": "n.",
             "meaning": "隐居处；修道院"
           },
           {
             "id": "s2col1-nuisance",
+            "phonetic": "/ˈn(j)uːsəns/",
             "word": "nuisance",
             "pos": "n.",
             "meaning": "讨厌的人/物；麻烦事"
           },
           {
             "id": "s2col1-dim",
+            "phonetic": "/dɪm/",
             "word": "dim",
             "pos": "adj.",
             "meaning": "昏暗的；模糊的"
           },
           {
             "id": "s2col1-fluctuation",
+            "phonetic": "/flʌktʃuːˈeɪʃən/",
             "word": "fluctuation",
             "pos": "n.",
             "meaning": "波动；起伏"
           },
           {
             "id": "s2col1-monopoly",
+            "phonetic": "/məˈnɑpəˌli/",
             "word": "monopoly",
             "pos": "n.",
             "meaning": "垄断；独占"
           },
           {
             "id": "s2col1-legislator",
+            "phonetic": "/ˈledʒɪsleɪtər/",
             "word": "legislator",
             "pos": "n.",
             "meaning": "立法者；议员"
@@ -2246,180 +2402,210 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s2col2-maturity",
+            "phonetic": "/məˈtʊəɹəti/",
             "word": "maturity",
             "pos": "n.",
             "meaning": "成熟；完备"
           },
           {
             "id": "s2col2-sewage",
+            "phonetic": "/ˈsuːɪdʒ/",
             "word": "sewage",
             "pos": "n.",
             "meaning": "污水；污物"
           },
           {
             "id": "s2col2-civic",
+            "phonetic": "/ˈsɪvɪk/",
             "word": "civic",
             "pos": "adj.",
             "meaning": "市民的；公民的"
           },
           {
             "id": "s2col2-eligible",
+            "phonetic": "/ˈɛlɪdʒəb(ə)l/",
             "word": "eligible",
             "pos": "adj.",
             "meaning": "合格的；有资格的"
           },
           {
             "id": "s2col2-illuminate",
+            "phonetic": "/ɪlˈl(j)uməneɪt/",
             "word": "illuminate",
             "pos": "v.",
             "meaning": "照亮；阐明"
           },
           {
             "id": "s2col2-treaty",
+            "phonetic": "/ˈtɹiːti/",
             "word": "treaty",
             "pos": "n.",
             "meaning": "条约；协议"
           },
           {
             "id": "s2col2-moderate",
+            "phonetic": "/ˈmɑdəɹeɪt/",
             "word": "moderate",
             "pos": "v.",
             "meaning": "缓和；节制"
           },
           {
             "id": "s2col2-prevalent",
+            "phonetic": "/ˈpɹɛvələnt/",
             "word": "prevalent",
             "pos": "adj.",
             "meaning": "普遍的；流行的"
           },
           {
             "id": "s2col2-barrel",
+            "phonetic": "/ˈbæɹəl/",
             "word": "barrel",
             "pos": "n.",
             "meaning": "桶；桶装物"
           },
           {
             "id": "s2col2-catastrophic",
+            "phonetic": "/kætəˈstɹɒfɪk/",
             "word": "catastrophic",
             "pos": "adj.",
             "meaning": "灾难性的"
           },
           {
             "id": "s2col2-enrolment",
+            "phonetic": "/ɪnˈroʊlmənt/",
             "word": "enrolment",
             "pos": "n.",
             "meaning": "注册；登记"
           },
           {
             "id": "s2col2-hostile",
+            "phonetic": "/ˈhɑstaɪl/",
             "word": "hostile",
             "pos": "adj.",
             "meaning": "敌对的；不友善的"
           },
           {
             "id": "s2col2-seize",
+            "phonetic": "/siːz/",
             "word": "seize",
             "pos": "v.",
             "meaning": "抓住；夺取"
           },
           {
             "id": "s2col2-toll",
+            "phonetic": "/toʊl/",
             "word": "toll",
             "pos": "n.",
             "meaning": "通行费；代价"
           },
           {
             "id": "s2col2-prescription",
+            "phonetic": "/pɝˈskɹɪpʃən/",
             "word": "prescription",
             "pos": "n.",
             "meaning": "处方；药方"
           },
           {
             "id": "s2col2-ferry",
+            "phonetic": "/ˈfɛɹi/",
             "word": "ferry",
             "pos": "n.",
             "meaning": "渡船；渡运"
           },
           {
             "id": "s2col2-predominantly",
+            "phonetic": "/prɪˈdɑːmɪnəntli/",
             "word": "predominantly",
             "pos": "adv.",
             "meaning": "主要地；占主导地"
           },
           {
             "id": "s2col2-inferior",
+            "phonetic": "/ɪnˈfɪ(ə)ɹiɚ/",
             "word": "inferior",
             "pos": "adj.",
             "meaning": "劣等的；下级的"
           },
           {
             "id": "s2col2-grim",
+            "phonetic": "/ɡɹɪm/",
             "word": "grim",
             "pos": "adj.",
             "meaning": "严酷的；阴郁的"
           },
           {
             "id": "s2col2-enforcement",
+            "phonetic": "/ɪnˈfɔːrsmənt/",
             "word": "enforcement",
             "pos": "n.",
             "meaning": "执行；实施"
           },
           {
             "id": "s2col2-finite",
+            "phonetic": "/ˈfaɪnaɪt/",
             "word": "finite",
             "pos": "adj.",
             "meaning": "有限的"
           },
           {
             "id": "s2col2-sequence",
+            "phonetic": "/ˈsiːkwəns/",
             "word": "sequence",
             "pos": "n.",
             "meaning": "顺序；连续"
           },
           {
             "id": "s2col2-collide",
+            "phonetic": "/kəˈlɑɪd/",
             "word": "collide",
             "pos": "v.",
             "meaning": "碰撞；冲突"
           },
           {
             "id": "s2col2-cosy",
+            "phonetic": "/ˈkoʊzi/",
             "word": "cosy",
             "pos": "adj.",
             "meaning": "舒适的；惬意的"
           },
           {
             "id": "s2col2-prairie",
+            "phonetic": "/ˈpɹɛəɹi/",
             "word": "prairie",
             "pos": "n.",
             "meaning": "大草原"
           },
           {
             "id": "s2col2-paradox",
+            "phonetic": "/ˈpæɹədɑks/",
             "word": "paradox",
             "pos": "n.",
             "meaning": "悖论；矛盾"
           },
           {
             "id": "s2col2-evolutionary",
+            "phonetic": "/ˌevəˈluːʃəneɹi/",
             "word": "evolutionary",
             "pos": "adj.",
             "meaning": "进化的；演变的"
           },
           {
             "id": "s2col2-stunning",
+            "phonetic": "/ˈstʌnɪŋ/",
             "word": "stunning",
             "pos": "adj.",
             "meaning": "令人震惊的；极好的"
           },
           {
             "id": "s2col2-merchant",
+            "phonetic": "/ˈmɝtʃənt/",
             "word": "merchant",
             "pos": "n.",
             "meaning": "商人"
           },
           {
             "id": "s2col2-paradise",
+            "phonetic": "/ˈpæ.ɹə.daɪs/",
             "word": "paradise",
             "pos": "n.",
             "meaning": "天堂；乐园"
@@ -2675,180 +2861,210 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s2col3-cricket",
+            "phonetic": "/ˈkɹɪk.ɪt/",
             "word": "cricket",
             "pos": "n.",
             "meaning": "蟋蟀；板球"
           },
           {
             "id": "s2col3-frustration",
+            "phonetic": "/fɹʌsˈtɹeɪʃən/",
             "word": "frustration",
             "pos": "n.",
             "meaning": "挫折；沮丧"
           },
           {
             "id": "s2col3-certify",
+            "phonetic": "/ˈsɜːrtɪfaɪ/",
             "word": "certify",
             "pos": "v.",
             "meaning": "证明；认证"
           },
           {
             "id": "s2col3-glamorous",
+            "phonetic": "/ˈɡlaməɹəs/",
             "word": "glamorous",
             "pos": "adj.",
             "meaning": "迷人的；富有魅力的"
           },
           {
             "id": "s2col3-fluid",
+            "phonetic": "/ˈfluːɪd/",
             "word": "fluid",
             "pos": "adj.",
             "meaning": "流动的；流体的"
           },
           {
             "id": "s2col3-aspire",
+            "phonetic": "/əˈspaɪɚ/",
             "word": "aspire",
             "pos": "v.",
             "meaning": "渴望；立志"
           },
           {
             "id": "s2col3-metropolitan",
+            "phonetic": "/mɛtɹəˈpɒlɪtən/",
             "word": "metropolitan",
             "pos": "adj.",
             "meaning": "大都市的"
           },
           {
             "id": "s2col3-competence",
+            "phonetic": "/ˈkɒmpətəns/",
             "word": "competence",
             "pos": "n.",
             "meaning": "能力；胜任"
           },
           {
             "id": "s2col3-cholesterol",
+            "phonetic": "/kəˈlɛstəɹɒl/",
             "word": "cholesterol",
             "pos": "n.",
             "meaning": "胆固醇"
           },
           {
             "id": "s2col3-dose",
+            "phonetic": "/doʊs/",
             "word": "dose",
             "pos": "n.",
             "meaning": "剂量；一剂"
           },
           {
             "id": "s2col3-crawl",
+            "phonetic": "/kɹɔl/",
             "word": "crawl",
             "pos": "v.",
             "meaning": "爬行；缓慢行进"
           },
           {
             "id": "s2col3-inertia",
+            "phonetic": "/ɪnˈɝ.ʃə/",
             "word": "inertia",
             "pos": "n.",
             "meaning": "惰性；惯性"
           },
           {
             "id": "s2col3-uncover",
+            "phonetic": "/ʌnˈkʌvə(ɹ)/",
             "word": "uncover",
             "pos": "v.",
             "meaning": "揭露；发现"
           },
           {
             "id": "s2col3-subsistence",
+            "phonetic": "/səbˈsɪstəns/",
             "word": "subsistence",
             "pos": "n.",
             "meaning": "生存；维持生活"
           },
           {
             "id": "s2col3-coordinate",
+            "phonetic": "/koʊˈɔːrdɪneɪt/",
             "word": "coordinate",
             "pos": "v.",
             "meaning": "协调；配合"
           },
           {
             "id": "s2col3-evident",
+            "phonetic": "/ˈɛ.vɪ.dənt/",
             "word": "evident",
             "pos": "adj.",
             "meaning": "明显的；显然的"
           },
           {
             "id": "s2col3-regulatory",
+            "phonetic": "/ˈɹɛɡjələtɹi/",
             "word": "regulatory",
             "pos": "adj.",
             "meaning": "监管的；规范的"
           },
           {
             "id": "s2col3-pledge",
+            "phonetic": "/plɛdʒ/",
             "word": "pledge",
             "pos": "n./v.",
             "meaning": "保证；誓言"
           },
           {
             "id": "s2col3-precedent",
+            "phonetic": "/pɹɪˈsiː.dənt/",
             "word": "precedent",
             "pos": "n.",
             "meaning": "先例；前例"
           },
           {
             "id": "s2col3-glamour",
+            "phonetic": "/ˈɡlæmə/",
             "word": "glamour",
             "pos": "n.",
             "meaning": "魅力；诱惑力"
           },
           {
             "id": "s2col3-aggravate",
+            "phonetic": "/ˈæɡ.ɹə.veɪ̯t/",
             "word": "aggravate",
             "pos": "v.",
             "meaning": "加重；恶化"
           },
           {
             "id": "s2col3-indigenous",
+            "phonetic": "/ɪnˈdɪdʒɪnəs/",
             "word": "indigenous",
             "pos": "adj.",
             "meaning": "本土的；原住民的"
           },
           {
             "id": "s2col3-chronically",
+            "phonetic": "/ˈkrɑːnɪkli/",
             "word": "chronically",
             "pos": "adv.",
             "meaning": "长期地；慢性地"
           },
           {
             "id": "s2col3-sphere",
+            "phonetic": "/sfɪɹ/",
             "word": "sphere",
             "pos": "n.",
             "meaning": "球体；领域"
           },
           {
             "id": "s2col3-millennium",
+            "phonetic": "/mɪˈlɛnɪəm/",
             "word": "millennium",
             "pos": "n.",
             "meaning": "千年；千禧年"
           },
           {
             "id": "s2col3-constraint",
+            "phonetic": "/kənˈstɹeɪnt/",
             "word": "constraint",
             "pos": "n.",
             "meaning": "约束；限制"
           },
           {
             "id": "s2col3-relocate",
+            "phonetic": "/ˌriːˈloʊkeɪt/",
             "word": "relocate",
             "pos": "v.",
             "meaning": "重新安置；搬迁"
           },
           {
             "id": "s2col3-cumulative",
+            "phonetic": "/ˈkjuːmjʊlətɪv/",
             "word": "cumulative",
             "pos": "adj.",
             "meaning": "累积的"
           },
           {
             "id": "s2col3-catastrophe",
+            "phonetic": "/kəˈtæstɹəfi/",
             "word": "catastrophe",
             "pos": "n.",
             "meaning": "灾难；大祸"
           },
           {
             "id": "s2col3-utterly",
+            "phonetic": "/ˈʌt.ə(ɹ).li/",
             "word": "utterly",
             "pos": "adv.",
             "meaning": "完全地；彻底地"
@@ -3101,180 +3317,210 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s2col4-endeavour",
+            "phonetic": "/ɪnˈdɛv.ə/",
             "word": "endeavour",
             "pos": "n./v.",
             "meaning": "努力；尽力"
           },
           {
             "id": "s2col4-quantify",
+            "phonetic": "/ˈkwɑːn.tə.faɪ/",
             "word": "quantify",
             "pos": "v.",
             "meaning": "量化；定量"
           },
           {
             "id": "s2col4-commodity",
+            "phonetic": "/kəˈmɒdəti/",
             "word": "commodity",
             "pos": "n.",
             "meaning": "商品；日用品"
           },
           {
             "id": "s2col4-impair",
+            "phonetic": "/ɪmˈpɛə/",
             "word": "impair",
             "pos": "v.",
             "meaning": "损害；削弱"
           },
           {
             "id": "s2col4-designate",
+            "phonetic": "/ˈdɛzɪɡ.neɪt/",
             "word": "designate",
             "pos": "v.",
             "meaning": "指定；指派"
           },
           {
             "id": "s2col4-liability",
+            "phonetic": "/laɪəˈbɪlɪti/",
             "word": "liability",
             "pos": "n.",
             "meaning": "责任；负债"
           },
           {
             "id": "s2col4-segregation",
+            "phonetic": "/sɛɡɹəˈɡeɪ̯ʃən/",
             "word": "segregation",
             "pos": "n.",
             "meaning": "隔离；分离"
           },
           {
             "id": "s2col4-elimination",
+            "phonetic": "/ɪˌlɪmɪˈneɪʃn/",
             "word": "elimination",
             "pos": "n.",
             "meaning": "消除；淘汰"
           },
           {
             "id": "s2col4-supplier",
+            "phonetic": "/səˈplaɪə/",
             "word": "supplier",
             "pos": "n.",
             "meaning": "供应商"
           },
           {
             "id": "s2col4-strategic",
+            "phonetic": "/stɹəˈtiː.dʒɪk/",
             "word": "strategic",
             "pos": "adj.",
             "meaning": "战略的；策略的"
           },
           {
             "id": "s2col4-jury",
+            "phonetic": "/ˈd͡ʒʊə.ɹi/",
             "word": "jury",
             "pos": "n.",
             "meaning": "陪审团"
           },
           {
             "id": "s2col4-syndrome",
+            "phonetic": "/ˈsɪndɹəʊm/",
             "word": "syndrome",
             "pos": "n.",
             "meaning": "综合征；症候群"
           },
           {
             "id": "s2col4-misfortune",
+            "phonetic": "/mɪsˈfɔɹtʃən/",
             "word": "misfortune",
             "pos": "n.",
             "meaning": "不幸；灾祸"
           },
           {
             "id": "s2col4-expedition",
+            "phonetic": "/ɛkspəˈdɪʃən/",
             "word": "expedition",
             "pos": "n.",
             "meaning": "探险；远征"
           },
           {
             "id": "s2col4-sue",
+            "phonetic": "/suː/",
             "word": "sue",
             "pos": "v.",
             "meaning": "起诉；控告"
           },
           {
             "id": "s2col4-invasive",
+            "phonetic": "/ɪnˈveɪsɪv/",
             "word": "invasive",
             "pos": "adj.",
             "meaning": "侵入的；入侵的"
           },
           {
             "id": "s2col4-confrontation",
+            "phonetic": "/ˌkɒnfɹənˈteɪʃən/",
             "word": "confrontation",
             "pos": "n.",
             "meaning": "对抗；冲突"
           },
           {
             "id": "s2col4-drone",
+            "phonetic": "/dɹəʊn/",
             "word": "drone",
             "pos": "n.",
             "meaning": "无人机；雄蜂"
           },
           {
             "id": "s2col4-certification",
+            "phonetic": "/ˌsɜːtɪfɪˈkeɪʃən/",
             "word": "certification",
             "pos": "n.",
             "meaning": "认证；证明"
           },
           {
             "id": "s2col4-retrieve",
+            "phonetic": "/ɹiˈtɹiv/",
             "word": "retrieve",
             "pos": "v.",
             "meaning": "取回；检索"
           },
           {
             "id": "s2col4-underlie",
+            "phonetic": "/ˌʌn.də(ɹ)ˈlaɪ/",
             "word": "underlie",
             "pos": "v.",
             "meaning": "构成…的基础"
           },
           {
             "id": "s2col4-affiliate",
+            "phonetic": "/əˈfɪl.i.et/",
             "word": "affiliate",
             "pos": "n.",
             "meaning": "附属机构；分支机构"
           },
           {
             "id": "s2col4-alleviate",
+            "phonetic": "/əˈli.vi.eɪt/",
             "word": "alleviate",
             "pos": "v.",
             "meaning": "减轻；缓解"
           },
           {
             "id": "s2col4-pasture",
+            "phonetic": "/ˈpæstʃɚ/",
             "word": "pasture",
             "pos": "n.",
             "meaning": "牧场；草地"
           },
           {
             "id": "s2col4-spur",
+            "phonetic": "/spɝ/",
             "word": "spur",
             "pos": "v.",
             "meaning": "刺激；激励"
           },
           {
             "id": "s2col4-default",
+            "phonetic": "/dɪˈfɔːlt/",
             "word": "default",
             "pos": "n./v.",
             "meaning": "违约；默认"
           },
           {
             "id": "s2col4-spectacular",
+            "phonetic": "/spɛkˈtæk.jʊ.lə/",
             "word": "spectacular",
             "pos": "adj.",
             "meaning": "壮观的；惊人的"
           },
           {
             "id": "s2col4-hint",
+            "phonetic": "/hɪnt/",
             "word": "hint",
             "pos": "n.",
             "meaning": "暗示；线索"
           },
           {
             "id": "s2col4-grave",
+            "phonetic": "/ɡɹeɪv/",
             "word": "grave",
             "pos": "adj.",
             "meaning": "严重的；庄严的"
           },
           {
             "id": "s2col4-monetary",
+            "phonetic": "/ˈmɑnɪteɹi/",
             "word": "monetary",
             "pos": "adj.",
             "meaning": "货币的；金融的"
@@ -3536,192 +3782,224 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s3col1-persist",
+            "phonetic": "/pɚˈsɪst/",
             "word": "persist",
             "pos": "v.",
             "meaning": "坚持；持续"
           },
           {
             "id": "s3col1-adversary",
+            "phonetic": "/ˈæd.vəɹ.sɛɹi/",
             "word": "adversary",
             "pos": "n.",
             "meaning": "对手；敌手"
           },
           {
             "id": "s3col1-assume",
+            "phonetic": "/əˈsuːm/",
             "word": "assume",
             "pos": "v.",
             "meaning": "假定；假设；承担"
           },
           {
             "id": "s3col1-endorse",
+            "phonetic": "/ɪnˈdɔːs/",
             "word": "endorse",
             "pos": "v.",
             "meaning": "赞同；认可；代言"
           },
           {
             "id": "s3col1-intimacy",
+            "phonetic": "/ˈɪn.tɪ.mə.si/",
             "word": "intimacy",
             "pos": "n.",
             "meaning": "亲密；密切关系"
           },
           {
             "id": "s3col1-galactic",
+            "phonetic": "/ɡəˈlæktɪk/",
             "word": "galactic",
             "pos": "adj.",
             "meaning": "银河的；星系的"
           },
           {
             "id": "s3col1-intuitive",
+            "phonetic": "/ɪnˈtjuːɪtɪv/",
             "word": "intuitive",
             "pos": "adj.",
             "meaning": "直觉的；凭直觉的"
           },
           {
             "id": "s3col1-skeptical",
+            "phonetic": "/ˈskeptɪkəl/",
             "word": "skeptical",
             "pos": "adj.",
             "meaning": "怀疑的；持怀疑态度的"
           },
           {
             "id": "s3col1-assert",
+            "phonetic": "/əˈsɝt/",
             "word": "assert",
             "pos": "v.",
             "meaning": "断言；坚称；主张"
           },
           {
             "id": "s3col1-conducive",
+            "phonetic": "/kənˈdjuːsɪv/",
             "word": "conducive",
             "pos": "adj.",
             "meaning": "有助于…的；有益的"
           },
           {
             "id": "s3col1-inevitably",
+            "phonetic": "/ɪˈnɛvətəbli/",
             "word": "inevitably",
             "pos": "adv.",
             "meaning": "不可避免地；必然地"
           },
           {
             "id": "s3col1-formulate",
+            "phonetic": "/ˈfɔːrmjuleɪt/",
             "word": "formulate",
             "pos": "v.",
             "meaning": "构想；制定；系统阐述"
           },
           {
             "id": "s3col1-stake",
+            "phonetic": "/steɪk/",
             "word": "stake",
             "pos": "n.",
             "meaning": "赌注；利害关系；股份"
           },
           {
             "id": "s3col1-provision",
+            "phonetic": "/pɹəˈvɪʒ.ən/",
             "word": "provision",
             "pos": "n.",
             "meaning": "供应；预备；规定"
           },
           {
             "id": "s3col1-irrational",
+            "phonetic": "/ɪˈɹæʃ.(ə.)nəl/",
             "word": "irrational",
             "pos": "adj.",
             "meaning": "不理性的；无理性的"
           },
           {
             "id": "s3col1-dawn",
+            "phonetic": "/dɔn/",
             "word": "dawn",
             "pos": "n.",
             "meaning": "黎明；开端"
           },
           {
             "id": "s3col1-bulk",
+            "phonetic": "/bʌlk/",
             "word": "bulk",
             "pos": "n.",
             "meaning": "大部分；体积；大块"
           },
           {
             "id": "s3col1-miniature",
+            "phonetic": "/ˈmɪn(ɪ)ətʃə(ɹ)/",
             "word": "miniature",
             "pos": "adj.",
             "meaning": "微型的；缩小的"
           },
           {
             "id": "s3col1-graze",
+            "phonetic": "/ɡɹeɪz/",
             "word": "graze",
             "pos": "v.",
             "meaning": "擦过；掠过；吃草"
           },
           {
             "id": "s3col1-ingenuity",
+            "phonetic": "/ˌɪndʒəˈn(j)uːəti/",
             "word": "ingenuity",
             "pos": "n.",
             "meaning": "独创性；心灵手巧；足智多谋"
           },
           {
             "id": "s3col1-exploitation",
+            "phonetic": "/ˌɛksplɔɪˈteɪʃn̩/",
             "word": "exploitation",
             "pos": "n.",
             "meaning": "开发；利用；剥削"
           },
           {
             "id": "s3col1-retreat",
+            "phonetic": "/ɹəˈtɹiːt/",
             "word": "retreat",
             "pos": "v.",
             "meaning": "撤退；退避"
           },
           {
             "id": "s3col1-embed",
+            "phonetic": "/əmˈbɛd/",
             "word": "embed",
             "pos": "v.",
             "meaning": "嵌入；植入；使深留"
           },
           {
             "id": "s3col1-distort",
+            "phonetic": "/dɪsˈtɔːt/",
             "word": "distort",
             "pos": "v.",
             "meaning": "扭曲；歪曲；使失真"
           },
           {
             "id": "s3col1-deem",
+            "phonetic": "/diːm/",
             "word": "deem",
             "pos": "v.",
             "meaning": "认为；视为"
           },
           {
             "id": "s3col1-publicity",
+            "phonetic": "/pʌbˈlɪsəti/",
             "word": "publicity",
             "pos": "n.",
             "meaning": "宣传；公众关注"
           },
           {
             "id": "s3col1-pyramid",
+            "phonetic": "/ˈpɪɹəmɪd/",
             "word": "pyramid",
             "pos": "n.",
             "meaning": "金字塔；棱锥体"
           },
           {
             "id": "s3col1-sculpture",
+            "phonetic": "/ˈskʌlpt͡ʃɚ/",
             "word": "sculpture",
             "pos": "n.",
             "meaning": "雕塑；雕刻品"
           },
           {
             "id": "s3col1-tilt",
+            "phonetic": "/tɪlt/",
             "word": "tilt",
             "pos": "v.",
             "meaning": "倾斜；翘起"
           },
           {
             "id": "s3col1-illiterate",
+            "phonetic": "/ɪˈlɪtəɹət/",
             "word": "illiterate",
             "pos": "adj.",
             "meaning": "文盲的；不会读写的"
           },
           {
             "id": "s3col1-stray",
+            "phonetic": "/stɹeɪ/",
             "word": "stray",
             "pos": "v.",
             "meaning": "迷路；偏离"
           },
           {
             "id": "s3col1-dividend",
+            "phonetic": "/ˈdɪvɪdɛnd/",
             "word": "dividend",
             "pos": "n.",
             "meaning": "股息；红利；回报"
@@ -3990,204 +4268,238 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s3col2-presumably",
+            "phonetic": "/pɹɪˈzuːməbli/",
             "word": "presumably",
             "pos": "adv.",
             "meaning": "大概；据推测"
           },
           {
             "id": "s3col2-essence",
+            "phonetic": "/ˈɛsəns/",
             "word": "essence",
             "pos": "n.",
             "meaning": "本质；精髓"
           },
           {
             "id": "s3col2-entail",
+            "phonetic": "/ənˈteɪl/",
             "word": "entail",
             "pos": "v.",
             "meaning": "需要；使成为必需"
           },
           {
             "id": "s3col2-disruption",
+            "phonetic": "/dɪsˈɹʌpʃən/",
             "word": "disruption",
             "pos": "n.",
             "meaning": "扰乱；中断"
           },
           {
             "id": "s3col2-curve",
+            "phonetic": "/kɝv/",
             "word": "curve",
             "pos": "n.",
             "meaning": "曲线；弧线"
           },
           {
             "id": "s3col2-devastating",
+            "phonetic": "/ˈdevəsteɪtɪŋ/",
             "word": "devastating",
             "pos": "adj.",
             "meaning": "毁灭性的；破坏性极强的"
           },
           {
             "id": "s3col2-psychiatrist",
+            "phonetic": "/ˌsaɪˈkaɪ.ə.tɹɪst/",
             "word": "psychiatrist",
             "pos": "n.",
             "meaning": "精神科医生"
           },
           {
             "id": "s3col2-outperform",
+            "phonetic": "/ˌaʊtpərˈfɔːrm/",
             "word": "outperform",
             "pos": "v.",
             "meaning": "胜过；表现优于"
           },
           {
             "id": "s3col2-exaggeration",
+            "phonetic": "/ɪɡˌzæd͡ʒəˈɹeɪʃən/",
             "word": "exaggeration",
             "pos": "n.",
             "meaning": "夸张；夸大"
           },
           {
             "id": "s3col2-feat",
+            "phonetic": "/fiːt/",
             "word": "feat",
             "pos": "n.",
             "meaning": "壮举；功绩"
           },
           {
             "id": "s3col2-advocacy",
+            "phonetic": "/ˈæd.və.kə.si/",
             "word": "advocacy",
             "pos": "n.",
             "meaning": "提倡；拥护；辩护"
           },
           {
             "id": "s3col2-intrigue",
+            "phonetic": "/ɪnˈtriːɡ/",
             "word": "intrigue",
             "pos": "v.",
             "meaning": "激起好奇心；引起兴趣"
           },
           {
             "id": "s3col2-excel",
+            "phonetic": "/ɪkˈsɛl/",
             "word": "excel",
             "pos": "v.",
             "meaning": "擅长；突出"
           },
           {
             "id": "s3col2-verge",
+            "phonetic": "/vɝd͡ʒ/",
             "word": "verge",
             "pos": "n.",
             "meaning": "边缘"
           },
           {
             "id": "s3col2-protagonist",
+            "phonetic": "/pɹoʊˈtæ.ɡə.nɪst/",
             "word": "protagonist",
             "pos": "n.",
             "meaning": "主角；主人公"
           },
           {
             "id": "s3col2-explicit",
+            "phonetic": "/ɪkˈsplɪsɪt/",
             "word": "explicit",
             "pos": "adj.",
             "meaning": "明确的；清楚的"
           },
           {
             "id": "s3col2-carbohydrate",
+            "phonetic": "/kɑːɹboʊˈhaɪdɹeɪt/",
             "word": "carbohydrate",
             "pos": "n.",
             "meaning": "碳水化合物"
           },
           {
             "id": "s3col2-hectic",
+            "phonetic": "/ˈhɛktɪk/",
             "word": "hectic",
             "pos": "adj.",
             "meaning": "忙乱的；繁忙的"
           },
           {
             "id": "s3col2-legitimate",
+            "phonetic": "/lɪˈdʒɪtɪmət/",
             "word": "legitimate",
             "pos": "adj.",
             "meaning": "合理的；合法的"
           },
           {
             "id": "s3col2-strand",
+            "phonetic": "/stɹænd/",
             "word": "strand",
             "pos": "n.",
             "meaning": "一股；一缕"
           },
           {
             "id": "s3col2-satire",
+            "phonetic": "/ˈsætaɪɹ/",
             "word": "satire",
             "pos": "n.",
             "meaning": "讽刺；讽刺作品"
           },
           {
             "id": "s3col2-timber",
+            "phonetic": "/ˈtɪmbə/",
             "word": "timber",
             "pos": "n.",
             "meaning": "木材；木料"
           },
           {
             "id": "s3col2-dwell",
+            "phonetic": "/dwɛl/",
             "word": "dwell",
             "pos": "v.",
             "meaning": "细想；居住（常与 on 连用）"
           },
           {
             "id": "s3col2-redundant",
+            "phonetic": "/ɹɪˈdʌn.dənt/",
             "word": "redundant",
             "pos": "adj.",
             "meaning": "多余的；冗余的"
           },
           {
             "id": "s3col2-crude",
+            "phonetic": "/kɹuːd/",
             "word": "crude",
             "pos": "adj.",
             "meaning": "粗糙的；粗略的"
           },
           {
             "id": "s3col2-imminent",
+            "phonetic": "/ˈɪmɪnənt/",
             "word": "imminent",
             "pos": "adj.",
             "meaning": "迫近的；即将发生的"
           },
           {
             "id": "s3col2-blur",
+            "phonetic": "/blɜ(ɹ)/",
             "word": "blur",
             "pos": "v.",
             "meaning": "（使）变模糊"
           },
           {
             "id": "s3col2-desperate",
+            "phonetic": "/ˈdɛsp(ə)ɹət/",
             "word": "desperate",
             "pos": "adj.",
             "meaning": "绝望的；拼命的"
           },
           {
             "id": "s3col2-thorough",
+            "phonetic": "/ˈθɜɹoʊ/",
             "word": "thorough",
             "pos": "adj.",
             "meaning": "彻底的；详尽的"
           },
           {
             "id": "s3col2-calcium",
+            "phonetic": "/ˈkælsi.əm/",
             "word": "calcium",
             "pos": "n.",
             "meaning": "钙"
           },
           {
             "id": "s3col2-imperative",
+            "phonetic": "/ɪmˈpɛɹ.ə.tɪv/",
             "word": "imperative",
             "pos": "adj.",
             "meaning": "必要的；迫切的"
           },
           {
             "id": "s3col2-refuge",
+            "phonetic": "/ˈɹɛfjuːdʒ/",
             "word": "refuge",
             "pos": "n.",
             "meaning": "避难所；庇护"
           },
           {
             "id": "s3col2-probe",
+            "phonetic": "/pɹəʊb/",
             "word": "probe",
             "pos": "v.",
             "meaning": "探查；探究"
           },
           {
             "id": "s3col2-propel",
+            "phonetic": "/pɹəˈpɛl/",
             "word": "propel",
             "pos": "v.",
             "meaning": "推进；推动"
@@ -4496,216 +4808,252 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s3col3-chunk",
+            "phonetic": "/t͡ʃʌŋk/",
             "word": "chunk",
             "pos": "n.",
             "meaning": "大块；厚块"
           },
           {
             "id": "s3col3-ancestry",
+            "phonetic": "/ˈæn.sɛs.tɹi/",
             "word": "ancestry",
             "pos": "n.",
             "meaning": "祖先；血统"
           },
           {
             "id": "s3col3-autonomous",
+            "phonetic": "/ɔˈtɑnəməs/",
             "word": "autonomous",
             "pos": "adj.",
             "meaning": "自治的；自主的"
           },
           {
             "id": "s3col3-detach",
+            "phonetic": "/dɪˈtætʃ/",
             "word": "detach",
             "pos": "v.",
             "meaning": "分离；拆开；使脱离"
           },
           {
             "id": "s3col3-collision",
+            "phonetic": "/kəˈlɪʒən/",
             "word": "collision",
             "pos": "n.",
             "meaning": "碰撞；冲突"
           },
           {
             "id": "s3col3-grip",
+            "phonetic": "/ɡɹɪp/",
             "word": "grip",
             "pos": "n./v.",
             "meaning": "紧握；控制"
           },
           {
             "id": "s3col3-automobile",
+            "phonetic": "/ˈɔ.tə.moʊˌbil/",
             "word": "automobile",
             "pos": "n.",
             "meaning": "汽车"
           },
           {
             "id": "s3col3-conception",
+            "phonetic": "/kənˈsɛpʃən/",
             "word": "conception",
             "pos": "n.",
             "meaning": "构想；概念；受孕"
           },
           {
             "id": "s3col3-rein",
+            "phonetic": "/ɹeɪn/",
             "word": "rein",
             "pos": "n.",
             "meaning": "缰绳；控制权"
           },
           {
             "id": "s3col3-manifest",
+            "phonetic": "/ˈmæn.ə.fɛst/",
             "word": "manifest",
             "pos": "v./adj.",
             "meaning": "显现；表明；明显的"
           },
           {
             "id": "s3col3-reproduction",
+            "phonetic": "/ˌriːprəˈdʌkʃ(ə)n/",
             "word": "reproduction",
             "pos": "n.",
             "meaning": "复制；再现；繁殖"
           },
           {
             "id": "s3col3-resilient",
+            "phonetic": "/rɪˈzɪliənt/",
             "word": "resilient",
             "pos": "adj.",
             "meaning": "有韧性的；能恢复的"
           },
           {
             "id": "s3col3-compatible",
+            "phonetic": "/kəmˈpætəbəl/",
             "word": "compatible",
             "pos": "adj.",
             "meaning": "兼容的；相容的"
           },
           {
             "id": "s3col3-speculate",
+            "phonetic": "/ˈspekjuleɪt/",
             "word": "speculate",
             "pos": "v.",
             "meaning": "推测；猜测；投机"
           },
           {
             "id": "s3col3-factual",
+            "phonetic": "/ˈfæk(t)ʃuəl/",
             "word": "factual",
             "pos": "adj.",
             "meaning": "事实的；基于事实的"
           },
           {
             "id": "s3col3-embark",
+            "phonetic": "/ɛmˈbɑːk/",
             "word": "embark",
             "pos": "v.",
             "meaning": "着手；从事；上船"
           },
           {
             "id": "s3col3-revive",
+            "phonetic": "/ɹɪˈvaɪv/",
             "word": "revive",
             "pos": "v.",
             "meaning": "使复苏；使复兴"
           },
           {
             "id": "s3col3-burial",
+            "phonetic": "/ˈbɛɹiəl/",
             "word": "burial",
             "pos": "n.",
             "meaning": "埋葬；葬礼"
           },
           {
             "id": "s3col3-jeopardise",
+            "phonetic": "/ˈdʒepərdaɪz/",
             "word": "jeopardise",
             "pos": "v.",
             "meaning": "危及；损害"
           },
           {
             "id": "s3col3-repository",
+            "phonetic": "/rɪˈpɑːzətɔːri/",
             "word": "repository",
             "pos": "n.",
             "meaning": "贮藏室；储藏库"
           },
           {
             "id": "s3col3-reckon",
+            "phonetic": "/ˈɹɛkən/",
             "word": "reckon",
             "pos": "v.",
             "meaning": "估算；认为；想"
           },
           {
             "id": "s3col3-dedication",
+            "phonetic": "/ˌdɛdɪˈkeɪʃən/",
             "word": "dedication",
             "pos": "n.",
             "meaning": "奉献；献身；专注"
           },
           {
             "id": "s3col3-notably",
+            "phonetic": "/ˈnoʊtəbli/",
             "word": "notably",
             "pos": "adv.",
             "meaning": "显著地；尤其"
           },
           {
             "id": "s3col3-circulate",
+            "phonetic": "/ˈsɚˌkju.leɪt/",
             "word": "circulate",
             "pos": "v.",
             "meaning": "流传；循环；散布"
           },
           {
             "id": "s3col3-incur",
+            "phonetic": "/ɪnˈkɝ/",
             "word": "incur",
             "pos": "v.",
             "meaning": "招致；引起；承担"
           },
           {
             "id": "s3col3-deliberate",
+            "phonetic": "/dɪˈlɪbərət/",
             "word": "deliberate",
             "pos": "adj./v.",
             "meaning": "蓄意的；深思熟虑的"
           },
           {
             "id": "s3col3-compulsory",
+            "phonetic": "/kəmˈpʌlsəri/",
             "word": "compulsory",
             "pos": "adj.",
             "meaning": "强制的；必修的；义务的"
           },
           {
             "id": "s3col3-drift",
+            "phonetic": "/dɹɪft/",
             "word": "drift",
             "pos": "v./n.",
             "meaning": "漂流；漂移；飘动"
           },
           {
             "id": "s3col3-rigour",
+            "phonetic": "/ˈɹɪɡə(ɹ)/",
             "word": "rigour",
             "pos": "n.",
             "meaning": "严格；严密；严酷"
           },
           {
             "id": "s3col3-haul",
+            "phonetic": "/hɔːl/",
             "word": "haul",
             "pos": "n./v.",
             "meaning": "拖拉；搬运；长途运输"
           },
           {
             "id": "s3col3-nominate",
+            "phonetic": "/ˈnɒm.ə.neɪt/",
             "word": "nominate",
             "pos": "v.",
             "meaning": "提名；任命"
           },
           {
             "id": "s3col3-violation",
+            "phonetic": "/ˌvaɪəˈleɪʃən/",
             "word": "violation",
             "pos": "n.",
             "meaning": "违反；违背；侵犯"
           },
           {
             "id": "s3col3-fraud",
+            "phonetic": "/fɹɔːd/",
             "word": "fraud",
             "pos": "n.",
             "meaning": "欺诈；骗局；骗子"
           },
           {
             "id": "s3col3-slack",
+            "phonetic": "/slæk/",
             "word": "slack",
             "pos": "adj.",
             "meaning": "松弛的；懈怠的；马虎的"
           },
           {
             "id": "s3col3-descendant",
+            "phonetic": "/dɪˈsɛndənt/",
             "word": "descendant",
             "pos": "n.",
             "meaning": "后代；后裔"
           },
           {
             "id": "s3col3-aisle",
+            "phonetic": "/aɪ̯l/",
             "word": "aisle",
             "pos": "n.",
             "meaning": "过道；通道；走廊"
@@ -5009,198 +5357,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s3col4-paralysed",
+            "phonetic": "/ˈpærəlaɪzd/",
             "word": "paralysed",
             "pos": "adj.",
             "meaning": "瘫痪的；麻痹的"
           },
           {
             "id": "s3col4-tide",
+            "phonetic": "/taɪd/",
             "word": "tide",
             "pos": "n.",
             "meaning": "潮汐；潮流；浪潮"
           },
           {
             "id": "s3col4-tenure",
+            "phonetic": "/ˈtɛn.jə/",
             "word": "tenure",
             "pos": "n.",
             "meaning": "占有权；保有期；任期"
           },
           {
             "id": "s3col4-cottage",
+            "phonetic": "/ˈkɑtədʒ/",
             "word": "cottage",
             "pos": "n.",
             "meaning": "村舍；小屋"
           },
           {
             "id": "s3col4-suspicion",
+            "phonetic": "/sə.ˈspɪ.ʃən/",
             "word": "suspicion",
             "pos": "n.",
             "meaning": "怀疑；嫌疑"
           },
           {
             "id": "s3col4-glacier",
+            "phonetic": "/ˈɡleɪ.ʃɚ/",
             "word": "glacier",
             "pos": "n.",
             "meaning": "冰川；冰河"
           },
           {
             "id": "s3col4-spectacle",
+            "phonetic": "/ˈspɛktəkl̩/",
             "word": "spectacle",
             "pos": "n.",
             "meaning": "壮观的景象；奇观"
           },
           {
             "id": "s3col4-notorious",
+            "phonetic": "/noʊˈtɔɹiəs/",
             "word": "notorious",
             "pos": "adj.",
             "meaning": "臭名昭著的；声名狼藉的"
           },
           {
             "id": "s3col4-sole",
+            "phonetic": "/soʊl/",
             "word": "sole",
             "pos": "adj.",
             "meaning": "唯一的；仅有的"
           },
           {
             "id": "s3col4-transcend",
+            "phonetic": "/tɹæn(t)ˈsɛnd/",
             "word": "transcend",
             "pos": "v.",
             "meaning": "超越；超出"
           },
           {
             "id": "s3col4-moan",
+            "phonetic": "/moʊn/",
             "word": "moan",
             "pos": "n./v.",
             "meaning": "呻吟（声）；抱怨"
           },
           {
             "id": "s3col4-oblige",
+            "phonetic": "/əˈblaɪdʒ/",
             "word": "oblige",
             "pos": "v.",
             "meaning": "迫使；责成；帮忙效劳"
           },
           {
             "id": "s3col4-tedious",
+            "phonetic": "/ˈti.di.əs/",
             "word": "tedious",
             "pos": "adj.",
             "meaning": "乏味的；单调沉闷的"
           },
           {
             "id": "s3col4-hazardous",
+            "phonetic": "/ˈhæzəɹdəs/",
             "word": "hazardous",
             "pos": "adj.",
             "meaning": "危险的；冒险的"
           },
           {
             "id": "s3col4-leverage",
+            "phonetic": "/ˈliːv(ə)ɹɪdʒ/",
             "word": "leverage",
             "pos": "v./n.",
             "meaning": "利用；杠杆作用；影响力"
           },
           {
             "id": "s3col4-blend",
+            "phonetic": "/blɛnd/",
             "word": "blend",
             "pos": "v./n.",
             "meaning": "混合；融合；混合物"
           },
           {
             "id": "s3col4-iconic",
+            "phonetic": "/aɪˈkɑːnɪk/",
             "word": "iconic",
             "pos": "adj.",
             "meaning": "标志性的；图标的"
           },
           {
             "id": "s3col4-rebel",
+            "phonetic": "/ˈɹɛbəl/",
             "word": "rebel",
             "pos": "v./n.",
             "meaning": "反抗；叛离；反抗者"
           },
           {
             "id": "s3col4-susceptible",
+            "phonetic": "/səˈsɛptɪbl̩/",
             "word": "susceptible",
             "pos": "adj.",
             "meaning": "易受影响的；易感染的"
           },
           {
             "id": "s3col4-contradict",
+            "phonetic": "/kɒntɹəˈdɪkt/",
             "word": "contradict",
             "pos": "v.",
             "meaning": "反驳；与……相矛盾"
           },
           {
             "id": "s3col4-stigma",
+            "phonetic": "/ˈstɪɡmə/",
             "word": "stigma",
             "pos": "n.",
             "meaning": "耻辱；污名"
           },
           {
             "id": "s3col4-plague",
+            "phonetic": "/pleɪɡ/",
             "word": "plague",
             "pos": "n./v.",
             "meaning": "瘟疫；虫害；折磨"
           },
           {
             "id": "s3col4-saturated",
+            "phonetic": "/ˈsætʃəreɪtɪd/",
             "word": "saturated",
             "pos": "adj.",
             "meaning": "饱和的；浸透的"
           },
           {
             "id": "s3col4-compact",
+            "phonetic": "/kəmˈpækt/",
             "word": "compact",
             "pos": "adj.",
             "meaning": "紧凑的；简洁的"
           },
           {
             "id": "s3col4-pesticide",
+            "phonetic": "/ˈpɛstɨsaɪd/",
             "word": "pesticide",
             "pos": "n.",
             "meaning": "杀虫剂；农药"
           },
           {
             "id": "s3col4-rationality",
+            "phonetic": "/ˌræʃəˈnæləti/",
             "word": "rationality",
             "pos": "n.",
             "meaning": "理性；合理性"
           },
           {
             "id": "s3col4-implicit",
+            "phonetic": "/ɪmˈplɪsɪt/",
             "word": "implicit",
             "pos": "adj.",
             "meaning": "含蓄的；暗含的"
           },
           {
             "id": "s3col4-immense",
+            "phonetic": "/ɪˈmɛns/",
             "word": "immense",
             "pos": "adj.",
             "meaning": "巨大的；广大的"
           },
           {
             "id": "s3col4-aggregate",
+            "phonetic": "/ˈæɡrɪɡət/",
             "word": "aggregate",
             "pos": "n./adj.",
             "meaning": "总计；聚集物；合计的"
           },
           {
             "id": "s3col4-therapeutic",
+            "phonetic": "/θɛɹəˈpjuːtɪk/",
             "word": "therapeutic",
             "pos": "adj.",
             "meaning": "治疗的；有疗效的"
           },
           {
             "id": "s3col4-stance",
+            "phonetic": "/stæns/",
             "word": "stance",
             "pos": "n.",
             "meaning": "立场；姿态"
           },
           {
             "id": "s3col4-shatter",
+            "phonetic": "/ˈʃæt.ɚ/",
             "word": "shatter",
             "pos": "v.",
             "meaning": "粉碎；砸碎；使破灭"
           },
           {
             "id": "s3col4-scattered",
+            "phonetic": "/ˈskætɚd/",
             "word": "scattered",
             "pos": "adj.",
             "meaning": "散落的；分散的"
@@ -5473,204 +5854,238 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s3col5-renovate",
+            "phonetic": "/ˈɹenəʊveɪt/",
             "word": "renovate",
             "pos": "v.",
             "meaning": "翻新；修复"
           },
           {
             "id": "s3col5-deprivation",
+            "phonetic": "/dɛp.ɹɪ.veɪʃən/",
             "word": "deprivation",
             "pos": "n.",
             "meaning": "剥夺；贫困"
           },
           {
             "id": "s3col5-plausible",
+            "phonetic": "/ˈplɔːz.ə.bəl/",
             "word": "plausible",
             "pos": "adj.",
             "meaning": "似有道理的；可信的"
           },
           {
             "id": "s3col5-morality",
+            "phonetic": "/məˈɹælɪti/",
             "word": "morality",
             "pos": "n.",
             "meaning": "道德；道德观"
           },
           {
             "id": "s3col5-magnitude",
+            "phonetic": "/ˈmæɡnɪtjuːd/",
             "word": "magnitude",
             "pos": "n.",
             "meaning": "重要性；规模"
           },
           {
             "id": "s3col5-medieval",
+            "phonetic": "/mɪd.ˈiː.vəl/",
             "word": "medieval",
             "pos": "adj.",
             "meaning": "中世纪的"
           },
           {
             "id": "s3col5-contempt",
+            "phonetic": "/kənˈtɛmpt/",
             "word": "contempt",
             "pos": "n.",
             "meaning": "蔑视；轻视"
           },
           {
             "id": "s3col5-provoke",
+            "phonetic": "/pɹəˈvoʊk/",
             "word": "provoke",
             "pos": "v.",
             "meaning": "激起；挑衅"
           },
           {
             "id": "s3col5-diesel",
+            "phonetic": "/ˈdiːzəl/",
             "word": "diesel",
             "pos": "n.",
             "meaning": "柴油"
           },
           {
             "id": "s3col5-additive",
+            "phonetic": "/ˈæ.dɪ.tɪv/",
             "word": "additive",
             "pos": "n.",
             "meaning": "添加剂"
           },
           {
             "id": "s3col5-warrant",
+            "phonetic": "/ˈwɑɹənt/",
             "word": "warrant",
             "pos": "v.",
             "meaning": "值得；证明……正当"
           },
           {
             "id": "s3col5-kidney",
+            "phonetic": "/ˈkɪdni/",
             "word": "kidney",
             "pos": "n.",
             "meaning": "肾脏"
           },
           {
             "id": "s3col5-embody",
+            "phonetic": "/ɪmˈbɒdi/",
             "word": "embody",
             "pos": "v.",
             "meaning": "体现；代表"
           },
           {
             "id": "s3col5-viable",
+            "phonetic": "/ˈvaɪəbəl/",
             "word": "viable",
             "pos": "adj.",
             "meaning": "可行的"
           },
           {
             "id": "s3col5-edible",
+            "phonetic": "/ˈɛdɪbl/",
             "word": "edible",
             "pos": "adj.",
             "meaning": "可食用的"
           },
           {
             "id": "s3col5-flaw",
+            "phonetic": "/ˈflɔ/",
             "word": "flaw",
             "pos": "n.",
             "meaning": "缺陷；瑕疵"
           },
           {
             "id": "s3col5-drain",
+            "phonetic": "/dɹeɪn/",
             "word": "drain",
             "pos": "n./v.",
             "meaning": "排水沟；消耗；排空"
           },
           {
             "id": "s3col5-spin",
+            "phonetic": "/spɪn/",
             "word": "spin",
             "pos": "v.",
             "meaning": "旋转；歪曲叙述"
           },
           {
             "id": "s3col5-conversion",
+            "phonetic": "/kənˈvɝʒən/",
             "word": "conversion",
             "pos": "n.",
             "meaning": "转换；改造"
           },
           {
             "id": "s3col5-vigorous",
+            "phonetic": "/ˈvɪɡəɹəs/",
             "word": "vigorous",
             "pos": "adj.",
             "meaning": "有力的；精力充沛的"
           },
           {
             "id": "s3col5-bust",
+            "phonetic": "/ˈbʌst/",
             "word": "bust",
             "pos": "v.",
             "meaning": "打破；使破产"
           },
           {
             "id": "s3col5-lament",
+            "phonetic": "/ləˈmɛnt/",
             "word": "lament",
             "pos": "v.",
             "meaning": "哀叹；惋惜"
           },
           {
             "id": "s3col5-eradicate",
+            "phonetic": "/ɪˈɹæd.ɪ.keɪt/",
             "word": "eradicate",
             "pos": "v.",
             "meaning": "根除；消灭"
           },
           {
             "id": "s3col5-resemble",
+            "phonetic": "/ɹɪˈzɛmb(ə)l/",
             "word": "resemble",
             "pos": "v.",
             "meaning": "类似；相似"
           },
           {
             "id": "s3col5-discard",
+            "phonetic": "/ˈdɪskɑːd/",
             "word": "discard",
             "pos": "v.",
             "meaning": "丢弃；抛弃"
           },
           {
             "id": "s3col5-likelihood",
+            "phonetic": "/ˈlaɪklihʊd/",
             "word": "likelihood",
             "pos": "n.",
             "meaning": "可能性"
           },
           {
             "id": "s3col5-dispose",
+            "phonetic": "/dɪsˈpoʊz/",
             "word": "dispose",
             "pos": "v.",
             "meaning": "处理；处置"
           },
           {
             "id": "s3col5-consultation",
+            "phonetic": "/ˌkɒnsl̩ˈteɪʃən/",
             "word": "consultation",
             "pos": "n.",
             "meaning": "咨询；磋商"
           },
           {
             "id": "s3col5-inferior",
+            "phonetic": "/ɪnˈfɪ(ə)ɹiɚ/",
             "word": "inferior",
             "pos": "adj.",
             "meaning": "劣质的；次的"
           },
           {
             "id": "s3col5-veteran",
+            "phonetic": "/[ˈvɛ.t̬ə.ɹən]/",
             "word": "veteran",
             "pos": "n./adj.",
             "meaning": "老兵；经验丰富的人"
           },
           {
             "id": "s3col5-applicable",
+            "phonetic": "/əˈplɪkəbəl/",
             "word": "applicable",
             "pos": "adj.",
             "meaning": "适用的；可应用的"
           },
           {
             "id": "s3col5-sneak",
+            "phonetic": "/sniːk/",
             "word": "sneak",
             "pos": "v.",
             "meaning": "偷偷地走；潜行"
           },
           {
             "id": "s3col5-predictable",
+            "phonetic": "/pɹɪˈdɪktəbl̩/",
             "word": "predictable",
             "pos": "adj.",
             "meaning": "可预测的"
           },
           {
             "id": "s3col5-import",
+            "phonetic": "/ˈɪm.pɔːt/",
             "word": "import",
             "pos": "v./n.",
             "meaning": "进口；引入"
@@ -5979,186 +6394,217 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s4col1-dread",
+            "phonetic": "/dɹɛd/",
             "word": "dread",
             "pos": "n.",
             "meaning": "恐惧；畏惧"
           },
           {
             "id": "s4col1-modernize",
+            "phonetic": "/ˈmɒdənaɪz/",
             "word": "modernize",
             "pos": "v.",
             "meaning": "使现代化"
           },
           {
             "id": "s4col1-conscientious",
+            "phonetic": "/ˌkɑnʃiˈɛnʃəs/",
             "word": "conscientious",
             "pos": "adj.",
             "meaning": "认真的；尽责的"
           },
           {
             "id": "s4col1-evaporate",
+            "phonetic": "/ɪˈvæpəɹeɪt/",
             "word": "evaporate",
             "pos": "v.",
             "meaning": "蒸发；消失"
           },
           {
             "id": "s4col1-fraction",
+            "phonetic": "/ˈfɹæk.ʃən/",
             "word": "fraction",
             "pos": "n.",
             "meaning": "小部分；一点儿"
           },
           {
             "id": "s4col1-bruising",
+            "phonetic": "/ˈbɹuːzɪŋ/",
             "word": "bruising",
             "pos": "adj.",
             "meaning": "艰苦的；激烈的"
           },
           {
             "id": "s4col1-overstate",
+            "phonetic": "/ˌoʊ.vɚˈsteɪt/",
             "word": "overstate",
             "pos": "v.",
             "meaning": "夸大；言过其实"
           },
           {
             "id": "s4col1-duplicate",
+            "phonetic": "/ˈdjuː.plɪ.kət/",
             "word": "duplicate",
             "pos": "adj.",
             "meaning": "复制的；完全相同的"
           },
           {
             "id": "s4col1-revelation",
+            "phonetic": "/ɹɛvəˈleɪʃən/",
             "word": "revelation",
             "pos": "n.",
             "meaning": "揭示；惊人的发现"
           },
           {
             "id": "s4col1-specialty",
+            "phonetic": "/ˈspɛʃəlti/",
             "word": "specialty",
             "pos": "n.",
             "meaning": "特色食品；特产"
           },
           {
             "id": "s4col1-affection",
+            "phonetic": "/əˈfɛkʃən/",
             "word": "affection",
             "pos": "n.",
             "meaning": "喜爱；感情"
           },
           {
             "id": "s4col1-tame",
+            "phonetic": "/teɪm/",
             "word": "tame",
             "pos": "v.",
             "meaning": "驯服；制服；整治"
           },
           {
             "id": "s4col1-primitive",
+            "phonetic": "/ˈpɹɪmɪtɪv/",
             "word": "primitive",
             "pos": "adj.",
             "meaning": "原始的；粗犷的"
           },
           {
             "id": "s4col1-tranquility",
+            "phonetic": "/træŋˈkwɪləti/",
             "word": "tranquility",
             "pos": "n.",
             "meaning": "宁静；平静"
           },
           {
             "id": "s4col1-irrigate",
+            "phonetic": "/ˈɪɹəˌɡeɪt/",
             "word": "irrigate",
             "pos": "v.",
             "meaning": "灌溉"
           },
           {
             "id": "s4col1-staple",
+            "phonetic": "/ˈsteɪ.pəl/",
             "word": "staple",
             "pos": "adj.",
             "meaning": "主要的；基本的"
           },
           {
             "id": "s4col1-frantic",
+            "phonetic": "/ˈfɹæntɪk/",
             "word": "frantic",
             "pos": "adj.",
             "meaning": "慌乱的；狂乱的"
           },
           {
             "id": "s4col1-badge",
+            "phonetic": "/bædʒ/",
             "word": "badge",
             "pos": "n.",
             "meaning": "徽章；象征"
           },
           {
             "id": "s4col1-scoop",
+            "phonetic": "/skuːp/",
             "word": "scoop",
             "pos": "n.",
             "meaning": "独家新闻；独家报道"
           },
           {
             "id": "s4col1-corrosive",
+            "phonetic": "/kəˈroʊsɪv/",
             "word": "corrosive",
             "pos": "adj.",
             "meaning": "腐蚀性的；破坏性的"
           },
           {
             "id": "s4col1-marginal",
+            "phonetic": "/ˈmɑːˌdʒɪn.əl/",
             "word": "marginal",
             "pos": "adj.",
             "meaning": "边缘的；微不足道的"
           },
           {
             "id": "s4col1-nominal",
+            "phonetic": "/ˈnɑm.ɪnl̩/",
             "word": "nominal",
             "pos": "adj.",
             "meaning": "象征性的；名义上的"
           },
           {
             "id": "s4col1-preliminary",
+            "phonetic": "/pɹɪˈlɪmɪnəɹi/",
             "word": "preliminary",
             "pos": "adj.",
             "meaning": "初步的；预备的"
           },
           {
             "id": "s4col1-bureaucracy",
+            "phonetic": "/bjʊəˈɹɒkɹəsi/",
             "word": "bureaucracy",
             "pos": "n.",
             "meaning": "官僚主义；官僚机构"
           },
           {
             "id": "s4col1-instruction",
+            "phonetic": "/ɪnˈstɹʌkʃən/",
             "word": "instruction",
             "pos": "n.",
             "meaning": "指示；说明"
           },
           {
             "id": "s4col1-bankruptcy",
+            "phonetic": "/ˈbæŋkɹʌptsɪ/",
             "word": "bankruptcy",
             "pos": "n.",
             "meaning": "破产"
           },
           {
             "id": "s4col1-dazzle",
+            "phonetic": "/ˈdæzəl/",
             "word": "dazzle",
             "pos": "v.",
             "meaning": "使目眩；使倾倒"
           },
           {
             "id": "s4col1-spacious",
+            "phonetic": "/ˈspeɪʃəs/",
             "word": "spacious",
             "pos": "adj.",
             "meaning": "宽敞的"
           },
           {
             "id": "s4col1-layoff",
+            "phonetic": "/ˈleɪˌɔːf/",
             "word": "layoff",
             "pos": "n.",
             "meaning": "裁员；解雇"
           },
           {
             "id": "s4col1-endorsement",
+            "phonetic": "/ɪnˈdɔːrsmənt/",
             "word": "endorsement",
             "pos": "n.",
             "meaning": "认可；支持；背书"
           },
           {
             "id": "s4col1-bleak",
+            "phonetic": "/bliːk/",
             "word": "bleak",
             "pos": "adj.",
             "meaning": "黯淡的；荒凉的"
@@ -6439,198 +6885,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s4col2-hospitality",
+            "phonetic": "/hɑs.pɪˈtæl.ɪ.ti/",
             "word": "hospitality",
             "pos": "n.",
             "meaning": "好客；殷勤"
           },
           {
             "id": "s4col2-vacant",
+            "phonetic": "/ˈveɪkənt/",
             "word": "vacant",
             "pos": "adj.",
             "meaning": "空的；空置的"
           },
           {
             "id": "s4col2-integral",
+            "phonetic": "/ˈɪntɪɡɹəl/",
             "word": "integral",
             "pos": "adj.",
             "meaning": "不可或缺的；基本的"
           },
           {
             "id": "s4col2-merit",
+            "phonetic": "/ˈmɛɹət/",
             "word": "merit",
             "pos": "n.",
             "meaning": "价值；优点"
           },
           {
             "id": "s4col2-orientation",
+            "phonetic": "/ˌɔɹiɛnˈteɪʃən/",
             "word": "orientation",
             "pos": "n.",
             "meaning": "方向；定位"
           },
           {
             "id": "s4col2-patrol",
+            "phonetic": "/pəˈtɹəʊl/",
             "word": "patrol",
             "pos": "v.",
             "meaning": "巡逻"
           },
           {
             "id": "s4col2-brochure",
+            "phonetic": "/bɹoʊˈʃɝ/",
             "word": "brochure",
             "pos": "n.",
             "meaning": "小册子"
           },
           {
             "id": "s4col2-intrinsic",
+            "phonetic": "/ɪn.ˈtɹɪn.zɪk/",
             "word": "intrinsic",
             "pos": "adj.",
             "meaning": "内在的；本质的"
           },
           {
             "id": "s4col2-slump",
+            "phonetic": "/slʌmp/",
             "word": "slump",
             "pos": "n.",
             "meaning": "萧条；暴跌"
           },
           {
             "id": "s4col2-enact",
+            "phonetic": "/ɪˈnækt/",
             "word": "enact",
             "pos": "v.",
             "meaning": "制定；颁布"
           },
           {
             "id": "s4col2-assault",
+            "phonetic": "/əˈsɔːlt/",
             "word": "assault",
             "pos": "n.",
             "meaning": "袭击；攻击"
           },
           {
             "id": "s4col2-embargo",
+            "phonetic": "/ɪmˈbɑːɡəʊ/",
             "word": "embargo",
             "pos": "n.",
             "meaning": "禁运；贸易封锁"
           },
           {
             "id": "s4col2-envisage",
+            "phonetic": "/ɛnˈvɪzɪdʒ/",
             "word": "envisage",
             "pos": "v.",
             "meaning": "设想；预见"
           },
           {
             "id": "s4col2-gale",
+            "phonetic": "/ɡeɪl/",
             "word": "gale",
             "pos": "n.",
             "meaning": "大风；狂风"
           },
           {
             "id": "s4col2-restrain",
+            "phonetic": "/ɹɪˈstɹeɪn/",
             "word": "restrain",
             "pos": "v.",
             "meaning": "抑制；克制"
           },
           {
             "id": "s4col2-durable",
+            "phonetic": "/ˈd(j)ʊəɹəbəl/",
             "word": "durable",
             "pos": "adj.",
             "meaning": "持久的；耐久的"
           },
           {
             "id": "s4col2-allure",
+            "phonetic": "/əˈl(j)ʊɚ/",
             "word": "allure",
             "pos": "n.",
             "meaning": "诱惑力；魅力"
           },
           {
             "id": "s4col2-ordeal",
+            "phonetic": "/ɔɹˈdil/",
             "word": "ordeal",
             "pos": "n.",
             "meaning": "煎熬；严酷考验"
           },
           {
             "id": "s4col2-allege",
+            "phonetic": "/əˈlɛdʒ/",
             "word": "allege",
             "pos": "v.",
             "meaning": "声称；断言"
           },
           {
             "id": "s4col2-furious",
+            "phonetic": "/ˈfjɝ.i.əs/",
             "word": "furious",
             "pos": "adj.",
             "meaning": "猛烈的；狂怒的"
           },
           {
             "id": "s4col2-deduction",
+            "phonetic": "/dɪˈdʌkʃən/",
             "word": "deduction",
             "pos": "n.",
             "meaning": "推断；演绎"
           },
           {
             "id": "s4col2-turmoil",
+            "phonetic": "/ˈtɜːmɔɪl/",
             "word": "turmoil",
             "pos": "n.",
             "meaning": "动荡；混乱"
           },
           {
             "id": "s4col2-credential",
+            "phonetic": "/kɹɪˈdɛnʃəl/",
             "word": "credential",
             "pos": "n.",
             "meaning": "资历；凭据"
           },
           {
             "id": "s4col2-unleash",
+            "phonetic": "/ʌnˈliʃ/",
             "word": "unleash",
             "pos": "v.",
             "meaning": "释放；发动"
           },
           {
             "id": "s4col2-fallacy",
+            "phonetic": "/ˈfæləsi/",
             "word": "fallacy",
             "pos": "n.",
             "meaning": "谬论；谬误"
           },
           {
             "id": "s4col2-undernourished",
+            "phonetic": "/ˌʌndərˈnɜːrɪʃt/",
             "word": "undernourished",
             "pos": "adj.",
             "meaning": "营养不良的"
           },
           {
             "id": "s4col2-cereal",
+            "phonetic": "/[ˈsɪəɹiːəɫ]/",
             "word": "cereal",
             "pos": "n.",
             "meaning": "谷物"
           },
           {
             "id": "s4col2-whip",
+            "phonetic": "/wɪp/",
             "word": "whip",
             "pos": "v.",
             "meaning": "驱使；鞭策"
           },
           {
             "id": "s4col2-evade",
+            "phonetic": "/ɪˈveɪd/",
             "word": "evade",
             "pos": "v.",
             "meaning": "躲避；规避"
           },
           {
             "id": "s4col2-ingenious",
+            "phonetic": "/ɪnˈdʒiːniəs/",
             "word": "ingenious",
             "pos": "adj.",
             "meaning": "巧妙的；独创的"
           },
           {
             "id": "s4col2-ardently",
+            "phonetic": "/ˈɑːrdntli/",
             "word": "ardently",
             "pos": "adv.",
             "meaning": "热烈地；热切地"
           },
           {
             "id": "s4col2-irony",
+            "phonetic": "/ˈaɪ.ɚ.ni/",
             "word": "irony",
             "pos": "n.",
             "meaning": "讽刺；反讽"
           },
           {
             "id": "s4col2-bolster",
+            "phonetic": "/ˈbəʊlstə/",
             "word": "bolster",
             "pos": "v.",
             "meaning": "支撑；增强"
@@ -6924,186 +7403,217 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s4col3-depiction",
+            "phonetic": "/dɪˈpɪkʃ(ə)n/",
             "word": "depiction",
             "pos": "n.",
             "meaning": "描绘；描写"
           },
           {
             "id": "s4col3-wither",
+            "phonetic": "/ˈwɪðə/",
             "word": "wither",
             "pos": "v.",
             "meaning": "枯萎；凋谢"
           },
           {
             "id": "s4col3-startling",
+            "phonetic": "/ˈstɑː.tl̩.ɪŋ/",
             "word": "startling",
             "pos": "adj.",
             "meaning": "令人吃惊的"
           },
           {
             "id": "s4col3-eternal",
+            "phonetic": "/ɪˈtɝnəl/",
             "word": "eternal",
             "pos": "adj.",
             "meaning": "永恒的"
           },
           {
             "id": "s4col3-crave",
+            "phonetic": "/kɹeɪv/",
             "word": "crave",
             "pos": "v.",
             "meaning": "渴望"
           },
           {
             "id": "s4col3-divert",
+            "phonetic": "/daɪˈvɝt/",
             "word": "divert",
             "pos": "v.",
             "meaning": "转移"
           },
           {
             "id": "s4col3-blunt",
+            "phonetic": "/blʌnt/",
             "word": "blunt",
             "pos": "adj.",
             "meaning": "钝的；不锋利的"
           },
           {
             "id": "s4col3-penetrate",
+            "phonetic": "/ˈpɛnɪtɹeɪt/",
             "word": "penetrate",
             "pos": "v.",
             "meaning": "穿透；透过"
           },
           {
             "id": "s4col3-insulate",
+            "phonetic": "/ˈɪnsəleɪt/",
             "word": "insulate",
             "pos": "v.",
             "meaning": "隔离；使隔绝"
           },
           {
             "id": "s4col3-parameter",
+            "phonetic": "/pəˈɹæm.ɪ.tə/",
             "word": "parameter",
             "pos": "n.",
             "meaning": "参数；界限"
           },
           {
             "id": "s4col3-reimburse",
+            "phonetic": "/ˌriːɪmˈbɜːrs/",
             "word": "reimburse",
             "pos": "v.",
             "meaning": "偿还；报销"
           },
           {
             "id": "s4col3-surrender",
+            "phonetic": "/səˈɹɛndəɹ/",
             "word": "surrender",
             "pos": "v.",
             "meaning": "屈服；投降"
           },
           {
             "id": "s4col3-hamper",
+            "phonetic": "/ˈhæmpɚ/",
             "word": "hamper",
             "pos": "v.",
             "meaning": "阻碍；妨碍"
           },
           {
             "id": "s4col3-stagnation",
+            "phonetic": "/stæɡˈneɪʃən/",
             "word": "stagnation",
             "pos": "n.",
             "meaning": "停滞"
           },
           {
             "id": "s4col3-overlap",
+            "phonetic": "/ˈəʊvəˌlæp/",
             "word": "overlap",
             "pos": "n.",
             "meaning": "重叠；交集"
           },
           {
             "id": "s4col3-swamp",
+            "phonetic": "/swɑmp/",
             "word": "swamp",
             "pos": "v.",
             "meaning": "淹没；使应接不暇"
           },
           {
             "id": "s4col3-recede",
+            "phonetic": "/ɹɨˈsiːd/",
             "word": "recede",
             "pos": "v.",
             "meaning": "退去；消退"
           },
           {
             "id": "s4col3-avert",
+            "phonetic": "/əˈvɜːt/",
             "word": "avert",
             "pos": "v.",
             "meaning": "避开；转移"
           },
           {
             "id": "s4col3-utter",
+            "phonetic": "/ˈʌtɚ/",
             "word": "utter",
             "pos": "adj.",
             "meaning": "完全的；彻底的"
           },
           {
             "id": "s4col3-sensational",
+            "phonetic": "/senˈseɪʃən(ə)l/",
             "word": "sensational",
             "pos": "adj.",
             "meaning": "轰动的；耸人听闻的"
           },
           {
             "id": "s4col3-rehearsal",
+            "phonetic": "/ɹɪˈhɜː(ɹ)səl/",
             "word": "rehearsal",
             "pos": "n.",
             "meaning": "排练；预演"
           },
           {
             "id": "s4col3-casualty",
+            "phonetic": "/ˈkaʒ(ʊ)əlti/",
             "word": "casualty",
             "pos": "n.",
             "meaning": "受害者；牺牲品"
           },
           {
             "id": "s4col3-haunt",
+            "phonetic": "/hænt/",
             "word": "haunt",
             "pos": "v.",
             "meaning": "困扰；萦绕"
           },
           {
             "id": "s4col3-rivalry",
+            "phonetic": "/ˈɹaɪ.vəl.ɹi/",
             "word": "rivalry",
             "pos": "n.",
             "meaning": "竞争；对抗"
           },
           {
             "id": "s4col3-carpentry",
+            "phonetic": "/ˈkɑːrpəntri/",
             "word": "carpentry",
             "pos": "n.",
             "meaning": "木工；木匠活"
           },
           {
             "id": "s4col3-offspring",
+            "phonetic": "/ˈɒfspɹɪŋ/",
             "word": "offspring",
             "pos": "n.",
             "meaning": "产物；后代"
           },
           {
             "id": "s4col3-discern",
+            "phonetic": "/dɪˈsɜːrn/",
             "word": "discern",
             "pos": "v.",
             "meaning": "辨别；识别"
           },
           {
             "id": "s4col3-ditch",
+            "phonetic": "/dɪtʃ/",
             "word": "ditch",
             "pos": "v.",
             "meaning": "抛弃；丢弃"
           },
           {
             "id": "s4col3-brisk",
+            "phonetic": "/bɹɪsk/",
             "word": "brisk",
             "pos": "adj.",
             "meaning": "轻快的；利落的"
           },
           {
             "id": "s4col3-peninsula",
+            "phonetic": "/pəˈnɪn.sə.lə/",
             "word": "peninsula",
             "pos": "n.",
             "meaning": "半岛"
           },
           {
             "id": "s4col3-discrepancy",
+            "phonetic": "/dɪsˈkɹɛpənsi/",
             "word": "discrepancy",
             "pos": "n.",
             "meaning": "差异；不一致"
@@ -7385,210 +7895,245 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s4col4-brisk",
+            "phonetic": "/bɹɪsk/",
             "word": "brisk",
             "pos": "adj.",
             "meaning": "轻快的；凛冽的"
           },
           {
             "id": "s4col4-consciousness",
+            "phonetic": "/ˈkɑnʃəsnəs/",
             "word": "consciousness",
             "pos": "n.",
             "meaning": "意识；知觉"
           },
           {
             "id": "s4col4-surplus",
+            "phonetic": "/ˈsɜːpləs/",
             "word": "surplus",
             "pos": "n.",
             "meaning": "过剩；剩余"
           },
           {
             "id": "s4col4-score",
+            "phonetic": "/skɔɹ/",
             "word": "score",
             "pos": "n.",
             "meaning": "二十（计数量词）"
           },
           {
             "id": "s4col4-flatter",
+            "phonetic": "/ˈflætɚ/",
             "word": "flatter",
             "pos": "v.",
             "meaning": "奉承；讨好"
           },
           {
             "id": "s4col4-spectator",
+            "phonetic": "/ˈspɛkteɪtɚ/",
             "word": "spectator",
             "pos": "n.",
             "meaning": "旁观者；观众"
           },
           {
             "id": "s4col4-craze",
+            "phonetic": "/kɹeɪz/",
             "word": "craze",
             "pos": "n.",
             "meaning": "狂热；风潮"
           },
           {
             "id": "s4col4-upbringing",
+            "phonetic": "/ˈʌpbrɪŋɪŋ/",
             "word": "upbringing",
             "pos": "n.",
             "meaning": "抚养；教养"
           },
           {
             "id": "s4col4-rationing",
+            "phonetic": "/ˈræʃənɪŋ/",
             "word": "rationing",
             "pos": "n.",
             "meaning": "配给；定量供应"
           },
           {
             "id": "s4col4-lump",
+            "phonetic": "/lʌmp/",
             "word": "lump",
             "pos": "n.",
             "meaning": "肿块；硬块"
           },
           {
             "id": "s4col4-renowned",
+            "phonetic": "/ɹɪˈnaʊnd/",
             "word": "renowned",
             "pos": "adj.",
             "meaning": "著名的"
           },
           {
             "id": "s4col4-uplift",
+            "phonetic": "/ˈʌplɪft/",
             "word": "uplift",
             "pos": "n.",
             "meaning": "振奋；提升"
           },
           {
             "id": "s4col4-friction",
+            "phonetic": "/ˈfɹɪkʃən̩/",
             "word": "friction",
             "pos": "n.",
             "meaning": "摩擦；冲突"
           },
           {
             "id": "s4col4-liable",
+            "phonetic": "/ˈlaɪ̯əbəl/",
             "word": "liable",
             "pos": "adj.",
             "meaning": "易于…的；可能…的"
           },
           {
             "id": "s4col4-populate",
+            "phonetic": "/ˈpɒp.jʊˌleɪt/",
             "word": "populate",
             "pos": "v.",
             "meaning": "居住于；占据"
           },
           {
             "id": "s4col4-soothe",
+            "phonetic": "/suːð/",
             "word": "soothe",
             "pos": "v.",
             "meaning": "安慰；抚慰"
           },
           {
             "id": "s4col4-mansion",
+            "phonetic": "/ˈmæn(t)ʃən/",
             "word": "mansion",
             "pos": "n.",
             "meaning": "宅邸；大厦"
           },
           {
             "id": "s4col4-worldly",
+            "phonetic": "/ˈwɜː(ɹ)ldli/",
             "word": "worldly",
             "pos": "adj.",
             "meaning": "世俗的；尘世的"
           },
           {
             "id": "s4col4-garment",
+            "phonetic": "/ˈɡɑː.mənt/",
             "word": "garment",
             "pos": "n.",
             "meaning": "衣服；服装"
           },
           {
             "id": "s4col4-proclaim",
+            "phonetic": "/pɹoʊˈkleɪm/",
             "word": "proclaim",
             "pos": "v.",
             "meaning": "宣称；宣告"
           },
           {
             "id": "s4col4-torture",
+            "phonetic": "/ˈtɔɹt͡ʃɚ/",
             "word": "torture",
             "pos": "n.",
             "meaning": "折磨；酷刑"
           },
           {
             "id": "s4col4-fleet",
+            "phonetic": "/flit/",
             "word": "fleet",
             "pos": "n.",
             "meaning": "船队；舰队"
           },
           {
             "id": "s4col4-attain",
+            "phonetic": "/əˈteɪn/",
             "word": "attain",
             "pos": "v.",
             "meaning": "获得；达到"
           },
           {
             "id": "s4col4-solitary",
+            "phonetic": "/ˈsɑlɪtɛɹi/",
             "word": "solitary",
             "pos": "adj.",
             "meaning": "孤独的；独自的"
           },
           {
             "id": "s4col4-complement",
+            "phonetic": "/ˈkɒmpləmənt/",
             "word": "complement",
             "pos": "v.",
             "meaning": "补充；补足"
           },
           {
             "id": "s4col4-dissertation",
+            "phonetic": "/ˌdɪsəˈteɪʃən/",
             "word": "dissertation",
             "pos": "n.",
             "meaning": "学位论文"
           },
           {
             "id": "s4col4-kidnap",
+            "phonetic": "/ˈkɪdnæp/",
             "word": "kidnap",
             "pos": "v.",
             "meaning": "绑架；劫持"
           },
           {
             "id": "s4col4-roam",
+            "phonetic": "/ɹoʊm/",
             "word": "roam",
             "pos": "v.",
             "meaning": "漫游；徜徉"
           },
           {
             "id": "s4col4-obscure",
+            "phonetic": "/əbˈskjɝ/",
             "word": "obscure",
             "pos": "adj.",
             "meaning": "鲜为人知的；晦涩的"
           },
           {
             "id": "s4col4-stripe",
+            "phonetic": "/st(ʃ)ɹʌɪp/",
             "word": "stripe",
             "pos": "n.",
             "meaning": "条纹；狭长地带"
           },
           {
             "id": "s4col4-magnetic",
+            "phonetic": "/mæɡˈnɛtɪk/",
             "word": "magnetic",
             "pos": "adj.",
             "meaning": "有磁性的；有吸引力的"
           },
           {
             "id": "s4col4-credibility",
+            "phonetic": "/kɹɛd.ə.ˈbɪ.ɫɪ.ti/",
             "word": "credibility",
             "pos": "n.",
             "meaning": "可信度；信誉"
           },
           {
             "id": "s4col4-botanist",
+            "phonetic": "/ˈbɒt.ən.ɪst/",
             "word": "botanist",
             "pos": "n.",
             "meaning": "植物学家"
           },
           {
             "id": "s4col4-injection",
+            "phonetic": "/ɪn.ˈdʒɛk.ʃən/",
             "word": "injection",
             "pos": "n.",
             "meaning": "注射"
           },
           {
             "id": "s4col4-caption",
+            "phonetic": "/ˈkæp.ʃən/",
             "word": "caption",
             "pos": "n.",
             "meaning": "说明文字；标题"
@@ -7919,216 +8464,252 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s5col1-traumatic",
+            "phonetic": "/trəˈmætɪk/",
             "word": "traumatic",
             "pos": "adj.",
             "meaning": "创伤的；造成精神创伤的"
           },
           {
             "id": "s5col1-deceive",
+            "phonetic": "/dɪˈsiːv/",
             "word": "deceive",
             "pos": "v.",
             "meaning": "欺骗；蒙蔽"
           },
           {
             "id": "s5col1-elicit",
+            "phonetic": "/ɪˈlɪsɪt/",
             "word": "elicit",
             "pos": "v.",
             "meaning": "引起；引出"
           },
           {
             "id": "s5col1-unplug",
+            "phonetic": "/ʌnˈplʌɡ/",
             "word": "unplug",
             "pos": "v.",
             "meaning": "拔掉插头；断开连接"
           },
           {
             "id": "s5col1-hyperactivity",
+            "phonetic": "/ˌhaɪpərækˈtɪvəti/",
             "word": "hyperactivity",
             "pos": "n.",
             "meaning": "极度活跃；多动"
           },
           {
             "id": "s5col1-atlas",
+            "phonetic": "/ˈætləs/",
             "word": "atlas",
             "pos": "n.",
             "meaning": "地图集；图集"
           },
           {
             "id": "s5col1-chronicle",
+            "phonetic": "/ˈkɹɒnɪkəl/",
             "word": "chronicle",
             "pos": "n.",
             "meaning": "编年史；记录"
           },
           {
             "id": "s5col1-reckless",
+            "phonetic": "/ˈɹɛkləs/",
             "word": "reckless",
             "pos": "adj.",
             "meaning": "鲁莽的；不计后果的"
           },
           {
             "id": "s5col1-neutral",
+            "phonetic": "/ˈnuːtɹəl/",
             "word": "neutral",
             "pos": "adj.",
             "meaning": "中立的；不偏不倚的"
           },
           {
             "id": "s5col1-harness",
+            "phonetic": "/ˈhɑː(ɹ).nəs/",
             "word": "harness",
             "pos": "v.",
             "meaning": "利用；驾驭"
           },
           {
             "id": "s5col1-creep",
+            "phonetic": "/kɹiːp/",
             "word": "creep",
             "pos": "v.",
             "meaning": "悄悄蔓延；潜行"
           },
           {
             "id": "s5col1-crossbreed",
+            "phonetic": "/ˈkɹɑːsˌbɹiːd/",
             "word": "crossbreed",
             "pos": "v.",
             "meaning": "杂交；交叉培育"
           },
           {
             "id": "s5col1-successive",
+            "phonetic": "/səkˈsɛsɪv/",
             "word": "successive",
             "pos": "adj.",
             "meaning": "连续的；接连的"
           },
           {
             "id": "s5col1-sightseeing",
+            "phonetic": "/ˈsaɪtsiːɪŋ/",
             "word": "sightseeing",
             "pos": "n.",
             "meaning": "观光；游览"
           },
           {
             "id": "s5col1-submarine",
+            "phonetic": "/sʌb.məˈɹiːn/",
             "word": "submarine",
             "pos": "n.",
             "meaning": "潜水艇"
           },
           {
             "id": "s5col1-elevation",
+            "phonetic": "/ˌɛlɪˈveɪʃən/",
             "word": "elevation",
             "pos": "n.",
             "meaning": "海拔；高处"
           },
           {
             "id": "s5col1-formation",
+            "phonetic": "/fə(ɹ).ˈmeɪ.ʃən/",
             "word": "formation",
             "pos": "n.",
             "meaning": "结构；形成物"
           },
           {
             "id": "s5col1-revival",
+            "phonetic": "/ɹɪˈvaɪvəl/",
             "word": "revival",
             "pos": "n.",
             "meaning": "复苏；复兴"
           },
           {
             "id": "s5col1-molecular",
+            "phonetic": "/məˈlɛkjʊlə/",
             "word": "molecular",
             "pos": "adj.",
             "meaning": "分子的"
           },
           {
             "id": "s5col1-banquet",
+            "phonetic": "/ˈbæŋkwɪt/",
             "word": "banquet",
             "pos": "n.",
             "meaning": "宴会"
           },
           {
             "id": "s5col1-coincide",
+            "phonetic": "/ˌkoʊɪnˈsaɪd/",
             "word": "coincide",
             "pos": "v.",
             "meaning": "同时发生；巧合"
           },
           {
             "id": "s5col1-trim",
+            "phonetic": "/tɹɪm/",
             "word": "trim",
             "pos": "v.",
             "meaning": "修剪；整理"
           },
           {
             "id": "s5col1-stalk",
+            "phonetic": "/stɔk/",
             "word": "stalk",
             "pos": "v.",
             "meaning": "悄悄跟踪；纠缠"
           },
           {
             "id": "s5col1-cocaine",
+            "phonetic": "/koʊˈkeɪn/",
             "word": "cocaine",
             "pos": "n.",
             "meaning": "可卡因"
           },
           {
             "id": "s5col1-cultivation",
+            "phonetic": "/ˌkʌltɪˈveɪʃən/",
             "word": "cultivation",
             "pos": "n.",
             "meaning": "培养；栽培"
           },
           {
             "id": "s5col1-ritual",
+            "phonetic": "/ˈɹɪ.tʃu.əl/",
             "word": "ritual",
             "pos": "n.",
             "meaning": "惯例；仪式"
           },
           {
             "id": "s5col1-buzz",
+            "phonetic": "/bʌz/",
             "word": "buzz",
             "pos": "n.",
             "meaning": "嗡嗡声；喧闹"
           },
           {
             "id": "s5col1-comply",
+            "phonetic": "/kəmˈplaɪ/",
             "word": "comply",
             "pos": "v.",
             "meaning": "遵从；服从"
           },
           {
             "id": "s5col1-nominee",
+            "phonetic": "/ˌnɒmɪˈniː/",
             "word": "nominee",
             "pos": "n.",
             "meaning": "被提名人"
           },
           {
             "id": "s5col1-pharma",
+            "phonetic": "/ˈfɑːrmə/",
             "word": "pharma",
             "pos": "n.",
             "meaning": "制药（业）"
           },
           {
             "id": "s5col1-pharmacist",
+            "phonetic": "/ˈfɑɹməsɪst/",
             "word": "pharmacist",
             "pos": "n.",
             "meaning": "药剂师"
           },
           {
             "id": "s5col1-wary",
+            "phonetic": "/ˈwɛəɹ.i/",
             "word": "wary",
             "pos": "adj.",
             "meaning": "警惕的；小心的"
           },
           {
             "id": "s5col1-recipient",
+            "phonetic": "/ɹəˈsɪp.i.ənt/",
             "word": "recipient",
             "pos": "n.",
             "meaning": "接受者；受药者"
           },
           {
             "id": "s5col1-peril",
+            "phonetic": "/ˈpɛɹəl/",
             "word": "peril",
             "pos": "n.",
             "meaning": "危险；危难"
           },
           {
             "id": "s5col1-dwarf",
+            "phonetic": "/dwɔɹf/",
             "word": "dwarf",
             "pos": "v.",
             "meaning": "使相形见绌；使显得渺小"
           },
           {
             "id": "s5col1-counsel",
+            "phonetic": "/ˈkaʊn.səl/",
             "word": "counsel",
             "pos": "n.",
             "meaning": "建议；忠告"
@@ -8458,198 +9039,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s5col2-frontier",
+            "phonetic": "/fɹʌnˈtɪɹ/",
             "word": "frontier",
             "pos": "n.",
             "meaning": "边疆；前沿"
           },
           {
             "id": "s5col2-consent",
+            "phonetic": "/kənˈsɛnt/",
             "word": "consent",
             "pos": "n.",
             "meaning": "同意；许可"
           },
           {
             "id": "s5col2-perish",
+            "phonetic": "/ˈpɛɹɪʃ/",
             "word": "perish",
             "pos": "v.",
             "meaning": "丧生；毁灭"
           },
           {
             "id": "s5col2-postgraduate",
+            "phonetic": "/ˌpoʊstˈɡrædʒuət/",
             "word": "postgraduate",
             "pos": "adj.",
             "meaning": "研究生的；大学毕业后的"
           },
           {
             "id": "s5col2-irreversible",
+            "phonetic": "/ˌɪrɪˈvɜːrsəb(ə)l/",
             "word": "irreversible",
             "pos": "adj.",
             "meaning": "不可逆的；无法挽回的"
           },
           {
             "id": "s5col2-expenditure",
+            "phonetic": "/ɛkˈspɛndɪt͡ʃɚ/",
             "word": "expenditure",
             "pos": "n.",
             "meaning": "支出；花费"
           },
           {
             "id": "s5col2-loom",
+            "phonetic": "/lum/",
             "word": "loom",
             "pos": "v.",
             "meaning": "隐约浮现；逼近"
           },
           {
             "id": "s5col2-lure",
+            "phonetic": "/lɔɹ/",
             "word": "lure",
             "pos": "n.",
             "meaning": "诱惑；吸引力"
           },
           {
             "id": "s5col2-equity",
+            "phonetic": "/ˈɛk.wɪ.ti/",
             "word": "equity",
             "pos": "n.",
             "meaning": "公正；公平"
           },
           {
             "id": "s5col2-resign",
+            "phonetic": "/ɹɪˈzaɪn/",
             "word": "resign",
             "pos": "v.",
             "meaning": "辞去；放弃"
           },
           {
             "id": "s5col2-aristocrat",
+            "phonetic": "/ˈæɹɪstəˌkɹæt/",
             "word": "aristocrat",
             "pos": "n.",
             "meaning": "贵族"
           },
           {
             "id": "s5col2-patron",
+            "phonetic": "/ˈpeɪ.tɹən/",
             "word": "patron",
             "pos": "n.",
             "meaning": "赞助人；庇护者"
           },
           {
             "id": "s5col2-carton",
+            "phonetic": "/ˈkɑːtn̩/",
             "word": "carton",
             "pos": "n.",
             "meaning": "纸板箱"
           },
           {
             "id": "s5col2-takeover",
+            "phonetic": "/ˈteɪkoʊvər/",
             "word": "takeover",
             "pos": "n.",
             "meaning": "接管；夺取"
           },
           {
             "id": "s5col2-vicious",
+            "phonetic": "/ˈvɪʃəs/",
             "word": "vicious",
             "pos": "adj.",
             "meaning": "凶残的；恶毒的"
           },
           {
             "id": "s5col2-orthodox",
+            "phonetic": "/ˈɔːɹθədɑks/",
             "word": "orthodox",
             "pos": "adj.",
             "meaning": "正统的；传统的"
           },
           {
             "id": "s5col2-portrait",
+            "phonetic": "/ˈpɔɹtɹeɪt/",
             "word": "portrait",
             "pos": "n.",
             "meaning": "肖像；画像"
           },
           {
             "id": "s5col2-idealistic",
+            "phonetic": "/ˌaɪdiəˈlɪstɪk/",
             "word": "idealistic",
             "pos": "adj.",
             "meaning": "理想主义的"
           },
           {
             "id": "s5col2-turbulent",
+            "phonetic": "/ˈtɜːbjələnt/",
             "word": "turbulent",
             "pos": "adj.",
             "meaning": "动荡的；骚乱的"
           },
           {
             "id": "s5col2-solidarity",
+            "phonetic": "/ˌsɑːlɪˈdærəti/",
             "word": "solidarity",
             "pos": "n.",
             "meaning": "团结"
           },
           {
             "id": "s5col2-extinguish",
+            "phonetic": "/ɪkˈstɪŋ.ɡwɪʃ/",
             "word": "extinguish",
             "pos": "v.",
             "meaning": "熄灭；扑灭"
           },
           {
             "id": "s5col2-renovation",
+            "phonetic": "/ˌrenəˈveɪʃ(ə)n/",
             "word": "renovation",
             "pos": "n.",
             "meaning": "翻修；改造"
           },
           {
             "id": "s5col2-soak",
+            "phonetic": "/səʊk/",
             "word": "soak",
             "pos": "v.",
             "meaning": "浸透；渗透"
           },
           {
             "id": "s5col2-trickle",
+            "phonetic": "/ˈtɹɪkəl/",
             "word": "trickle",
             "pos": "v.",
             "meaning": "滴流；缓缓渗入"
           },
           {
             "id": "s5col2-eccentric",
+            "phonetic": "/ɛkˈsɛntɹɪk/",
             "word": "eccentric",
             "pos": "adj.",
             "meaning": "古怪的；异乎寻常的"
           },
           {
             "id": "s5col2-hygiene",
+            "phonetic": "/ˈhaɪˌdʒiːn/",
             "word": "hygiene",
             "pos": "n.",
             "meaning": "卫生"
           },
           {
             "id": "s5col2-confer",
+            "phonetic": "/kənˈfɜː/",
             "word": "confer",
             "pos": "v.",
             "meaning": "商讨；交谈"
           },
           {
             "id": "s5col2-manuscript",
+            "phonetic": "/ˈmænjəˌskɹɪpt/",
             "word": "manuscript",
             "pos": "n.",
             "meaning": "手稿；原稿"
           },
           {
             "id": "s5col2-stall",
+            "phonetic": "/stɔːl/",
             "word": "stall",
             "pos": "v.",
             "meaning": "拖延；使停顿"
           },
           {
             "id": "s5col2-dessert",
+            "phonetic": "/dɪˈzɝt/",
             "word": "dessert",
             "pos": "n.",
             "meaning": "甜点"
           },
           {
             "id": "s5col2-descend",
+            "phonetic": "/dɪˈsɛnd/",
             "word": "descend",
             "pos": "v.",
             "meaning": "走下；下降"
           },
           {
             "id": "s5col2-aloof",
+            "phonetic": "/əˈluːf/",
             "word": "aloof",
             "pos": "adj.",
             "meaning": "冷漠的；超然的"
           },
           {
             "id": "s5col2-drawback",
+            "phonetic": "/ˈdɹɔːˌbæk/",
             "word": "drawback",
             "pos": "n.",
             "meaning": "缺点；不利之处"
@@ -8988,198 +9602,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s5col3-masculine",
+            "phonetic": "/ˈmæskjulɪn/",
             "word": "masculine",
             "pos": "adj.",
             "meaning": "男性的；阳刚的"
           },
           {
             "id": "s5col3-caravan",
+            "phonetic": "/ˈkæɹəvæn/",
             "word": "caravan",
             "pos": "n.",
             "meaning": "商队；旅行队"
           },
           {
             "id": "s5col3-shrewdly",
+            "phonetic": "/ˈʃruːdli/",
             "word": "shrewdly",
             "pos": "adv.",
             "meaning": "精明地；机敏地"
           },
           {
             "id": "s5col3-lucrative",
+            "phonetic": "/ˈluːkrətɪv/",
             "word": "lucrative",
             "pos": "adj.",
             "meaning": "获利丰厚的；有利可图的"
           },
           {
             "id": "s5col3-disposable",
+            "phonetic": "/dɪsˈpəʊzəbl̩/",
             "word": "disposable",
             "pos": "adj.",
             "meaning": "一次性的；可丢弃的"
           },
           {
             "id": "s5col3-ayes",
+            "phonetic": "/aɪz/",
             "word": "ayes",
             "pos": "n.",
             "meaning": "赞成票；同意"
           },
           {
             "id": "s5col3-aversion",
+            "phonetic": "/əˈvɜːʃn/",
             "word": "aversion",
             "pos": "n.",
             "meaning": "厌恶；反感"
           },
           {
             "id": "s5col3-sin",
+            "phonetic": "/sɪn/",
             "word": "sin",
             "pos": "n.",
             "meaning": "罪恶；罪过"
           },
           {
             "id": "s5col3-imprison",
+            "phonetic": "/ɪmˈpɹɪzən/",
             "word": "imprison",
             "pos": "v.",
             "meaning": "监禁；关押"
           },
           {
             "id": "s5col3-jeopardy",
+            "phonetic": "/ˈd͡ʒɛpədi/",
             "word": "jeopardy",
             "pos": "n.",
             "meaning": "危险；危难"
           },
           {
             "id": "s5col3-scepticism",
+            "phonetic": "/ˈskeptɪsɪzəm/",
             "word": "scepticism",
             "pos": "n.",
             "meaning": "怀疑；怀疑态度"
           },
           {
             "id": "s5col3-contemplate",
+            "phonetic": "/ˈkɑn.təmˌpleɪt/",
             "word": "contemplate",
             "pos": "v.",
             "meaning": "沉思；深思"
           },
           {
             "id": "s5col3-compile",
+            "phonetic": "/kəmpʌɪl/",
             "word": "compile",
             "pos": "v.",
             "meaning": "收集；编纂"
           },
           {
             "id": "s5col3-preferable",
+            "phonetic": "/pɹəˈfɜːɹəb(ə)l/",
             "word": "preferable",
             "pos": "adj.",
             "meaning": "更可取的；更合意的"
           },
           {
             "id": "s5col3-fabricate",
+            "phonetic": "/ˈfæb.ɹɪ.keɪt/",
             "word": "fabricate",
             "pos": "v.",
             "meaning": "编造；捏造"
           },
           {
             "id": "s5col3-detriment",
+            "phonetic": "/ˈdɛtɹɪmənt/",
             "word": "detriment",
             "pos": "n.",
             "meaning": "损害；不利"
           },
           {
             "id": "s5col3-carefree",
+            "phonetic": "/kɛɹˈfɹi/",
             "word": "carefree",
             "pos": "adj.",
             "meaning": "无忧无虑的"
           },
           {
             "id": "s5col3-ventilate",
+            "phonetic": "/ˈventɪleɪt/",
             "word": "ventilate",
             "pos": "v.",
             "meaning": "使通风；使空气流通"
           },
           {
             "id": "s5col3-optimal",
+            "phonetic": "/ˈɑptɪməl/",
             "word": "optimal",
             "pos": "adj.",
             "meaning": "最佳的；最适宜的"
           },
           {
             "id": "s5col3-restless",
+            "phonetic": "/ˈɹɛstləs/",
             "word": "restless",
             "pos": "adj.",
             "meaning": "烦躁不安的；坐立不安的"
           },
           {
             "id": "s5col3-prerequisite",
+            "phonetic": "/pɹiːˈɹɛkwɪzɪt/",
             "word": "prerequisite",
             "pos": "n.",
             "meaning": "先决条件；前提"
           },
           {
             "id": "s5col3-outbreak",
+            "phonetic": "/ˈaʊtbɹeɪk/",
             "word": "outbreak",
             "pos": "n.",
             "meaning": "爆发；突然发生"
           },
           {
             "id": "s5col3-lane",
+            "phonetic": "/leɪn/",
             "word": "lane",
             "pos": "n.",
             "meaning": "小巷；窄路"
           },
           {
             "id": "s5col3-vacancy",
+            "phonetic": "/ˈveɪkənsi/",
             "word": "vacancy",
             "pos": "n.",
             "meaning": "空缺；空位"
           },
           {
             "id": "s5col3-maim",
+            "phonetic": "/meɪm/",
             "word": "maim",
             "pos": "v.",
             "meaning": "使残废；使受重伤"
           },
           {
             "id": "s5col3-malnutrition",
+            "phonetic": "/ˌmælnuˈtrɪʃ(ə)n/",
             "word": "malnutrition",
             "pos": "n.",
             "meaning": "营养不良"
           },
           {
             "id": "s5col3-plight",
+            "phonetic": "/plaɪt/",
             "word": "plight",
             "pos": "n.",
             "meaning": "困境；苦境"
           },
           {
             "id": "s5col3-divine",
+            "phonetic": "/dɪˈvaɪn/",
             "word": "divine",
             "pos": "adj.",
             "meaning": "神圣的；神的"
           },
           {
             "id": "s5col3-irresistible",
+            "phonetic": "/ˌɪɹɪˈzɪstəbl̩/",
             "word": "irresistible",
             "pos": "adj.",
             "meaning": "不可抗拒的；无法抵挡的"
           },
           {
             "id": "s5col3-miraculous",
+            "phonetic": "/məˈɹækjʊləs/",
             "word": "miraculous",
             "pos": "adj.",
             "meaning": "奇迹般的；不可思议的"
           },
           {
             "id": "s5col3-prevalence",
+            "phonetic": "/ˈprevələns/",
             "word": "prevalence",
             "pos": "n.",
             "meaning": "普遍；盛行"
           },
           {
             "id": "s5col3-inanimate",
+            "phonetic": "/ɪnˈænɪmət/",
             "word": "inanimate",
             "pos": "adj.",
             "meaning": "无生命的；无生气的"
           },
           {
             "id": "s5col3-reluctance",
+            "phonetic": "/ɹɪˈlʌktəns/",
             "word": "reluctance",
             "pos": "n.",
             "meaning": "不情愿；勉强"
@@ -9498,204 +10145,238 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s5col4-resent",
+            "phonetic": "/ɹiˈzɛnt/",
             "word": "resent",
             "pos": "v.",
             "meaning": "怨恨；愤恨"
           },
           {
             "id": "s5col4-assortment",
+            "phonetic": "/əˈsɔːtmənt/",
             "word": "assortment",
             "pos": "n.",
             "meaning": "各式各样；分类"
           },
           {
             "id": "s5col4-absurd",
+            "phonetic": "/æbˈsɝd/",
             "word": "absurd",
             "pos": "adj.",
             "meaning": "荒谬的；荒唐的"
           },
           {
             "id": "s5col4-module",
+            "phonetic": "/ˈmɒdjuːl/",
             "word": "module",
             "pos": "n.",
             "meaning": "模块；组件"
           },
           {
             "id": "s5col4-malignant",
+            "phonetic": "/məˈlɪɡnənt/",
             "word": "malignant",
             "pos": "adj.",
             "meaning": "恶性的；恶意的"
           },
           {
             "id": "s5col4-interweave",
+            "phonetic": "/ɪntəɹˈwiːv/",
             "word": "interweave",
             "pos": "v.",
             "meaning": "交织；交错编织"
           },
           {
             "id": "s5col4-premise",
+            "phonetic": "/ˈpɹɛ.mɪs/",
             "word": "premise",
             "pos": "n.",
             "meaning": "前提"
           },
           {
             "id": "s5col4-circuit",
+            "phonetic": "/[ˈsəɾ.kɪʈ]/",
             "word": "circuit",
             "pos": "n.",
             "meaning": "巡回路线；电路"
           },
           {
             "id": "s5col4-abolition",
+            "phonetic": "/ˌæb.əˈlɪʃ.n̩/",
             "word": "abolition",
             "pos": "n.",
             "meaning": "废除；废止"
           },
           {
             "id": "s5col4-synonymous",
+            "phonetic": "/sɪˈnɑnɪməs/",
             "word": "synonymous",
             "pos": "adj.",
             "meaning": "同义的；等同于…的"
           },
           {
             "id": "s5col4-yearn",
+            "phonetic": "/jɝn/",
             "word": "yearn",
             "pos": "v.",
             "meaning": "渴望；向往"
           },
           {
             "id": "s5col4-connotation",
+            "phonetic": "/ˌkɒnəˈteɪʃən/",
             "word": "connotation",
             "pos": "n.",
             "meaning": "内涵；言外之意"
           },
           {
             "id": "s5col4-vista",
+            "phonetic": "/ˈviːstə/",
             "word": "vista",
             "pos": "n.",
             "meaning": "景色；远景"
           },
           {
             "id": "s5col4-viciously",
+            "phonetic": "/ˈvɪʃəsli/",
             "word": "viciously",
             "pos": "adv.",
             "meaning": "残酷地；恶毒地"
           },
           {
             "id": "s5col4-immersion",
+            "phonetic": "/ɪˈmɝʒən/",
             "word": "immersion",
             "pos": "n.",
             "meaning": "沉浸；专心投入"
           },
           {
             "id": "s5col4-assimilate",
+            "phonetic": "/əˈsɪm.ɪ.leɪt/",
             "word": "assimilate",
             "pos": "v.",
             "meaning": "吸收；同化"
           },
           {
             "id": "s5col4-muddy",
+            "phonetic": "/[ˈmʌdi]/",
             "word": "muddy",
             "pos": "adj.",
             "meaning": "浑浊的；泥泞的"
           },
           {
             "id": "s5col4-polarise",
+            "phonetic": "/ˈpoʊləraɪz/",
             "word": "polarise",
             "pos": "v.",
             "meaning": "使两极分化"
           },
           {
             "id": "s5col4-offshore",
+            "phonetic": "/ɒfˈʃɔː(ɹ)/",
             "word": "offshore",
             "pos": "adj.",
             "meaning": "海外的；近海的"
           },
           {
             "id": "s5col4-contention",
+            "phonetic": "/kənˈtɛnʃən/",
             "word": "contention",
             "pos": "n.",
             "meaning": "论点；争论"
           },
           {
             "id": "s5col4-superstitious",
+            "phonetic": "/ˌs(j)u.pɚˈstɪ.ʃəs/",
             "word": "superstitious",
             "pos": "adj.",
             "meaning": "迷信的"
           },
           {
             "id": "s5col4-facet",
+            "phonetic": "/ˈfæsɪt/",
             "word": "facet",
             "pos": "n.",
             "meaning": "方面；层面"
           },
           {
             "id": "s5col4-reign",
+            "phonetic": "/[ɹeɪn]/",
             "word": "reign",
             "pos": "v.",
             "meaning": "统治；盛行"
           },
           {
             "id": "s5col4-constitution",
+            "phonetic": "/ˌkɑnstɪˈtuʃən/",
             "word": "constitution",
             "pos": "n.",
             "meaning": "宪法；章程"
           },
           {
             "id": "s5col4-ubiquitous",
+            "phonetic": "/juˈbɪk.wɪ.təs/",
             "word": "ubiquitous",
             "pos": "adj.",
             "meaning": "无处不在的；普遍存在的"
           },
           {
             "id": "s5col4-brutal",
+            "phonetic": "/ˈbɹuːtəl/",
             "word": "brutal",
             "pos": "adj.",
             "meaning": "残酷的；野蛮的"
           },
           {
             "id": "s5col4-synthetic",
+            "phonetic": "/sɪnˈθɛtɪk/",
             "word": "synthetic",
             "pos": "adj.",
             "meaning": "合成的；人造的"
           },
           {
             "id": "s5col4-stifle",
+            "phonetic": "/ˈstaɪfəl/",
             "word": "stifle",
             "pos": "v.",
             "meaning": "压制；扼杀"
           },
           {
             "id": "s5col4-inventory",
+            "phonetic": "/ɪnˈvɛn.tə.ɹi/",
             "word": "inventory",
             "pos": "n.",
             "meaning": "清单；详细目录"
           },
           {
             "id": "s5col4-spontaneously",
+            "phonetic": "/spɒnˈteɪ.ni.əs.li/",
             "word": "spontaneously",
             "pos": "adv.",
             "meaning": "自发地"
           },
           {
             "id": "s5col4-puppet",
+            "phonetic": "/ˈpʌpɪt/",
             "word": "puppet",
             "pos": "n.",
             "meaning": "傀儡"
           },
           {
             "id": "s5col4-successor",
+            "phonetic": "/səkˈsɛsə(ɹ)/",
             "word": "successor",
             "pos": "n.",
             "meaning": "继任者；接班人"
           },
           {
             "id": "s5col4-intuition",
+            "phonetic": "/ɪntuwˈɪʃɨn/",
             "word": "intuition",
             "pos": "n.",
             "meaning": "直觉"
           },
           {
             "id": "s5col4-attributable",
+            "phonetic": "/əˈtɹɪbjuːtəbəl/",
             "word": "attributable",
             "pos": "adj.",
             "meaning": "可归因于…的"
@@ -9973,198 +10654,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s6col1-articulate",
+            "phonetic": "/ɑːɹˈtɪk.jə.lət/",
             "word": "articulate",
             "pos": "v.",
             "meaning": "清晰表达"
           },
           {
             "id": "s6col1-sip",
+            "phonetic": "/sɪp/",
             "word": "sip",
             "pos": "v.",
             "meaning": "啜饮"
           },
           {
             "id": "s6col1-enlist",
+            "phonetic": "/ɪnˈlɪst/",
             "word": "enlist",
             "pos": "v.",
             "meaning": "征募；谋取（帮助）"
           },
           {
             "id": "s6col1-savage",
+            "phonetic": "/ˈsævɪdʒ/",
             "word": "savage",
             "pos": "adj.",
             "meaning": "凶猛的；野蛮的"
           },
           {
             "id": "s6col1-mourn",
+            "phonetic": "/mɔrn/",
             "word": "mourn",
             "pos": "v.",
             "meaning": "哀悼"
           },
           {
             "id": "s6col1-sprawl",
+            "phonetic": "/spɹɔːl/",
             "word": "sprawl",
             "pos": "v.",
             "meaning": "蔓延；伸开手足躺"
           },
           {
             "id": "s6col1-textile",
+            "phonetic": "/ˈtɛks.taɪl/",
             "word": "textile",
             "pos": "n.",
             "meaning": "纺织品"
           },
           {
             "id": "s6col1-storey",
+            "phonetic": "/ˈstɔːɹi/",
             "word": "storey",
             "pos": "n.",
             "meaning": "楼层"
           },
           {
             "id": "s6col1-detrimental",
+            "phonetic": "/ˌdɛtɹɪˈmɛntəl/",
             "word": "detrimental",
             "pos": "adj.",
             "meaning": "有害的"
           },
           {
             "id": "s6col1-conscience",
+            "phonetic": "/kɒnʃəns/",
             "word": "conscience",
             "pos": "n.",
             "meaning": "良心"
           },
           {
             "id": "s6col1-havoc",
+            "phonetic": "/ˈhæv.ək/",
             "word": "havoc",
             "pos": "n.",
             "meaning": "大破坏"
           },
           {
             "id": "s6col1-gigantic",
+            "phonetic": "/dʒaɪˈɡæntɪk/",
             "word": "gigantic",
             "pos": "adj.",
             "meaning": "巨大的"
           },
           {
             "id": "s6col1-aftermath",
+            "phonetic": "/ˈæf.tɚˌmæθ/",
             "word": "aftermath",
             "pos": "n.",
             "meaning": "后果；灾后"
           },
           {
             "id": "s6col1-confession",
+            "phonetic": "/kənˈfɛʃən/",
             "word": "confession",
             "pos": "n.",
             "meaning": "供认；忏悔"
           },
           {
             "id": "s6col1-slender",
+            "phonetic": "/ˈslɛndɚ/",
             "word": "slender",
             "pos": "adj.",
             "meaning": "细长的；微薄的"
           },
           {
             "id": "s6col1-gaze",
+            "phonetic": "/ɡeɪz/",
             "word": "gaze",
             "pos": "v./n.",
             "meaning": "凝视"
           },
           {
             "id": "s6col1-overdue",
+            "phonetic": "/ˌoʊ.vəɹˈdu/",
             "word": "overdue",
             "pos": "adj.",
             "meaning": "过期的；迟到的"
           },
           {
             "id": "s6col1-fertile",
+            "phonetic": "/ˈfɝːtaɪl/",
             "word": "fertile",
             "pos": "adj.",
             "meaning": "肥沃的；多产的"
           },
           {
             "id": "s6col1-defective",
+            "phonetic": "/dɪˈfɛktɪv/",
             "word": "defective",
             "pos": "adj.",
             "meaning": "有缺陷的"
           },
           {
             "id": "s6col1-auditory",
+            "phonetic": "/ˈɔːdətɔːri/",
             "word": "auditory",
             "pos": "adj.",
             "meaning": "听觉的"
           },
           {
             "id": "s6col1-breach",
+            "phonetic": "/[bɹiːtʃ]/",
             "word": "breach",
             "pos": "n.",
             "meaning": "违反；缺口"
           },
           {
             "id": "s6col1-rust",
+            "phonetic": "/ɹʌst/",
             "word": "rust",
             "pos": "n./v.",
             "meaning": "锈；生锈"
           },
           {
             "id": "s6col1-expend",
+            "phonetic": "/ɛkˈspɛnd/",
             "word": "expend",
             "pos": "v.",
             "meaning": "花费；消耗"
           },
           {
             "id": "s6col1-malfunction",
+            "phonetic": "/ˌmælˈfʌŋk.ʃən/",
             "word": "malfunction",
             "pos": "n./v.",
             "meaning": "故障"
           },
           {
             "id": "s6col1-refinement",
+            "phonetic": "/ɹəˈfaɪnmənt/",
             "word": "refinement",
             "pos": "n.",
             "meaning": "精炼；改进"
           },
           {
             "id": "s6col1-hypocritical",
+            "phonetic": "/hɪpəˈkɹɪtɪkəl/",
             "word": "hypocritical",
             "pos": "adj.",
             "meaning": "伪善的"
           },
           {
             "id": "s6col1-vicinity",
+            "phonetic": "/vəˈsɪnəti/",
             "word": "vicinity",
             "pos": "n.",
             "meaning": "附近"
           },
           {
             "id": "s6col1-genre",
+            "phonetic": "/(d)ʒɑn.ɹə/",
             "word": "genre",
             "pos": "n.",
             "meaning": "类型；流派"
           },
           {
             "id": "s6col1-crunchy",
+            "phonetic": "/ˈkɹʌntʃi/",
             "word": "crunchy",
             "pos": "adj.",
             "meaning": "松脆的"
           },
           {
             "id": "s6col1-perpetual",
+            "phonetic": "/pɚˈpɛtʃuəl/",
             "word": "perpetual",
             "pos": "adj.",
             "meaning": "永久的"
           },
           {
             "id": "s6col1-inspector",
+            "phonetic": "/ɪnˈspɛktɚ/",
             "word": "inspector",
             "pos": "n.",
             "meaning": "检查员"
           },
           {
             "id": "s6col1-concede",
+            "phonetic": "/kənˈsiːd/",
             "word": "concede",
             "pos": "v.",
             "meaning": "承认；让步"
           },
           {
             "id": "s6col1-suffice",
+            "phonetic": "/səˈfaɪs/",
             "word": "suffice",
             "pos": "v.",
             "meaning": "足够"
@@ -10428,192 +11142,224 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s6col2-preferential",
+            "phonetic": "/ˈpɹɛf.ɜː(ɹ)ˌɛn.ʃəl/",
             "word": "preferential",
             "pos": "adj.",
             "meaning": "优先的"
           },
           {
             "id": "s6col2-disastrous",
+            "phonetic": "/dɪˈzɑːstɹəs/",
             "word": "disastrous",
             "pos": "adj.",
             "meaning": "灾难性的"
           },
           {
             "id": "s6col2-radiate",
+            "phonetic": "/ˈɹeɪdi.ət/",
             "word": "radiate",
             "pos": "v.",
             "meaning": "辐射；散发"
           },
           {
             "id": "s6col2-exclaim",
+            "phonetic": "/ɛkˈskleɪm/",
             "word": "exclaim",
             "pos": "v.",
             "meaning": "惊叫"
           },
           {
             "id": "s6col2-stupidity",
+            "phonetic": "/stuˈpɪdɪti/",
             "word": "stupidity",
             "pos": "n.",
             "meaning": "愚蠢"
           },
           {
             "id": "s6col2-proficient",
+            "phonetic": "/pɹoʊˈfɪʃ.ənt/",
             "word": "proficient",
             "pos": "adj.",
             "meaning": "熟练的"
           },
           {
             "id": "s6col2-promptly",
+            "phonetic": "/ˈpɹɑmptli/",
             "word": "promptly",
             "pos": "adv.",
             "meaning": "迅速地"
           },
           {
             "id": "s6col2-unorthodox",
+            "phonetic": "/ʌnˈɔːθədɒks/",
             "word": "unorthodox",
             "pos": "adj.",
             "meaning": "非正统的"
           },
           {
             "id": "s6col2-trophy",
+            "phonetic": "/ˈtɹəʊfi/",
             "word": "trophy",
             "pos": "n.",
             "meaning": "战利品；奖杯"
           },
           {
             "id": "s6col2-complexion",
+            "phonetic": "/kəmˈplɛkʃən/",
             "word": "complexion",
             "pos": "n.",
             "meaning": "肤色；面容"
           },
           {
             "id": "s6col2-superficial",
+            "phonetic": "/ˌsupɚˈfɪʃəl/",
             "word": "superficial",
             "pos": "adj.",
             "meaning": "表面的；肤浅的"
           },
           {
             "id": "s6col2-toss",
+            "phonetic": "/tɑs/",
             "word": "toss",
             "pos": "v.",
             "meaning": "抛；掷"
           },
           {
             "id": "s6col2-accessory",
+            "phonetic": "/ækˈsɛsəɹi/",
             "word": "accessory",
             "pos": "n.",
             "meaning": "附件；从犯"
           },
           {
             "id": "s6col2-precaution",
+            "phonetic": "/pɹiːˈkɔːʃən/",
             "word": "precaution",
             "pos": "n.",
             "meaning": "预防措施"
           },
           {
             "id": "s6col2-slam",
+            "phonetic": "/slæm/",
             "word": "slam",
             "pos": "v.",
             "meaning": "砰地关上"
           },
           {
             "id": "s6col2-poised",
+            "phonetic": "/pɔɪzd/",
             "word": "poised",
             "pos": "adj.",
             "meaning": "泰然自若的；准备好的"
           },
           {
             "id": "s6col2-juvenile",
+            "phonetic": "/ˈdʒuːvənaɪl/",
             "word": "juvenile",
             "pos": "adj.",
             "meaning": "青少年的"
           },
           {
             "id": "s6col2-fracture",
+            "phonetic": "/ˈfɹæk.tjə/",
             "word": "fracture",
             "pos": "n./v.",
             "meaning": "骨折；断裂"
           },
           {
             "id": "s6col2-disposition",
+            "phonetic": "/ˌdɪs.pəˈzɪ.ʃɪn/",
             "word": "disposition",
             "pos": "n.",
             "meaning": "性情"
           },
           {
             "id": "s6col2-ponder",
+            "phonetic": "/ˈpɑn.dɚ/",
             "word": "ponder",
             "pos": "v.",
             "meaning": "沉思"
           },
           {
             "id": "s6col2-benign",
+            "phonetic": "/bɪˈnaɪn/",
             "word": "benign",
             "pos": "adj.",
             "meaning": "良性的；和蔼的"
           },
           {
             "id": "s6col2-profoundly",
+            "phonetic": "/pɹəˈfaʊndli/",
             "word": "profoundly",
             "pos": "adv.",
             "meaning": "深刻地"
           },
           {
             "id": "s6col2-indifference",
+            "phonetic": "/ɪnˈdɪf.ə.ɹəns/",
             "word": "indifference",
             "pos": "n.",
             "meaning": "冷漠"
           },
           {
             "id": "s6col2-expel",
+            "phonetic": "/ɪkˈspɛl/",
             "word": "expel",
             "pos": "v.",
             "meaning": "驱逐；开除"
           },
           {
             "id": "s6col2-emulate",
+            "phonetic": "/ˈɛm.jə.leɪt/",
             "word": "emulate",
             "pos": "v.",
             "meaning": "仿效"
           },
           {
             "id": "s6col2-obedient",
+            "phonetic": "/oʊˈbidiənt/",
             "word": "obedient",
             "pos": "adj.",
             "meaning": "顺从的"
           },
           {
             "id": "s6col2-anecdote",
+            "phonetic": "/ˈæ.nɪk.doʊt/",
             "word": "anecdote",
             "pos": "n.",
             "meaning": "轶事"
           },
           {
             "id": "s6col2-toddler",
+            "phonetic": "/ˈtɑːdlər/",
             "word": "toddler",
             "pos": "n.",
             "meaning": "学步儿童"
           },
           {
             "id": "s6col2-inspect",
+            "phonetic": "/ɪnˈspɛkt/",
             "word": "inspect",
             "pos": "v.",
             "meaning": "检查"
           },
           {
             "id": "s6col2-discourse",
+            "phonetic": "/dɪsˈkɔː(ɹ)s/",
             "word": "discourse",
             "pos": "n.",
             "meaning": "论述；交谈"
           },
           {
             "id": "s6col2-commend",
+            "phonetic": "/kəˈmɛnd/",
             "word": "commend",
             "pos": "v.",
             "meaning": "表扬"
           },
           {
             "id": "s6col2-distortion",
+            "phonetic": "/dɪsˈtɔːʃən/",
             "word": "distortion",
             "pos": "n.",
             "meaning": "扭曲；变形"
@@ -10888,186 +11634,217 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s6col3-aesthetics",
+            "phonetic": "/ɛsˈθɛt.ɪks/",
             "word": "aesthetics",
             "pos": "n.",
             "meaning": "美学"
           },
           {
             "id": "s6col3-barren",
+            "phonetic": "/ˈbæɹən/",
             "word": "barren",
             "pos": "adj.",
             "meaning": "贫瘠的"
           },
           {
             "id": "s6col3-defect",
+            "phonetic": "/ˈdiːfekt/",
             "word": "defect",
             "pos": "n.",
             "meaning": "缺陷"
           },
           {
             "id": "s6col3-portrayal",
+            "phonetic": "/ˌpɔɹˈtɹeɪ.əl/",
             "word": "portrayal",
             "pos": "n.",
             "meaning": "描绘"
           },
           {
             "id": "s6col3-sketch",
+            "phonetic": "/skɛtʃ/",
             "word": "sketch",
             "pos": "n./v.",
             "meaning": "草图；素描"
           },
           {
             "id": "s6col3-integration",
+            "phonetic": "/ɪntəˈɡɹeɪʃən/",
             "word": "integration",
             "pos": "n.",
             "meaning": "整合"
           },
           {
             "id": "s6col3-baffle",
+            "phonetic": "/ˈbæfl̩/",
             "word": "baffle",
             "pos": "v.",
             "meaning": "使困惑"
           },
           {
             "id": "s6col3-delicacy",
+            "phonetic": "/ˈdɛlɪkəsi/",
             "word": "delicacy",
             "pos": "n.",
             "meaning": "美味；精致"
           },
           {
             "id": "s6col3-acupuncture",
+            "phonetic": "/ˈæ.kju.ˌpʌŋk.t͡ʃɝ/",
             "word": "acupuncture",
             "pos": "n.",
             "meaning": "针灸"
           },
           {
             "id": "s6col3-remnant",
+            "phonetic": "/ˈɹɛmnənt/",
             "word": "remnant",
             "pos": "n.",
             "meaning": "残余"
           },
           {
             "id": "s6col3-salient",
+            "phonetic": "/ˈseɪ.li.ənt/",
             "word": "salient",
             "pos": "adj.",
             "meaning": "显著的"
           },
           {
             "id": "s6col3-mediocre",
+            "phonetic": "/ˌmidiˈoʊkəɹ/",
             "word": "mediocre",
             "pos": "adj.",
             "meaning": "平庸的"
           },
           {
             "id": "s6col3-aquatic",
+            "phonetic": "/əˈkwæ.tɪk/",
             "word": "aquatic",
             "pos": "adj.",
             "meaning": "水生的"
           },
           {
             "id": "s6col3-immerse",
+            "phonetic": "/ɪˈmɜː(ɹ)s/",
             "word": "immerse",
             "pos": "v.",
             "meaning": "沉浸"
           },
           {
             "id": "s6col3-sovereign",
+            "phonetic": "/ˈsɑv(ə)ɹɪn/",
             "word": "sovereign",
             "pos": "adj.",
             "meaning": "主权的"
           },
           {
             "id": "s6col3-barge",
+            "phonetic": "/bɑːdʒ/",
             "word": "barge",
             "pos": "v.",
             "meaning": "闯入"
           },
           {
             "id": "s6col3-versatile",
+            "phonetic": "/ˈvɝsətl̩/",
             "word": "versatile",
             "pos": "adj.",
             "meaning": "多才多艺的"
           },
           {
             "id": "s6col3-scrape",
+            "phonetic": "/skɹeɪp/",
             "word": "scrape",
             "pos": "v.",
             "meaning": "刮擦"
           },
           {
             "id": "s6col3-ripe",
+            "phonetic": "/ɹaɪp/",
             "word": "ripe",
             "pos": "adj.",
             "meaning": "成熟的"
           },
           {
             "id": "s6col3-surveillance",
+            "phonetic": "/səɹˈveɪ.ləns/",
             "word": "surveillance",
             "pos": "n.",
             "meaning": "监视"
           },
           {
             "id": "s6col3-icon",
+            "phonetic": "/ˈaɪ.kɑːn/",
             "word": "icon",
             "pos": "n.",
             "meaning": "图标；偶像"
           },
           {
             "id": "s6col3-inconspicuous",
+            "phonetic": "/ˌɪn.kənˈspɪk.ju.əs/",
             "word": "inconspicuous",
             "pos": "adj.",
             "meaning": "不显眼的"
           },
           {
             "id": "s6col3-extravagant",
+            "phonetic": "/ɪkˈstɹævəɡənt/",
             "word": "extravagant",
             "pos": "adj.",
             "meaning": "奢侈的"
           },
           {
             "id": "s6col3-complimentary",
+            "phonetic": "/ˌkɑmplɪ̈ˈmɛnt(ə)ɹi/",
             "word": "complimentary",
             "pos": "adj.",
             "meaning": "赞美的；免费的"
           },
           {
             "id": "s6col3-worship",
+            "phonetic": "/ˈwɝʃɪp/",
             "word": "worship",
             "pos": "v./n.",
             "meaning": "崇拜"
           },
           {
             "id": "s6col3-solemn",
+            "phonetic": "/ˈsɑləm/",
             "word": "solemn",
             "pos": "adj.",
             "meaning": "庄严的"
           },
           {
             "id": "s6col3-escalate",
+            "phonetic": "/ˈɛs.kə.leɪt/",
             "word": "escalate",
             "pos": "v.",
             "meaning": "升级"
           },
           {
             "id": "s6col3-interval",
+            "phonetic": "/ˈɪntɚvəl/",
             "word": "interval",
             "pos": "n.",
             "meaning": "间隔"
           },
           {
             "id": "s6col3-scrutiny",
+            "phonetic": "/ˈskɹuː.tɪ.ni/",
             "word": "scrutiny",
             "pos": "n.",
             "meaning": "审查"
           },
           {
             "id": "s6col3-potent",
+            "phonetic": "/ˈpəʊt(ə)nt/",
             "word": "potent",
             "pos": "adj.",
             "meaning": "强有力的"
           },
           {
             "id": "s6col3-moist",
+            "phonetic": "/mɔɪst/",
             "word": "moist",
             "pos": "adj.",
             "meaning": "潮湿的"
@@ -11319,204 +12096,238 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s6col4-peculiar",
+            "phonetic": "/[pʰə̥ˈkʰj̊uːljʊə]/",
             "word": "peculiar",
             "pos": "adj.",
             "meaning": "奇怪的；特有的"
           },
           {
             "id": "s6col4-proximity",
+            "phonetic": "/pɹɑkˈsɪ.mɪ.ti/",
             "word": "proximity",
             "pos": "n.",
             "meaning": "接近"
           },
           {
             "id": "s6col4-alteration",
+            "phonetic": "/ɔl.tɚˈeɪ.ʃən/",
             "word": "alteration",
             "pos": "n.",
             "meaning": "改变"
           },
           {
             "id": "s6col4-mandate",
+            "phonetic": "/ˈmæn.deɪt/",
             "word": "mandate",
             "pos": "n./v.",
             "meaning": "授权；命令"
           },
           {
             "id": "s6col4-vague",
+            "phonetic": "/veɪɡ/",
             "word": "vague",
             "pos": "adj.",
             "meaning": "模糊的"
           },
           {
             "id": "s6col4-unbiased",
+            "phonetic": "/ʌnˈbaɪəst/",
             "word": "unbiased",
             "pos": "adj.",
             "meaning": "无偏见的"
           },
           {
             "id": "s6col4-eject",
+            "phonetic": "/ɪˈdʒɛkt/",
             "word": "eject",
             "pos": "v.",
             "meaning": "弹出；驱逐"
           },
           {
             "id": "s6col4-ignite",
+            "phonetic": "/ɪɡˈnaɪt/",
             "word": "ignite",
             "pos": "v.",
             "meaning": "点燃"
           },
           {
             "id": "s6col4-mighty",
+            "phonetic": "/ˈmaɪti/",
             "word": "mighty",
             "pos": "adj.",
             "meaning": "强大的"
           },
           {
             "id": "s6col4-denial",
+            "phonetic": "/dɪˈnaɪ.əl/",
             "word": "denial",
             "pos": "n.",
             "meaning": "否认"
           },
           {
             "id": "s6col4-discern",
+            "phonetic": "/dɪˈsɜːrn/",
             "word": "discern",
             "pos": "v.",
             "meaning": "辨别"
           },
           {
             "id": "s6col4-discernible",
+            "phonetic": "/dɪˈsɜːnɪbl̩/",
             "word": "discernible",
             "pos": "adj.",
             "meaning": "可辨别的"
           },
           {
             "id": "s6col4-align",
+            "phonetic": "/æˈlaɪn/",
             "word": "align",
             "pos": "v.",
             "meaning": "对齐；使一致"
           },
           {
             "id": "s6col4-physiological",
+            "phonetic": "/ˌfɪzi.əˈlɑdʒɪkəl/",
             "word": "physiological",
             "pos": "adj.",
             "meaning": "生理的"
           },
           {
             "id": "s6col4-indebted",
+            "phonetic": "/ɪnˈdɛtɪd/",
             "word": "indebted",
             "pos": "adj.",
             "meaning": "感激的；负债的"
           },
           {
             "id": "s6col4-trivial",
+            "phonetic": "/ˈtɹɪ.vi.əl/",
             "word": "trivial",
             "pos": "adj.",
             "meaning": "琐碎的"
           },
           {
             "id": "s6col4-novelty",
+            "phonetic": "/ˈnɑvəlti/",
             "word": "novelty",
             "pos": "n.",
             "meaning": "新奇"
           },
           {
             "id": "s6col4-cluster",
+            "phonetic": "/ˈklʌstə/",
             "word": "cluster",
             "pos": "n./v.",
             "meaning": "群；聚集"
           },
           {
             "id": "s6col4-whistle",
+            "phonetic": "/wɪsl̩/",
             "word": "whistle",
             "pos": "v./n.",
             "meaning": "吹口哨"
           },
           {
             "id": "s6col4-consolidate",
+            "phonetic": "/kənˈsɒlɪdeɪt/",
             "word": "consolidate",
             "pos": "v.",
             "meaning": "巩固"
           },
           {
             "id": "s6col4-refute",
+            "phonetic": "/ɹəˈfjut/",
             "word": "refute",
             "pos": "v.",
             "meaning": "反驳"
           },
           {
             "id": "s6col4-resignation",
+            "phonetic": "/ɹɛzɪɡˈneɪʃən/",
             "word": "resignation",
             "pos": "n.",
             "meaning": "辞职"
           },
           {
             "id": "s6col4-verse",
+            "phonetic": "/ˈvɝs/",
             "word": "verse",
             "pos": "n.",
             "meaning": "诗句"
           },
           {
             "id": "s6col4-stump",
+            "phonetic": "/stʌmp/",
             "word": "stump",
             "pos": "v.",
             "meaning": "难住"
           },
           {
             "id": "s6col4-hasten",
+            "phonetic": "/ˈheɪ.sən/",
             "word": "hasten",
             "pos": "v.",
             "meaning": "催促；加速"
           },
           {
             "id": "s6col4-fury",
+            "phonetic": "/ˈfjʊɹi/",
             "word": "fury",
             "pos": "n.",
             "meaning": "狂怒"
           },
           {
             "id": "s6col4-compatibility",
+            "phonetic": "/kəmˌpætɪˈbɪlɪti/",
             "word": "compatibility",
             "pos": "n.",
             "meaning": "兼容性"
           },
           {
             "id": "s6col4-dub",
+            "phonetic": "/dʌb/",
             "word": "dub",
             "pos": "v.",
             "meaning": "授予称号；配音"
           },
           {
             "id": "s6col4-hitherto",
+            "phonetic": "/ˈhɪðɚˌtu/",
             "word": "hitherto",
             "pos": "adv.",
             "meaning": "迄今"
           },
           {
             "id": "s6col4-indulgence",
+            "phonetic": "/ɪnˈdʌld͡ʒəns/",
             "word": "indulgence",
             "pos": "n.",
             "meaning": "沉溺；纵容"
           },
           {
             "id": "s6col4-extravagance",
+            "phonetic": "/ɪkˈstɹævəɡəns/",
             "word": "extravagance",
             "pos": "n.",
             "meaning": "奢侈"
           },
           {
             "id": "s6col4-disparity",
+            "phonetic": "/dɪsˈpæɹɪti/",
             "word": "disparity",
             "pos": "n.",
             "meaning": "差距"
           },
           {
             "id": "s6col4-diagnosis",
+            "phonetic": "/daɪəɡˈnəʊsɪs/",
             "word": "diagnosis",
             "pos": "n.",
             "meaning": "诊断"
           },
           {
             "id": "s6col4-sanitation",
+            "phonetic": "/ˌsænɪˈteɪʃən/",
             "word": "sanitation",
             "pos": "n.",
             "meaning": "卫生"
@@ -11806,198 +12617,231 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s7col1-premature",
+            "phonetic": "/ˈpɹɛ.mə.tjə/",
             "word": "premature",
             "pos": "adj.",
             "meaning": "过早的；提前的"
           },
           {
             "id": "s7col1-dissolve",
+            "phonetic": "/dɪˈzɒlv/",
             "word": "dissolve",
             "pos": "v.",
             "meaning": "解散；溶解"
           },
           {
             "id": "s7col1-cripple",
+            "phonetic": "/ˈkɹɪpl/",
             "word": "cripple",
             "pos": "v.",
             "meaning": "使瘫痪；严重削弱"
           },
           {
             "id": "s7col1-ascend",
+            "phonetic": "/əˈsɛnd/",
             "word": "ascend",
             "pos": "v.",
             "meaning": "攀登；上升"
           },
           {
             "id": "s7col1-offset",
+            "phonetic": "/ɒfˈsɛt/",
             "word": "offset",
             "pos": "v.",
             "meaning": "抵消；补偿"
           },
           {
             "id": "s7col1-malpractice",
+            "phonetic": "/ˌmælˈpræktɪs/",
             "word": "malpractice",
             "pos": "n.",
             "meaning": "渎职；玩忽职守"
           },
           {
             "id": "s7col1-reassure",
+            "phonetic": "/ɹiəˈʃʊə(ɹ)/",
             "word": "reassure",
             "pos": "v.",
             "meaning": "使安心；再保证"
           },
           {
             "id": "s7col1-rebellion",
+            "phonetic": "/ɹɪˈbɛl.i.ən/",
             "word": "rebellion",
             "pos": "n.",
             "meaning": "叛变；反抗"
           },
           {
             "id": "s7col1-lofty",
+            "phonetic": "/ˈlɔːfti/",
             "word": "lofty",
             "pos": "adj.",
             "meaning": "崇高的；高耸的"
           },
           {
             "id": "s7col1-conformity",
+            "phonetic": "/kənˈfɔɹmɪti/",
             "word": "conformity",
             "pos": "n.",
             "meaning": "顺从；一致"
           },
           {
             "id": "s7col1-landmark",
+            "phonetic": "/ˈlændmɑɹk/",
             "word": "landmark",
             "pos": "n.",
             "meaning": "地标；里程碑"
           },
           {
             "id": "s7col1-compartment",
+            "phonetic": "/kəmˈpɑː(ɹ)tmənt/",
             "word": "compartment",
             "pos": "n.",
             "meaning": "隔间；车厢"
           },
           {
             "id": "s7col1-rigid",
+            "phonetic": "/ˈɹɪdʒɪd/",
             "word": "rigid",
             "pos": "adj.",
             "meaning": "僵硬的；严格的"
           },
           {
             "id": "s7col1-sanction",
+            "phonetic": "/ˈsæŋkʃən/",
             "word": "sanction",
             "pos": "n.",
             "meaning": "制裁；批准"
           },
           {
             "id": "s7col1-artery",
+            "phonetic": "/ˈɑɹ.təɹɪ/",
             "word": "artery",
             "pos": "n.",
             "meaning": "动脉；干线"
           },
           {
             "id": "s7col1-recurring",
+            "phonetic": "/rɪˈkɜːrɪŋ/",
             "word": "recurring",
             "pos": "adj.",
             "meaning": "反复出现的"
           },
           {
             "id": "s7col1-overturn",
+            "phonetic": "/ˌoʊvərˈtɜːrn/",
             "word": "overturn",
             "pos": "v.",
             "meaning": "推翻；倾覆"
           },
           {
             "id": "s7col1-escort",
+            "phonetic": "/ɛˈskɔɹt/",
             "word": "escort",
             "pos": "v.",
             "meaning": "护送；陪同"
           },
           {
             "id": "s7col1-monotony",
+            "phonetic": "/məˈnɑtəni/",
             "word": "monotony",
             "pos": "n.",
             "meaning": "单调；乏味"
           },
           {
             "id": "s7col1-smuggle",
+            "phonetic": "/ˈsmʌɡəl/",
             "word": "smuggle",
             "pos": "v.",
             "meaning": "走私；偷运"
           },
           {
             "id": "s7col1-rhetoric",
+            "phonetic": "/ˈretərɪk/",
             "word": "rhetoric",
             "pos": "n.",
             "meaning": "修辞；华而不实的言语"
           },
           {
             "id": "s7col1-reconcile",
+            "phonetic": "/ˈɹɛkənsaɪl/",
             "word": "reconcile",
             "pos": "v.",
             "meaning": "和解；调和"
           },
           {
             "id": "s7col1-slaughter",
+            "phonetic": "/ˈslɔːtə/",
             "word": "slaughter",
             "pos": "n.",
             "meaning": "大量杀戮"
           },
           {
             "id": "s7col1-console",
+            "phonetic": "/ˈkɑːn.soʊl/",
             "word": "console",
             "pos": "v.",
             "meaning": "安慰；慰藉"
           },
           {
             "id": "s7col1-hinge",
+            "phonetic": "/ˈhɪndʒ/",
             "word": "hinge",
             "pos": "v.",
             "meaning": "取决于；铰链"
           },
           {
             "id": "s7col1-tangled",
+            "phonetic": "/ˈtæŋ.ɡəld/",
             "word": "tangled",
             "pos": "adj.",
             "meaning": "纠缠的；混乱的"
           },
           {
             "id": "s7col1-imbibe",
+            "phonetic": "/ɪmˈbaɪb/",
             "word": "imbibe",
             "pos": "v.",
             "meaning": "吸收；饮（酒）"
           },
           {
             "id": "s7col1-inhibit",
+            "phonetic": "/ɪnˈhɪbɪt/",
             "word": "inhibit",
             "pos": "v.",
             "meaning": "抑制；阻碍"
           },
           {
             "id": "s7col1-linger",
+            "phonetic": "/ˈlɪŋɡə/",
             "word": "linger",
             "pos": "v.",
             "meaning": "逗留；徘徊"
           },
           {
             "id": "s7col1-grind",
+            "phonetic": "/ˈɡɹaɪnd/",
             "word": "grind",
             "pos": "v.",
             "meaning": "磨碎；苦干"
           },
           {
             "id": "s7col1-huddle",
+            "phonetic": "/ˈhʌdəl/",
             "word": "huddle",
             "pos": "v.",
             "meaning": "挤作一团；蜷缩"
           },
           {
             "id": "s7col1-withhold",
+            "phonetic": "/wɪðˈhoʊld/",
             "word": "withhold",
             "pos": "v.",
             "meaning": "扣留；拒绝给予"
           },
           {
             "id": "s7col1-forfeit",
+            "phonetic": "/ˈfɔɹ.fɪt/",
             "word": "forfeit",
             "pos": "v.",
             "meaning": "丧失；没收"
@@ -12279,210 +13123,245 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s7col2-summon",
+            "phonetic": "/ˈsʌmən/",
             "word": "summon",
             "pos": "v.",
             "meaning": "传唤；召唤"
           },
           {
             "id": "s7col2-strangle",
+            "phonetic": "/ˈstɹæŋɡ(ə)l/",
             "word": "strangle",
             "pos": "v.",
             "meaning": "勒死；扼杀"
           },
           {
             "id": "s7col2-counterfeit",
+            "phonetic": "/ˈkaʊn.tɚˌfɪt/",
             "word": "counterfeit",
             "pos": "adj.",
             "meaning": "伪造的；假冒的"
           },
           {
             "id": "s7col2-endow",
+            "phonetic": "/ɛn-/",
             "word": "endow",
             "pos": "v.",
             "meaning": "赋予；资助"
           },
           {
             "id": "s7col2-reciprocal",
+            "phonetic": "/ɹɪˈsɪpɹək(ə)l/",
             "word": "reciprocal",
             "pos": "adj.",
             "meaning": "互惠的；相互的"
           },
           {
             "id": "s7col2-unveil",
+            "phonetic": "/ʌnˈveɪl/",
             "word": "unveil",
             "pos": "v.",
             "meaning": "揭示；揭幕"
           },
           {
             "id": "s7col2-mediate",
+            "phonetic": "/ˈmidi.ət/",
             "word": "mediate",
             "pos": "v.",
             "meaning": "调解；斡旋"
           },
           {
             "id": "s7col2-deplore",
+            "phonetic": "/dɪˈplɔː/",
             "word": "deplore",
             "pos": "v.",
             "meaning": "谴责；强烈反对"
           },
           {
             "id": "s7col2-trauma",
+            "phonetic": "/ˈtɹaʊ.mə/",
             "word": "trauma",
             "pos": "n.",
             "meaning": "创伤；精神创伤"
           },
           {
             "id": "s7col2-invert",
+            "phonetic": "/ɪnˈvɜːrt/",
             "word": "invert",
             "pos": "v.",
             "meaning": "倒置；反转"
           },
           {
             "id": "s7col2-ascribe",
+            "phonetic": "/əˈskɹaɪb/",
             "word": "ascribe",
             "pos": "v.",
             "meaning": "归因于"
           },
           {
             "id": "s7col2-prototype",
+            "phonetic": "/-ɾə-/",
             "word": "prototype",
             "pos": "n.",
             "meaning": "原型；雏形"
           },
           {
             "id": "s7col2-exempt",
+            "phonetic": "/ɛɡˈzɛm(p)t/",
             "word": "exempt",
             "pos": "adj.",
             "meaning": "免除的；豁免的"
           },
           {
             "id": "s7col2-brink",
+            "phonetic": "/bɹɪŋk/",
             "word": "brink",
             "pos": "n.",
             "meaning": "边缘"
           },
           {
             "id": "s7col2-disperse",
+            "phonetic": "/dɪˈspɜːs/",
             "word": "disperse",
             "pos": "v.",
             "meaning": "驱散；分散"
           },
           {
             "id": "s7col2-repress",
+            "phonetic": "/rɪˈpres/",
             "word": "repress",
             "pos": "v.",
             "meaning": "压制；抑制"
           },
           {
             "id": "s7col2-impetus",
+            "phonetic": "/ˈɪm.pə.təs/",
             "word": "impetus",
             "pos": "n.",
             "meaning": "动力；推动力"
           },
           {
             "id": "s7col2-noteworthy",
+            "phonetic": "/ˈnəʊtˌwɜːði/",
             "word": "noteworthy",
             "pos": "adj.",
             "meaning": "值得注意的"
           },
           {
             "id": "s7col2-besiege",
+            "phonetic": "/bəˈsiːd͡ʒ/",
             "word": "besiege",
             "pos": "v.",
             "meaning": "围困；包围"
           },
           {
             "id": "s7col2-devour",
+            "phonetic": "/dɪˈvaʊ(w)ə(ɹ)/",
             "word": "devour",
             "pos": "v.",
             "meaning": "吞食；毁灭"
           },
           {
             "id": "s7col2-retort",
+            "phonetic": "/ɹɪˈtɔːt/",
             "word": "retort",
             "pos": "v.",
             "meaning": "反驳；回嘴"
           },
           {
             "id": "s7col2-intelligible",
+            "phonetic": "/ɪnˈtɛlədʒəbl̩/",
             "word": "intelligible",
             "pos": "adj.",
             "meaning": "可理解的；明了的"
           },
           {
             "id": "s7col2-stumble",
+            "phonetic": "/ˈstʌmbəl/",
             "word": "stumble",
             "pos": "v.",
             "meaning": "绊倒；踉跄"
           },
           {
             "id": "s7col2-rectify",
+            "phonetic": "/ˈɹɛktəˌfaɪ/",
             "word": "rectify",
             "pos": "v.",
             "meaning": "纠正；修复"
           },
           {
             "id": "s7col2-reputed",
+            "phonetic": "/ɹɪˈpju.tɪd/",
             "word": "reputed",
             "pos": "adj.",
             "meaning": "被认为的；有名的"
           },
           {
             "id": "s7col2-revolt",
+            "phonetic": "/ɹɪˈvoʊlt/",
             "word": "revolt",
             "pos": "n.",
             "meaning": "反叛；厌恶"
           },
           {
             "id": "s7col2-conspiracy",
+            "phonetic": "/kənˈspɪɹəsi/",
             "word": "conspiracy",
             "pos": "n.",
             "meaning": "密谋；共谋"
           },
           {
             "id": "s7col2-contagious",
+            "phonetic": "/kənˈteɪdʒəs/",
             "word": "contagious",
             "pos": "adj.",
             "meaning": "传染性的"
           },
           {
             "id": "s7col2-rehearse",
+            "phonetic": "/ɹɨˈhɝs/",
             "word": "rehearse",
             "pos": "v.",
             "meaning": "排练；预演"
           },
           {
             "id": "s7col2-groan",
+            "phonetic": "/ɡɹoʊn/",
             "word": "groan",
             "pos": "v.",
             "meaning": "呻吟；叹息"
           },
           {
             "id": "s7col2-eminent",
+            "phonetic": "/ˈɛmɪnənt/",
             "word": "eminent",
             "pos": "adj.",
             "meaning": "杰出的；显赫的"
           },
           {
             "id": "s7col2-denounce",
+            "phonetic": "/diˈnaʊns/",
             "word": "denounce",
             "pos": "v.",
             "meaning": "谴责；告发"
           },
           {
             "id": "s7col2-negligent",
+            "phonetic": "/ˈnɛɡ.lɪ.dʒənt/",
             "word": "negligent",
             "pos": "adj.",
             "meaning": "疏忽的；粗心大意的"
           },
           {
             "id": "s7col2-negligible",
+            "phonetic": "/ˈnɛɡlɪdʒɪbəl/",
             "word": "negligible",
             "pos": "adj.",
             "meaning": "微不足道的；可忽略的"
           },
           {
             "id": "s7col2-stagger",
+            "phonetic": "/ˈstæɡə/",
             "word": "stagger",
             "pos": "v.",
             "meaning": "蹒跚；使震惊"
@@ -12776,108 +13655,126 @@ WordTales.Data = (function() {
         "words": [
           {
             "id": "s7col3-intricate",
+            "phonetic": "/ˈɪn.tɹɪ.kət/",
             "word": "intricate",
             "pos": "adj.",
             "meaning": "复杂的；精细的"
           },
           {
             "id": "s7col3-mortal",
+            "phonetic": "/ˈmɔːtəl/",
             "word": "mortal",
             "pos": "adj.",
             "meaning": "致命的；凡人的"
           },
           {
             "id": "s7col3-enclose",
+            "phonetic": "/ənˈkloʊz/",
             "word": "enclose",
             "pos": "v.",
             "meaning": "围绕；圈起"
           },
           {
             "id": "s7col3-affiliated",
+            "phonetic": "/əˈfɪlieɪtɪd/",
             "word": "affiliated",
             "pos": "adj.",
             "meaning": "附属的；有关联的"
           },
           {
             "id": "s7col3-sturdy",
+            "phonetic": "/ˈstɜrdi/",
             "word": "sturdy",
             "pos": "adj.",
             "meaning": "坚固的；强壮的"
           },
           {
             "id": "s7col3-humiliate",
+            "phonetic": "/hjuːˈmɪliˌeɪt/",
             "word": "humiliate",
             "pos": "v.",
             "meaning": "羞辱；使丢脸"
           },
           {
             "id": "s7col3-propagate",
+            "phonetic": "/ˈpɹɒpəˌɡeɪt/",
             "word": "propagate",
             "pos": "v.",
             "meaning": "繁殖；传播"
           },
           {
             "id": "s7col3-propaganda",
+            "phonetic": "/[ˌpɹɒp.ə.ˈɡæn.də]/",
             "word": "propaganda",
             "pos": "n.",
             "meaning": "宣传"
           },
           {
             "id": "s7col3-scramble",
+            "phonetic": "/ˈskɹæmbl̩/",
             "word": "scramble",
             "pos": "v.",
             "meaning": "攀爬；争夺"
           },
           {
             "id": "s7col3-reproach",
+            "phonetic": "/ɹɪˈpɹoʊtʃ/",
             "word": "reproach",
             "pos": "v.",
             "meaning": "责备；指责"
           },
           {
             "id": "s7col3-perplexing",
+            "phonetic": "/pɚˈplɛksɪŋ/",
             "word": "perplexing",
             "pos": "adj.",
             "meaning": "令人困惑的"
           },
           {
             "id": "s7col3-bewildered",
+            "phonetic": "/bəˈwɪldəd/",
             "word": "bewildered",
             "pos": "adj.",
             "meaning": "困惑的；不知所措的"
           },
           {
             "id": "s7col3-stagnate",
+            "phonetic": "/ˈstæɡneɪt/",
             "word": "stagnate",
             "pos": "v.",
             "meaning": "停滞；不景气"
           },
           {
             "id": "s7col3-outrageous",
+            "phonetic": "/aʊtˈɹeɪdʒəs/",
             "word": "outrageous",
             "pos": "adj.",
             "meaning": "蛮横的；骇人听闻的"
           },
           {
             "id": "s7col3-snatch",
+            "phonetic": "/snætʃ/",
             "word": "snatch",
             "pos": "v.",
             "meaning": "夺取；抢走"
           },
           {
             "id": "s7col3-counteract",
+            "phonetic": "/ˈkaʊntəɹˌækt/",
             "word": "counteract",
             "pos": "v.",
             "meaning": "抵消；对抗"
           },
           {
             "id": "s7col3-assassinate",
+            "phonetic": "/əˈsasɪneɪt/",
             "word": "assassinate",
             "pos": "v.",
             "meaning": "行刺"
           },
           {
             "id": "s7col3-dubious",
+            "phonetic": "/ˈdu.bi.əs/",
             "word": "dubious",
             "pos": "adj.",
             "meaning": "怀疑的；靠不住的"

@@ -727,6 +727,13 @@ align-items:center;
 justify-content:center;
 text-align:center;
 gap:.2rem}
+/* 词卡双面用网格堆叠在同一单元格：行高取前后两面最大高度，
+ * 翻面时卡片自动长高包住背面全部内容，文字不会超出卡片。 */
+.vocab-card .card-inner {
+display:grid}
+.vocab-card .card-face {
+position:static;
+grid-area:1/1}
 .vocab-card .vw {
 font-family:var(--serif);
 font-weight:700;
@@ -746,6 +753,12 @@ color:var(--muted);
 font-style:italic;
 margin-right:.3rem;
 line-height:1.2}
+.vocab-card .vf {
+font-size:.8rem;
+color:var(--muted);
+line-height:1.2;
+max-width:100%;
+overflow-wrap:anywhere}
 .vocab-card .vm {
 font-size:.82rem;
 color:var(--ink);
