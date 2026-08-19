@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
 <title>词汇记忆短文集 · Vocabulary in Context</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235b7cfa'/%3E%3Ctext x='16' y='23' font-size='18' font-family='Georgia' fill='white' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/styles.css?v=3.0.7">
+<link rel="stylesheet" href="css/styles.css?v=3.0.9">
 <link rel="stylesheet" href="../shared/hub.css">
 </head>
 <body>
@@ -24,6 +24,10 @@
         <span class="record-entry-mark" aria-hidden="true">✓</span>
         记录表
       </button>
+      <button type="button" class="record-entry starred-entry" id="starredEntry" disabled aria-busy="true">
+        <span class="record-entry-mark starred-entry-mark" aria-hidden="true">★</span>
+        星标单词
+      </button>
     </div>
     <div class="auth-mount" id="authMount" aria-live="polite"></div>
   </div>
@@ -35,6 +39,18 @@
   <div class="changelog-head">
     <h2>第八份：更新日志</h2>
     <p>记录 WordTales 从第一行代码至今的每一次蜕变。大版本意味着全新能力板块的上线，小版本则是在现有框架下的功能增强与打磨。</p>
+  </div>
+
+  <div class="changelog-version">
+    <h3>v3.8 <span class="cv-badge minor">小版本</span></h3>
+    <div class="cv-date">2026-08-19</div>
+    <div class="cv-desc"><strong>星标单词汇总与导出。</strong>记录表旁新增“星标单词”入口，集中查看所有标记过的单词；右上角导出按钮可按词集筛选范围，并自由选择导出哪些列，生成 CSV 文件保存。</div>
+    <ul>
+      <li>星标列表按正文出现顺序展示单词、音标、词性、释义、所属词集栏目和标记时间</li>
+      <li>导出时可勾选第一份至第七份词集筛选范围，只导出来自所选词集的星标单词</li>
+      <li>导出列可在单词、音标、词性、释义、词集栏目、语境句子、标记时间中任意组合</li>
+      <li>导出文件为带 BOM 的 CSV，Excel 打开中文不乱码，文件名自动带上当天日期</li>
+    </ul>
   </div>
 
   <div class="changelog-version">
@@ -265,6 +281,8 @@
 <script defer src="js/portal-sync.js?v=1.0.0"></script>
 
 <script defer src="js/study-record.js?v=1.1.0"></script>
+
+<script defer src="js/starred-words.js?v=1.1.0"></script>
 
 <script defer src="js/feature-modal-navigation.js?v=1.0.0"></script>
 <script defer src="js/reader.js?v=1.0.0"></script>

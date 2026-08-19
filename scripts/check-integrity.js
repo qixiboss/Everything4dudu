@@ -28,6 +28,7 @@ const expectedScripts = [
   'js/learning-progress-v2.js',
   'js/portal-sync.js',
   'js/study-record.js',
+  'js/starred-words.js',
   'js/feature-modal-navigation.js',
   'js/reader.js',
   'js/progress-ui.js',

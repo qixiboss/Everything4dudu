@@ -1766,3 +1766,185 @@ display:block!important}
 .set-btn {
 display:none}
 }
+
+/* ============================================================
+ * 星标单词面板：复用记录表 overlay 骨架，以下为专属样式。
+ * ============================================================ */
+.starred-entry-mark {
+background:#f1c75b;
+color:#5b4300}
+.starred-head-actions {
+display:flex;
+align-items:flex-start;
+gap:.55rem;
+flex:0 0 auto}
+.starred-export-button {
+height:2.5rem;
+padding:0 1.1rem;
+border:1px solid var(--accent);
+border-radius:999px;
+background:var(--accent);
+color:#fff;
+font:700 .82rem var(--sans);
+cursor:pointer;
+transition:background .2s,transform .2s}
+.starred-export-button:hover:not(:disabled) {
+transform:translateY(-1px)}
+.starred-export-button:disabled {
+opacity:.45;
+cursor:not-allowed}
+.starred-panel {
+position:relative}
+.starred-export-menu {
+position:absolute;
+top:5.2rem;
+right:clamp(1rem,3vw,2.4rem);
+z-index:6;
+width:16rem;
+padding:.9rem 1rem 1rem;
+border:1px solid var(--rule);
+border-radius:14px;
+background:#fff;
+box-shadow:0 18px 46px rgba(19,27,30,.2)}
+.starred-export-body {
+max-height:22rem;
+overflow:auto;
+overscroll-behavior:contain}
+.starred-export-title {
+margin:0 0 .55rem;
+color:var(--ink);
+font:700 .78rem var(--sans)}
+.starred-export-title-sub {
+margin-top:.9rem;
+padding-top:.7rem;
+border-top:1px solid var(--rule)}
+.starred-export-options {
+display:grid;
+gap:.3rem}
+.starred-export-option {
+display:flex;
+align-items:center;
+gap:.5rem;
+padding:.3rem .35rem;
+border-radius:8px;
+color:var(--ink);
+font-size:.78rem;
+cursor:pointer}
+.starred-export-option:hover {
+background:#f4efe4}
+.starred-export-option input {
+width:1rem;
+height:1rem;
+margin:0;
+accent-color:var(--accent);
+cursor:pointer}
+.starred-export-actions {
+display:flex;
+flex-wrap:wrap;
+gap:.5rem;
+margin-top:.75rem;
+padding-top:.7rem;
+border-top:1px solid var(--rule)}
+.starred-export-toggle {
+padding:.4rem .7rem;
+border:1px solid var(--rule);
+border-radius:999px;
+background:#fff;
+color:var(--ink);
+font:700 .72rem var(--sans);
+cursor:pointer}
+.starred-export-toggle:hover {
+border-color:var(--accent);
+color:var(--accent)}
+.starred-export-confirm {
+flex:1 0 100%;
+padding:.5rem .95rem;
+border:1px solid var(--accent);
+border-radius:999px;
+background:var(--accent);
+color:#fff;
+font:700 .74rem var(--sans);
+cursor:pointer}
+.starred-scroll {
+margin-top:1rem}
+.starred-table {
+width:100%;
+min-width:820px;
+border-collapse:separate;
+border-spacing:0;
+font-size:.8rem}
+.starred-table th,.starred-table td {
+padding:.6rem .8rem;
+border-right:1px solid var(--rule);
+border-bottom:1px solid var(--rule);
+text-align:left;
+vertical-align:middle}
+.starred-table tr:last-child th,.starred-table tr:last-child td {
+border-bottom:0}
+.starred-table th:last-child,.starred-table td:last-child {
+border-right:0}
+.starred-table thead th {
+position:sticky;
+top:0;
+z-index:3;
+background:#f2eee5;
+color:var(--muted);
+font-size:.72rem;
+font-weight:700;
+white-space:nowrap}
+.starred-col-word {
+white-space:nowrap}
+.starred-star {
+margin-right:.4rem;
+color:#e0a92e;
+font-size:.85rem}
+.starred-word-text {
+color:var(--ink);
+font:700 .95rem var(--serif)}
+.starred-col-phonetic {
+color:var(--muted);
+font-size:.74rem;
+white-space:nowrap}
+.starred-col-pos {
+color:var(--muted);
+font-size:.74rem;
+white-space:nowrap}
+.starred-col-source {
+color:var(--muted);
+font-size:.72rem;
+white-space:nowrap}
+.starred-col-time {
+color:var(--muted);
+font-size:.72rem;
+white-space:nowrap}
+.starred-empty {
+flex:1;
+display:grid;
+place-content:center;
+justify-items:center;
+gap:.6rem;
+color:var(--muted);
+font-size:.85rem;
+text-align:center}
+.starred-empty-star {
+color:#e0a92e;
+font-size:2.6rem;
+line-height:1}
+@media(max-width:700px) {
+.starred-head-actions {
+align-items:center}
+.starred-export-button {
+height:44px}
+.starred-export-menu {
+top:4.6rem;
+right:.75rem;
+left:.75rem;
+width:auto}
+.starred-export-body {
+max-height:18rem}
+.starred-table {
+min-width:640px;
+font-size:.74rem}
+.starred-table th,.starred-table td {
+padding:.5rem .55rem}
+}

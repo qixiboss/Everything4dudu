@@ -57,6 +57,7 @@ WordTales.PortalSync.init().then(function(){
 return WordTales.LearningProgress.init();
 }).then(function(){
 WordTales.StudyRecord.init();
+WordTales.StarredWords.init();
 WordTales.Progress.refresh();
 window.addEventListener('hashchange', switchToHash);
 switchToHash();
