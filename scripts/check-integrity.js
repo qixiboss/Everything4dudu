@@ -28,6 +28,7 @@ const expectedScripts = [
   'js/learning-progress-v2.js',
   'js/portal-sync.js',
   'js/study-record.js',
+  'js/export-pdf.js',
   'js/starred-words.js',
   'js/feature-modal-navigation.js',
   'js/reader.js',
@@ -90,6 +91,22 @@ scripts.forEach((script, index) => {
     errors.push(`${script.source || `script ${index + 1}`}: ${error.message}`);
   }
 });
+
+/*
+ * export-font.js 是 PDF 导出按需懒加载的字体数据文件：不在 HTML 的
+ * <script> 序列里，但仍然必须存在并能通过 V8 解析，否则首次导出
+ * 会跳到 script 404 错误。
+ */
+const lazyFontPath = path.resolve(path.dirname(htmlPath), 'js/export-font.js');
+if (!fs.existsSync(lazyFontPath) || !fs.statSync(lazyFontPath).isFile()) {
+  errors.push('Referenced static asset is missing: js/export-font.js');
+} else {
+  try {
+    new vm.Script(fs.readFileSync(lazyFontPath, 'utf8'), { filename: 'js/export-font.js' });
+  } catch (error) {
+    errors.push(`js/export-font.js: ${error.message}`);
+  }
+}
 
 const dataPath = path.resolve(path.dirname(htmlPath), 'js/data.js');
 const dataSource = fs.existsSync(dataPath) ? fs.readFileSync(dataPath, 'utf8') : '';

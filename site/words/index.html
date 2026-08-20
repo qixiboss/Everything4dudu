@@ -78,6 +78,19 @@
   </div>
 
   <div class="changelog-version">
+    <h3>v3.6 <span class="cv-badge minor">小版本</span></h3>
+    <div class="cv-date">2026-08-20</div>
+    <div class="cv-desc"><strong>段落解析可正常打开，星标导出改为 PDF。</strong>修复解析按钮因模块间函数未导出而静默失败的 bug；星标列表的导出从 CSV 改为按所选列生成 A4 PDF，嵌入中文字体确保打印与跨设备阅读效果一致。</div>
+    <ul>
+      <li>解析按钮现在能进入翻转背面，渲染翻译、要点与关键词高亮</li>
+      <li>PDF 内嵌 Noto Sans SC（中文）与 Noto Sans（拉丁 + IPA）子集字体</li>
+      <li>首屏不加载字体数据；首次点击「导出 PDF」时再按需注入</li>
+      <li>默认勾选单词 / 音标 / 词性 / 释义 / 词集·栏目五列，语境句子与标记时间可按需追加</li>
+      <li>PDF 文件名沿用「星标单词-YYYY-MM-DD.pdf」约定，便于归档</li>
+    </ul>
+  </div>
+
+  <div class="changelog-version">
     <h3>v3.5 <span class="cv-badge minor">小版本</span></h3>
     <div class="cv-date">2026-08-14</div>
     <div class="cv-desc"><strong>栏目标题旁新增快捷完成按钮。</strong>无需打开学习记录表，即可按今天的日期完成当前栏目；记录仍沿用本地保存与登录后的云端同步。</div>
@@ -282,7 +295,9 @@
 
 <script defer src="js/study-record.js?v=1.1.0"></script>
 
-<script defer src="js/starred-words.js?v=1.1.0"></script>
+<script defer src="js/export-pdf.js?v=1.0.0"></script>
+
+<script defer src="js/starred-words.js?v=1.2.0"></script>
 
 <script defer src="js/feature-modal-navigation.js?v=1.0.0"></script>
 <script defer src="js/reader.js?v=1.0.0"></script>

@@ -18,3 +18,4 @@ __pycache__/
 
 # 本地生成产物（PDF / md 由脚本重新生成）
 output/
+scripts/.font-cache/

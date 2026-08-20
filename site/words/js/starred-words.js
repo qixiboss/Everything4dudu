@@ -1,29 +1,36 @@
 /* ============================================================
  * Module: StarredWords
- * 汇总展示所有星标词条，并支持按所选栏目导出 CSV 文件。
+ * 汇总展示所有星标词条，并支持按所选栏目导出 PDF 文件。
  * 星标事实来源仍是 LearningProgress，本模块只读不写。
+ * PDF 字体子集约 900KB，首屏不加载；首次点击导出时由 ExportPdf
+ * 注入 <script> 拉取 js/export-font.js，之后复用同一 Promise。
  * ============================================================ */
 WordTales.StarredWords = (function() {
   var overlay = null;
   var panel = null;
   var exportMenu = null;
   var exportButton = null;
+  var exportStatus = null;
   var setOptionList = null;
   var columnOptionList = null;
   var previousFocus = null;
   var previousBodyOverflow = '';
   var initialized = false;
 
-  /* 可导出列：id 同时用于行数据取值和 CSV 表头。 */
+  /*
+   * 可导出列：id 用于行数据取值，width / min 用于 PDF 排版。
+   * 默认勾选前 5 列基础信息；语境句子与标记时间可按需追加。
+   */
   var EXPORT_COLUMNS = [
-    { id: 'word', label: '单词' },
-    { id: 'phonetic', label: '音标' },
-    { id: 'pos', label: '词性' },
-    { id: 'meaning', label: '释义' },
-    { id: 'source', label: '词集·栏目' },
-    { id: 'sentence', label: '语境句子' },
-    { id: 'starredAt', label: '标记时间' }
+    { id: 'word', label: '单词', width: 70, min: 52 },
+    { id: 'phonetic', label: '音标', width: 100, min: 72 },
+    { id: 'pos', label: '词性', width: 32, min: 28 },
+    { id: 'meaning', label: '释义', width: 160, min: 96 },
+    { id: 'source', label: '词集·栏目', width: 100, min: 60 },
+    { id: 'sentence', label: '语境句子', width: 220, min: 110, flex: true },
+    { id: 'starredAt', label: '标记时间', width: 68, min: 52 }
   ];
+  var DEFAULT_COLUMN_IDS = ['word', 'phonetic', 'pos', 'meaning', 'source'];
 
   function pad(value) { return ('0' + value).slice(-2); }
   function dayKey(date) {
@@ -84,25 +91,6 @@ WordTales.StarredWords = (function() {
         setIds: setIds
       };
     }).filter(Boolean).sort(function(a, b) { return a.sourceOrder - b.sourceOrder; });
-  }
-
-  function cellValue(row, columnId) {
-    if (columnId === 'starredAt') return formatStarredAt(row.starredAt);
-    var value = row[columnId];
-    return value == null ? '' : String(value);
-  }
-  function csvEscape(value) {
-    var text = value == null ? '' : String(value);
-    return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
-  }
-  /* 生成带 BOM 的 CSV 文本，Excel 打开时中文不乱码。 */
-  function buildCsv(rows, columnIds) {
-    var selected = EXPORT_COLUMNS.filter(function(column) { return columnIds.indexOf(column.id) >= 0; });
-    var lines = [selected.map(function(column) { return csvEscape(column.label); }).join(',')];
-    rows.forEach(function(row) {
-      lines.push(selected.map(function(column) { return csvEscape(cellValue(row, column.id)); }).join(','));
-    });
-    return '﻿' + lines.join('\r\n');
   }
 
   function focusableElements() {
@@ -171,24 +159,97 @@ WordTales.StarredWords = (function() {
     if (!WordTales.Data || !WordTales.Data.sets) return [];
     return WordTales.Data.sets.map(function(set) { return { id: set.id, label: set.label }; });
   }
-  function downloadCsv(csvText) {
-    var blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = '星标单词-' + dayKey(new Date()) + '.csv';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+
+  /*
+   * 把选中列与行数据打包成 ExportPdf 可用的输入：保留 width/min/flex
+   * 排版参数，并把 starredAt 格式化为本地时间。供运行期与测试共用
+   * 一份逻辑，避免行为漂移。
+   */
+  function buildExportDocument(rows, columnIds, options) {
+    options = options || {};
+    var columns = EXPORT_COLUMNS.filter(function(column) {
+      return columnIds.indexOf(column.id) >= 0;
+    });
+    if (!columns.length || !rows.length) {
+      return { bytes: new Uint8Array(0), pageCount: 0, filename: '' };
+    }
+    var tableRows = rows.map(function(row) {
+      var object = {};
+      columns.forEach(function(column) {
+        var value = column.id === 'starredAt' ? formatStarredAt(row.starredAt) : row[column.id];
+        object[column.id] = value == null ? '' : String(value);
+      });
+      return object;
+    });
+    var today = options.date instanceof Date ? options.date : new Date();
+    var labelDate = dayKey(today);
+    var document = WordTales.ExportPdf.buildDocument({
+      title: '星标单词',
+      subtitle: '导出日期 ' + labelDate + ' · 共 ' + rows.length + ' 词',
+      columns: columns.map(function(column) {
+        return {
+          id: column.id,
+          label: column.label,
+          width: column.width,
+          min: column.min,
+          flex: !!column.flex
+        };
+      }),
+      rows: tableRows
+    });
+    return {
+      bytes: document.bytes,
+      pageCount: document.pageCount,
+      filename: '星标单词-' + labelDate + '.pdf'
+    };
   }
+
+  function setExporting(pending) {
+    if (!exportMenu) return;
+    var confirm = exportMenu.querySelector('.starred-export-confirm');
+    if (!confirm) return;
+    confirm.disabled = !!pending;
+    if (pending) {
+      confirm.dataset.previousText = confirm.textContent;
+      confirm.textContent = '生成中…';
+    } else if (confirm.dataset.previousText) {
+      confirm.textContent = confirm.dataset.previousText;
+      delete confirm.dataset.previousText;
+    }
+  }
+
+  function announce(message, error) {
+    if (!exportStatus) return;
+    exportStatus.textContent = message || '';
+    exportStatus.classList.toggle('is-error', !!error);
+  }
+
   function runExport() {
     var columnIds = selectedColumnIds();
     var setIds = selectedSetIds();
+    if (!columnIds.length) {
+      announce('请至少选择一列再导出', true);
+      return;
+    }
     var rows = filterRowsBySets(collectRows(), setIds);
-    if (!columnIds.length || !rows.length) return;
-    downloadCsv(buildCsv(rows, columnIds));
-    closeExportMenu();
+    if (!rows.length) {
+      announce('所选词集下暂无星标单词', true);
+      return;
+    }
+    setExporting(true);
+    announce('正在生成 PDF…');
+    WordTales.ExportPdf.loadFonts().then(function() {
+      var document = buildExportDocument(rows, columnIds);
+      if (!document.bytes.length) throw new Error('PDF 生成失败');
+      WordTales.ExportPdf.download(document.bytes, document.filename);
+      announce('已导出 ' + document.filename);
+      closeExportMenu();
+    }).catch(function(err) {
+      var message = err && err.message ? err.message : 'PDF 生成失败';
+      announce(message, true);
+    }).then(function() {
+      setExporting(false);
+    });
   }
   function buildCheckboxOption(list, value, label, checked) {
     var option = appendElement(list, 'label', 'starred-export-option');
@@ -217,8 +278,12 @@ WordTales.StarredWords = (function() {
     appendElement(body, 'p', 'starred-export-title starred-export-title-sub', '选择导出列');
     columnOptionList = appendElement(body, 'div', 'starred-export-options starred-column-options');
     EXPORT_COLUMNS.forEach(function(column) {
-      buildCheckboxOption(columnOptionList, column.id, column.label, column.id !== 'sentence' && column.id !== 'starredAt');
+      buildCheckboxOption(columnOptionList, column.id, column.label, DEFAULT_COLUMN_IDS.indexOf(column.id) >= 0);
     });
+
+    exportStatus = appendElement(body, 'p', 'starred-export-status', '');
+    exportStatus.setAttribute('role', 'status');
+    exportStatus.setAttribute('aria-live', 'polite');
 
     var actions = appendElement(exportMenu, 'div', 'starred-export-actions');
     var setToggle = createButton('starred-export-toggle', '清空', '全选或清空词集');
@@ -233,7 +298,7 @@ WordTales.StarredWords = (function() {
       setAllOptions(columnOptionList, turnOn);
       columnToggle.textContent = turnOn ? '清空' : '全选';
     });
-    var confirm = createButton('starred-export-confirm', '导出文件', '按所选词集与列导出 CSV 文件');
+    var confirm = createButton('starred-export-confirm', '导出 PDF', '按所选词集与列生成 PDF 文件');
     confirm.addEventListener('click', runExport);
     actions.appendChild(setToggle);
     actions.appendChild(columnToggle);
@@ -257,6 +322,7 @@ WordTales.StarredWords = (function() {
     var rows = collectRows();
     panel.innerHTML = '';
     exportMenu = null;
+    exportStatus = null;
 
     var header = appendElement(panel, 'div', 'record-panel-head');
     var heading = appendElement(header, 'div', 'record-heading');
@@ -266,7 +332,7 @@ WordTales.StarredWords = (function() {
     appendElement(heading, 'p', 'record-intro',
       rows.length ? '共 ' + rows.length + ' 个星标单词，按正文出现顺序排列。' : '还没有星标单词，在词卡或游戏中点五角星即可标记。');
     var actions = appendElement(header, 'div', 'starred-head-actions');
-    exportButton = createButton('starred-export-button', '导出', '选择列并导出星标单词');
+    exportButton = createButton('starred-export-button', '导出', '选择列并导出星标单词为 PDF');
     exportButton.disabled = !rows.length;
     exportButton.setAttribute('aria-haspopup', 'true');
     exportButton.setAttribute('aria-expanded', 'false');
@@ -280,7 +346,7 @@ WordTales.StarredWords = (function() {
     if (!rows.length) {
       var empty = appendElement(panel, 'div', 'starred-empty');
       appendElement(empty, 'span', 'starred-empty-star', '☆');
-      appendElement(empty, 'p', '', '星标单词会显示在这里，之后可以按列导出成文件。');
+      appendElement(empty, 'p', '', '星标单词会显示在这里，之后可以按列导出为 PDF 文件。');
       return;
     }
 
@@ -373,11 +439,14 @@ WordTales.StarredWords = (function() {
     open: open,
     close: close,
     collectRows: collectRows,
-    buildCsv: buildCsv,
+    buildExportDocument: buildExportDocument,
     filterRowsBySets: filterRowsBySets,
     getSetFilters: getSetFilters,
     getExportColumns: function() {
-      return EXPORT_COLUMNS.map(function(column) { return { id: column.id, label: column.label }; });
-    }
+      return EXPORT_COLUMNS.map(function(column) {
+        return { id: column.id, label: column.label };
+      });
+    },
+    getDefaultColumnIds: function() { return DEFAULT_COLUMN_IDS.slice(); }
   };
 })();

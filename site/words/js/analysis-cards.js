@@ -92,7 +92,11 @@ back.setAttribute('aria-hidden', 'true');
 }
 
 function showAnalysis(block, backEl, paraIdx) {
-closeWordPopups();
+/*
+ * closeWordPopups 只在 Reader 的闭包内定义；这里必须走 WordPopup 门面，
+ * 否则点击“解析”会抛 ReferenceError，翻转与背面渲染都不会发生。
+ */
+if (WordTales.WordPopup && WordTales.WordPopup.close) WordTales.WordPopup.close();
 var paragraphs = block.querySelectorAll('.essay-face p');
 var paragraphId = paragraphs[paraIdx] ? paragraphs[paraIdx].dataset.paragraphId : '';
 var paragraphData = WordTales.Data.getParagraph(paragraphId);

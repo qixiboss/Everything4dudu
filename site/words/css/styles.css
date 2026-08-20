@@ -1865,6 +1865,16 @@ background:var(--accent);
 color:#fff;
 font:700 .74rem var(--sans);
 cursor:pointer}
+.starred-export-confirm:disabled {
+opacity:.6;
+cursor:wait}
+.starred-export-status {
+min-height:1.1em;
+margin:.45rem 0 0;
+font:.7rem var(--sans);
+color:var(--muted)}
+.starred-export-status.is-error {
+color:#c0392b}
 .starred-scroll {
 margin-top:1rem}
 .starred-table {
