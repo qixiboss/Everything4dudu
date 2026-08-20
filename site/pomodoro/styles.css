@@ -105,6 +105,38 @@ button{
 }
 .stat-v{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--mint-2);line-height:1.1}
 .stat-k{font-size:12px;color:var(--sub)}
+.sr-only{
+  position:absolute;width:1px;height:1px;
+  margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.cycle-tomatoes{
+  display:flex;justify-content:center;align-items:center;
+  flex-wrap:wrap;gap:3px;
+  min-height:28px;
+  padding:2px 0;
+}
+.cycle-tomatoes svg{width:24px;height:24px;flex:none;display:block}
+.cycle-tomatoes .tomato-done .t-body{fill:var(--tomato);stroke:var(--tomato)}
+.cycle-tomatoes .tomato-done .t-highlight{stroke:rgba(255,255,255,.55);stroke-width:1.4}
+.cycle-tomatoes .tomato-done .t-leaf{fill:#4E9F6D;stroke:#3C7E55}
+.cycle-tomatoes .tomato-done .t-stem{stroke:#3C7E55;stroke-width:1.5}
+.cycle-tomatoes .tomato-todo .t-body{fill:transparent;stroke:var(--sub)}
+.cycle-tomatoes .tomato-todo .t-leaf{fill:transparent;stroke:var(--sub)}
+.cycle-tomatoes .tomato-todo .t-stem{stroke:var(--sub);stroke-width:1.5}
+.cycle-tomatoes .tomato-todo .t-highlight{display:none}
+.cycle-tomatoes .t-leaf{stroke-width:1.3}
+.cycle-tomatoes .t-highlight{fill:none}
+.cycle-tomatoes .tomato-done{
+  animation:tomato-pop .25s ease;
+}
+@keyframes tomato-pop{
+  from{transform:scale(.55);opacity:.4}
+  to{transform:scale(1);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .cycle-tomatoes .tomato-done{animation:none}
+}
 
 /* ============ 计时布局 ============ */
 .timer-layout{display:grid;gap:18px;align-items:start}

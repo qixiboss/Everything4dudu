@@ -394,7 +394,36 @@
     setStat('stat-today-focus', today.focusCount);
     setStat('stat-today-sec', today.totalFocusSec === 0 ? '0 分钟' : M.fmtDuration(today.totalFocusSec));
     setStat('stat-month-days', month.activeDayCount);
-    setStat('stat-cycle', cyclePosition() + ' / ' + state.data.settings.longBreakInterval);
+    renderCycleTomatoes();
+  }
+
+  function tomatoSVG(done) {
+    var cls = done ? 'tomato-done' : 'tomato-todo';
+    return '' +
+      '<svg viewBox="0 0 32 32" aria-hidden="true">' +
+      '<g class="' + cls + '">' +
+      '<path class="t-leaf" d="M16 13.2 12.4 8.6c-1.2-.7-2.7-.6-3.7.2.4 1.8 1.5 3.2 3.5 3.9 1.2.4 2.5.5 3.8.5z" fill="none" stroke-linejoin="round"/>' +
+      '<path class="t-leaf" d="M16 13.2 19.6 8.6c1.2-.7 2.7-.6 3.7.2-.4 1.8-1.5 3.2-3.5 3.9-1.2.4-2.5.5-3.8.5z" fill="none" stroke-linejoin="round"/>' +
+      '<path class="t-leaf" d="M16 13.3 15.2 7.9c-.2-1.4.7-2.8 2-3.1 1 .3 1.6 1.2 1.7 2.4.1 1.2-.1 2.4-.7 3.5-.4.8-.9 1.7-2.2 2.6z" fill="none" stroke-linejoin="round"/>' +
+      '<path class="t-leaf" d="M16 13.3 16.8 7.9c.2-1.4-.7-2.8-2-3.1-1 .3-1.6 1.2-1.7 2.4-.1 1.2.1 2.4.7 3.5.4.8.9 1.7 2.2 2.6z" fill="none" stroke-linejoin="round"/>' +
+      '<path class="t-leaf" d="M16 13.4c-.5-1.1-1.3-1.9-2.3-2.5.4-1 1.2-1.8 2.3-2.2 1.1.4 1.9 1.2 2.3 2.2-1 .6-1.8 1.4-2.3 2.5z" fill="none" stroke-linejoin="round"/>' +
+      '<path class="t-stem" d="M15.4 8.7c0-1.7 0-3.4.6-4.7" fill="none" stroke-linecap="round"/>' +
+      '<path class="t-body" d="M16 28.8c-6 0-10.2-4.1-10.2-9.6 0-4.6 2.6-8.3 6.3-9.6 1.2-.4 2.5-.6 3.9-.6s2.7.2 3.9.6c3.7 1.3 6.3 5 6.3 9.6 0 5.5-4.2 9.6-10.2 9.6z" fill="none" stroke-width="1.8" stroke-linejoin="round"/>' +
+      '<path class="t-highlight" d="M8.7 21.3c.9 2 2.4 3.3 4.2 3.9" fill="none" stroke-linecap="round"/>' +
+      '</g>' +
+      '</svg>';
+  }
+
+  function renderCycleTomatoes() {
+    var node = $('#cycle-tomatoes');
+    if (!node) return;
+    var settings = state.data.settings;
+    var total = settings.longBreakInterval;
+    var done = cyclePosition();
+    var html = '';
+    for (var i = 0; i < total; i++) html += tomatoSVG(i < done);
+    node.innerHTML = html;
+    node.setAttribute('aria-label', '本轮进度 ' + done + ' / ' + total);
   }
 
   function setStat(id, value) {
