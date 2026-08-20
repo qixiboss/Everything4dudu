@@ -138,12 +138,23 @@
     return timer.totalSec > 0 ? timer.totalSec : durationFor(timer.mode, state.data.settings);
   }
 
-  function cyclePosition() {
-    var settings = state.data.settings;
+  function focusDoneToday() {
     var day = state.data.log[M.todayKey()];
-    var focusDone = day ? day.focusCount : 0;
-    var position = focusDone % settings.longBreakInterval;
-    return position === 0 ? settings.longBreakInterval : position;
+    return day ? day.focusCount : 0;
+  }
+
+  function completedInCycle() {
+    return focusDoneToday() % state.data.settings.longBreakInterval;
+  }
+
+  /* 当前本轮已完成几个番茄；用于展示“本组第 N 个/已完成第 N 个”。 */
+  function cyclePosition() {
+    return completedInCycle() + 1;
+  }
+
+  function completedInCycleForBreak() {
+    var completed = completedInCycle();
+    return completed === 0 ? state.data.settings.longBreakInterval : completed;
   }
 
   function syncModeChips() {
@@ -192,8 +203,8 @@
     syncModeChips();
     var nextNode = $('#timer-next');
     if (nextNode) {
-      var position = cyclePosition();
-      var nextMode = advanceMode();
+      var position = timer.mode === MODES.FOCUS ? cyclePosition() : completedInCycleForBreak();
+      var nextMode = nextModeForDisplay();
       var prefix = timer.mode === MODES.FOCUS ? '本组第 ' + position + ' 个番茄' : '已完成第 ' + position + ' 个番茄';
       nextNode.textContent = prefix + ' · 下一个：' + modeMeta(nextMode).label;
     }
@@ -237,14 +248,27 @@
     timer.remaining = 0;
   }
 
-  function advanceMode() {
-    var settings = state.data.settings;
-    if (timer.mode === MODES.FOCUS) {
-      var day = state.data.log[M.todayKey()];
-      var focusDone = day ? day.focusCount : 0;
+  /* 已完成的阶段之后：专注完成后，整组完成进入长休息，否则进入短休息。 */
+  function nextModeAfterCompletedPhase(mode) {
+    if (mode === MODES.FOCUS) {
+      var settings = state.data.settings;
+      var focusDone = focusDoneToday();
       return (focusDone > 0 && focusDone % settings.longBreakInterval === 0) ? MODES.LONG : MODES.SHORT;
     }
     return MODES.FOCUS;
+  }
+
+  /* 提前结束/切换阶段：专注只进入短休息，休息回到专注。 */
+  function nextModeAfterIncompletePhase(mode) {
+    return mode === MODES.FOCUS ? MODES.SHORT : MODES.FOCUS;
+  }
+
+  /* 当前阶段之后会进入哪个阶段，用于“下一个”文案。 */
+  function nextModeForDisplay() {
+    if (timer.mode !== MODES.FOCUS) return MODES.FOCUS;
+    var settings = state.data.settings;
+    var upcoming = focusDoneToday() + 1;
+    return (upcoming % settings.longBreakInterval === 0) ? MODES.LONG : MODES.SHORT;
   }
 
   function startTimer() {
@@ -300,9 +324,10 @@
     vibrate();
     stopTimer();
     resetPhaseMeta();
-    var nextMode = advanceMode();
+    var nextMode = nextModeAfterCompletedPhase(finishedMode);
     timer.mode = nextMode;
     timer.currentId = M.makeId('pomo');
+    renderTimerStats();
     renderTimerRing();
     if (nextMode === MODES.LONG) {
       toast('本组完成，来个长休息吧');
@@ -330,13 +355,15 @@
 
   function endPhaseEarly() {
     window.clearTimeout(autoStartHandle);
+    var finishedMode = timer.mode;
     commitPomodoro(false);
     beep();
     vibrate();
     stopTimer();
     resetPhaseMeta();
-    timer.mode = advanceMode();
+    timer.mode = nextModeAfterIncompletePhase(finishedMode);
     timer.currentId = M.makeId('pomo');
+    renderTimerStats();
     renderTimerRing();
     persistSession();
     toast('已记录本次进度');
@@ -380,6 +407,7 @@
       }
       timer.mode = target;
       timer.currentId = M.makeId('pomo');
+      renderTimerStats();
       persistSession();
       renderTimerRing();
       toast('已切换到' + modeMeta(target).label);
@@ -427,7 +455,7 @@
     if (!node) return;
     var settings = state.data.settings;
     var total = settings.longBreakInterval;
-    var done = cyclePosition();
+    var done = timer.mode === MODES.FOCUS ? completedInCycle() : completedInCycleForBreak();
     var html = '';
     for (var i = 0; i < total; i++) html += tomatoSVG(i < done);
     node.innerHTML = html;
@@ -716,7 +744,7 @@
       timer.totalSec = Number.isFinite(raw.totalSec) && raw.totalSec > 0 ? raw.totalSec : durationFor(raw.mode, settings);
       timer.startedAt = Number.isFinite(raw.startedAt) ? raw.startedAt : (raw.endAt || Date.now()) - timer.totalSec * 1000;
       commitPomodoro(true);
-      timer.mode = advanceMode();
+      timer.mode = nextModeAfterCompletedPhase(raw.mode);
       timer.currentId = M.makeId('pomo');
       resetPhaseMeta();
       M.clearSession(localStorage);
