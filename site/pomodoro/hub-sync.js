@@ -20,6 +20,8 @@
     window.dispatchEvent(new CustomEvent('pomodoro:data-change', { detail: { reset: reset === true } }));
   }
 
+  /* 本机优先：同 id 条目保留本机版本，仅补入远端新增条目。跨设备同时编辑时
+   * 不做字段级合并，避免把已确认的本机记录改坏。 */
   function mergeDay(localDay, remoteDay) {
     if (!localDay) return remoteDay;
     if (!remoteDay) return localDay;
@@ -70,8 +72,11 @@
         else if (!row.deleted_at) {
           var normalized = window.PomodoroModel.normalizeDay(row.payload);
           normalized.date = day;
-          log[day] = mergeDay(log[day], normalized);
-          changed = true;
+          var merged = mergeDay(log[day], normalized);
+          if (JSON.stringify(log[day]) !== JSON.stringify(merged)) {
+            log[day] = merged;
+            changed = true;
+          }
         }
       }
     });

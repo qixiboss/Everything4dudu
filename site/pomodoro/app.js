@@ -19,6 +19,7 @@
   var lastTitle = '';
   var audioCtx = null;
   var resizeHandle = 0;
+  var autoStartHandle = 0;
 
   function $(selector, root) { return (root || document).querySelector(selector); }
   function el(tag, attrs, children) {
@@ -248,6 +249,7 @@
 
   function startTimer() {
     var settings = state.data.settings;
+    window.clearTimeout(autoStartHandle);
     if (timer.running) {
       var remaining = remainingNow();
       stopTimer();
@@ -308,12 +310,15 @@
       toast(finishedMode === MODES.FOCUS ? '专注完成，去休息一下吧' : '休息结束，开始下一个番茄');
     }
     if (state.data.settings.autoStart) {
-      window.setTimeout(function () {
+      window.clearTimeout(autoStartHandle);
+      autoStartHandle = window.setTimeout(function () {
+        if (timer.running || timer.paused) return;
         timer.running = true;
         timer.paused = false;
         timer.totalSec = durationFor(timer.mode, state.data.settings);
         timer.startedAt = Date.now();
         timer.endAt = Date.now() + timer.totalSec * 1000;
+        timer.currentId = M.makeId('pomo');
         loopTick();
         persistSession();
         renderTimerRing();
@@ -324,6 +329,7 @@
   }
 
   function endPhaseEarly() {
+    window.clearTimeout(autoStartHandle);
     commitPomodoro(false);
     beep();
     vibrate();
@@ -338,6 +344,7 @@
 
   function resetPhase() {
     if (!timer.running && !timer.paused) return;
+    window.clearTimeout(autoStartHandle);
     var total = totalForCurrent();
     var remaining = timer.paused ? timer.remaining : remainingNow();
     var elapsed = Math.max(0, total - remaining);
@@ -364,6 +371,7 @@
   function switchMode(mode) {
     var target = mode === 'focus' ? MODES.FOCUS : (mode === 'short' ? MODES.SHORT : MODES.LONG);
     if (target === timer.mode) return;
+    window.clearTimeout(autoStartHandle);
     function doSwitch() {
       if (timer.running || timer.paused) {
         commitPomodoro(false);
@@ -546,7 +554,7 @@
     setStat('all-streak', all.streakDays + ' 天');
     setStat('all-checkins', all.activeDays);
     var last = state.data.log[all.lastDay];
-    setStat('all-last', last ? (all.lastDay + ' ' + M.fmtClock(new Date(last.pomodoros[last.pomodoros.length - 1].endedAt))) : '—');
+    setStat('all-last', last && last.pomodoros && last.pomodoros.length ? (all.lastDay + ' ' + M.fmtClock(new Date(last.pomodoros[last.pomodoros.length - 1].endedAt))) : '—');
     setStat('all-best', all.bestDay ? (all.bestDay + ' · ' + (state.data.log[all.bestDay] ? state.data.log[all.bestDay].focusCount : 0) + ' 个') : '—');
   }
 
@@ -607,10 +615,27 @@
     var save = $('#set-save');
     if (save) save.addEventListener('click', function () {
       var clamped = false;
+      for (var i = 0; i < mins.length; i += 1) {
+        var input = mins[i][0];
+        if (!input) continue;
+        var value = input.value;
+        if (value === '') {
+          toast('请填写完整的时长设置');
+          return;
+        }
+        var minutes = Number(value);
+        if (!Number.isFinite(minutes)) {
+          toast('请输入有效数字');
+          return;
+        }
+        if (!Number.isInteger(minutes)) {
+          toast('时长请输入整数分钟');
+          return;
+        }
+      }
       mins.forEach(function (pair) {
         var input = pair[0];
         var minutes = Number(input.value);
-        if (!Number.isFinite(minutes) || input.value === '') return;
         var min = Number(input.min);
         var max = Number(input.max);
         if (Number.isFinite(min) && minutes < min) { minutes = min; clamped = true; }
@@ -759,10 +784,10 @@
     var target = event.target;
     var tag = target && target.tagName ? target.tagName.toLowerCase() : '';
     if (tag === 'input' || tag === 'select' || tag === 'textarea' || (target && target.isContentEditable)) return;
-    if (tag === 'button' || tag === 'a') return;
     var modal = $('#modal');
     if (modal && !modal.hidden) return;
     if (event.code === 'Space' || event.key === ' ') {
+      if (tag === 'button' || tag === 'a') return;
       event.preventDefault();
       startTimer();
     } else if (event.key === 'r' || event.key === 'R') {
@@ -820,8 +845,17 @@
     bindModal();
     restoreSession();
     switchView('timer');
-    window.addEventListener('pomodoro:data-change', function () {
+    window.addEventListener('pomodoro:data-change', function (event) {
+      if (event && event.detail && event.detail.reset) {
+        stopTimer();
+        resetPhaseMeta();
+        timer.currentId = M.makeId('pomo');
+        M.clearSession(localStorage);
+      }
+      var stored = M.load(localStorage);
+      state.data.log = stored.log;
       renderTimerStats();
+      renderTimerRing();
       if (currentView === 'insight') renderInsight();
     });
   }

@@ -183,6 +183,10 @@
     });
     var streak = 0;
     var cursor = new Date();
+    var today = dayKey(cursor);
+    if (!days[today] || days[today].focusCount === 0) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
     while (true) {
       var key = dayKey(cursor);
       if (!days[key] || days[key].focusCount === 0) break;
@@ -240,21 +244,12 @@
       var date = new Date(year, month, day);
       cells.push({ inMonth: true, day: day, date: date, key: dayKey(date) });
     }
-    while (cells.length % 7 !== 0) {
+    while (cells.length < 42) {
       var trailingDay = cells.length - firstWeekday - last.getDate() + 1;
       cells.push({
         inMonth: false,
         day: trailingDay,
         date: new Date(year, month + 1, trailingDay),
-        key: ''
-      });
-    }
-    while (cells.length < 42) {
-      var moreDay = cells.length - firstWeekday - last.getDate() + 1;
-      cells.push({
-        inMonth: false,
-        day: moreDay,
-        date: new Date(year, month + 1, moreDay),
         key: ''
       });
     }
