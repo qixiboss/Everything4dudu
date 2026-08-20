@@ -10,7 +10,8 @@ const APP_ROUTES = Object.freeze({
   training: 'training/',
   'exam-schedule': 'exam-schedule/',
   changelog: 'changelog/',
-  'cost-trace': 'CostTrace/'
+  'cost-trace': 'CostTrace/',
+  pomodoro: 'pomodoro/'
 });
 
 const AUTH_SCRIPT_TAGS = Object.freeze([

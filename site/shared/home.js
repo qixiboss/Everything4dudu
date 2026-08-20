@@ -268,7 +268,7 @@
 
   function requestedApp() {
     var params = new URLSearchParams(window.location.search || '');
-    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/', changelog: 'changelog/', 'cost-trace': 'CostTrace/' };
+    var routes = { words: 'words/', training: 'training/', 'exam-schedule': 'exam-schedule/', changelog: 'changelog/', 'cost-trace': 'CostTrace/', pomodoro: 'pomodoro/' };
     return { href: routes[params.get('next')] || '', login: params.get('login') === '1' };
   }
 

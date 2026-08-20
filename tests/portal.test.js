@@ -67,7 +67,7 @@ function syncHarness({ session = null, remote = [], initialStorage = {} } = {}) 
 }
 
 test('主页把应用标记为登录后访问且不暴露公开注册入口', () => {
-  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html', 'CostTrace/index.html', 'changelog/index.html'].forEach((file) => {
+  ['index.html', 'words/index.html', 'training/index.html', 'exam-schedule/index.html', 'CostTrace/index.html', 'changelog/index.html', 'pomodoro/index.html'].forEach((file) => {
     assert.equal(fs.existsSync(path.join(siteRoot, file)), true, file);
   });
   const home = fs.readFileSync(path.join(siteRoot, 'index.html'), 'utf8');
@@ -76,6 +76,7 @@ test('主页把应用标记为登录后访问且不暴露公开注册入口', ()
   assert.match(home, /href="exam-schedule\/" data-protected-app="exam-schedule"/);
   assert.match(home, /href="changelog\/" data-protected-app="changelog"/);
   assert.match(home, /href="CostTrace\/" data-protected-app="cost-trace"/);
+  assert.match(home, /href="pomodoro\/" data-protected-app="pomodoro"/);
   assert.match(home, /hero-clock/);
   assert.match(home, /data-login-open/);
   assert.match(home, /data-app-pager/);
@@ -147,7 +148,7 @@ test('应用页面不被验证遮罩阻塞，无会话时仍跳回门户登录',
   assert.doesNotMatch(css, /visibility:\s*hidden/);
   assert.doesNotMatch(css, /正在验证账户…/);
   assert.doesNotMatch(css, /正在验证账户并同步数据|应用暂时保持锁定/);
-  ['words', 'training', 'exam-schedule', 'CostTrace'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'CostTrace', 'pomodoro'].forEach((app) => {
     const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
     /* 共享脚本必须按 site-contract.js 定义的顺序完整出现（登录先于锁定与同步）。 */
     let previous = -1;
@@ -169,7 +170,7 @@ test('应用页面不被验证遮罩阻塞，无会话时仍跳回门户登录',
 });
 
 test('所有应用页面引用的本地脚本和样式均存在', () => {
-  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace', 'pomodoro'].forEach((app) => {
     const entry = path.join(siteRoot, app, 'index.html');
     const html = fs.readFileSync(entry, 'utf8');
     const references = [
@@ -296,7 +297,7 @@ test('应用页只注入低调的返回主页入口，不渲染门户导航栏',
   assert.match(shell, /class="hub-home-link"/);
   assert.match(shell, /href="\.\.\/"/);
   assert.doesNotMatch(shell, /hub-header|hub-brand|hub-nav|hub-login/);
-  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace'].forEach((app) => {
+  ['words', 'training', 'exam-schedule', 'changelog', 'CostTrace', 'pomodoro'].forEach((app) => {
     const html = fs.readFileSync(path.join(siteRoot, app, 'index.html'), 'utf8');
     assert.match(html, /<div id="hub-shell"><\/div>/);
   });

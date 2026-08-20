@@ -20,7 +20,7 @@ Node >= 22 is required. There is intentionally no `npm run build`: static files 
 ## Architecture
 
 - `site/index.html` and `site/shared/home.*` provide the mobile-style portal and login dialog.
-- `site/words/`, `site/training/`, `site/exam-schedule/`, `site/CostTrace/`, and `site/changelog/` are complete static applications with direct `index.html` entries.
+- `site/words/`, `site/training/`, `site/exam-schedule/`, `site/CostTrace/`, `site/pomodoro/`, and `site/changelog/` are complete static applications with direct `index.html` entries.
 - `site/shared/` provides the shared Supabase client, authentication, app route guard, local-first synchronization engine, and return-to-home shell.
 - Each synchronized application keeps its storage adapter beside its own code; WordTales combines that adapter with account status in `portal-sync.js`.
 - WordTales splits reading, games, copy practice, analysis, and cards by responsibility while preserving the `WordTales.*` module facade.

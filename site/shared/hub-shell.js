@@ -6,7 +6,8 @@
     training: '.topbar-inner',
     'exam-schedule': '#kaoyan-plan .brand',
     changelog: '.app-header',
-    'cost-trace': '.brand-row'
+    'cost-trace': '.brand-row',
+    pomodoro: '.topbar-inner'
   };
 
   function render() {

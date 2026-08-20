@@ -14,7 +14,7 @@ supabase/   # 数据库迁移
 docs/       # 历史应用资料，仅供参考，不参与发布或 CI
 ```
 
-`site/` 内的 `/`、`/words/`、`/training/`、`/exam-schedule/`、`/CostTrace/` 和 `/changelog/` 都是直接可发布的静态页面。功能应用加载认证与同步运行时；只读更新日志只加载认证与返回主页外壳。不要再生成、提交或编辑 `_site/`。
+`site/` 内的 `/`、`/words/`、`/training/`、`/exam-schedule/`、`/CostTrace/`、`/pomodoro/` 和 `/changelog/` 都是直接可发布的静态页面。功能应用加载认证与同步运行时；只读更新日志只加载认证与返回主页外壳。不要再生成、提交或编辑 `_site/`。
 
 ## 本地查看与验证
 
@@ -39,7 +39,7 @@ npm run verify  # test + check，CI 发布前的完整验证
 ## Supabase
 
 1. 在当前 Supabase 项目执行 `supabase/migrations/` 中尚未执行的迁移。
-2. 在 Data API 中确认 `words_sync_items`、`training_sync_items`、`exam_sync_items`、`costtrace_sync_items` 已暴露，并保留迁移中定义的 RLS。
+2. 在 Data API 中确认 `words_sync_items`、`training_sync_items`、`exam_sync_items`、`costtrace_sync_items`、`pomodoro_sync_items` 已暴露，并保留迁移中定义的 RLS。
 3. 在 Auth URL Configuration 中把 Site URL 设为 `https://qixiboss.github.io/Everything4dudu/`，并添加门户主页及五个应用路径作为精确 Redirect URL。
 4. 预先创建允许登录的账户，启用 Email Provider，并关闭公开注册。
 5. 浏览器只使用 `site/shared/config.js` 中的 publishable key；绝不提交 service-role 或其他 secret key。

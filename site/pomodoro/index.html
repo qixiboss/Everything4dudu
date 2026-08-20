@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-app="pomodoro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E9FBF4">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://nhqncjwfspaxlggmsoxg.supabase.co wss://nhqncjwfspaxlggmsoxg.supabase.co; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+<title>番茄专注</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2334A98C'/><path d='M50 26a17 17 0 1 1 0 34 17 17 0 0 1 0-34z' fill='%23fff'/><circle cx='50' cy='43' r='6' fill='%2334A98C'/></svg>">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../shared/hub.css">
+</head>
+<body>
+<div id="hub-shell"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="36" r="20" fill="none" stroke="currentColor" stroke-width="5"/><path d="M22 16h20M30 6h4M32 16v20l11 7" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="42" cy="22" r="3" fill="currentColor"/></svg>
+      <span id="brand-label">番茄专注</span>
+    </span>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-view="timer" type="button">番茄</button>
+      <button class="tab" data-view="insight" type="button">洞察</button>
+      <button class="tab" data-view="settings" type="button">设置</button>
+    </nav>
+    <div class="tools">
+      <button class="tool" id="btn-settings" type="button" aria-label="打开设置">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="tool-text">设置</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- 番茄计时 -->
+  <section class="view" id="view-timer">
+    <div class="timer-layout">
+      <aside class="timer-side" aria-label="今日与本月统计">
+        <div class="stat-row">
+          <div class="stat-card">
+            <span class="stat-v" id="stat-today-focus">0</span>
+            <span class="stat-k">今日番茄</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-v" id="stat-today-sec">0 分钟</span>
+            <span class="stat-k">今日专注</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-v" id="stat-month-days">0</span>
+            <span class="stat-k">本月打卡</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-v" id="stat-cycle">1 / 4</span>
+            <span class="stat-k">本轮进度</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="timer-stage">
+        <div class="timer-wrap" id="timer-circle" data-accent="tomato">
+          <svg class="timer-svg" viewBox="0 0 300 300" aria-hidden="true">
+            <circle class="timer-track" cx="150" cy="150" r="130"/>
+            <circle class="timer-progress" id="timer-progress" cx="150" cy="150" r="130"
+                    transform="rotate(-90 150 150)"
+                    stroke-dasharray="816.8" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-center">
+            <span class="timer-mode" id="timer-mode" data-accent="tomato">专注</span>
+            <span class="timer-time" id="timer-time" role="timer">25:00</span>
+            <span class="timer-dot" id="timer-dot"></span>
+            <span class="timer-phase" id="timer-phase" aria-live="polite">准备开始</span>
+            <span class="timer-hint" id="timer-hint">保持节奏，进入心流</span>
+          </div>
+        </div>
+
+        <div class="mode-row" id="mode-row">
+          <button class="chip active" type="button" data-mode="focus" aria-pressed="true">专注</button>
+          <button class="chip" type="button" data-mode="short" aria-pressed="false">短休息</button>
+          <button class="chip" type="button" data-mode="long" aria-pressed="false">长休息</button>
+        </div>
+
+        <div class="timer-actions">
+          <button class="btn primary" id="btn-start" type="button">开始</button>
+          <button class="btn ghost" id="btn-end" type="button" hidden>结束</button>
+          <button class="btn ghost" id="btn-reset" type="button" hidden>重置</button>
+        </div>
+
+        <p class="timer-next" id="timer-next" aria-live="polite"></p>
+        <p class="timer-keys" id="timer-keys">空格 开始 / 暂停 · R 重置</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 洞察 -->
+  <section class="view" id="view-insight" hidden>
+    <div class="card">
+      <div class="card-head">
+        <h2>专注日历</h2>
+        <span class="card-sub" id="cal-sub">颜色越深代表当天专注越多</span>
+      </div>
+      <div class="cal-nav">
+        <button class="cal-arrow" id="cal-prev" type="button" aria-label="上个月">‹</button>
+        <span class="cal-title" id="cal-title"></span>
+        <button class="cal-arrow" id="cal-next" type="button" aria-label="下个月">›</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>今日概览</h2>
+        <span class="card-sub">自动汇总今天</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="v" id="ov-focus-sec">0 分钟</span><span class="k">专注时长</span></div>
+        <div class="stat"><span class="v" id="ov-focus-count">0</span><span class="k">番茄次数</span></div>
+        <div class="stat"><span class="v" id="ov-cycle">0</span><span class="k">循环次数</span></div>
+        <div class="stat"><span class="v" id="ov-records">0</span><span class="k">记录条数</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>专注趋势</h2>
+        <select class="range" id="trend-range">
+          <option value="7">近 7 天</option>
+          <option value="15">近 15 天</option>
+          <option value="30">近 30 天</option>
+        </select>
+      </div>
+      <div class="trend-area" id="trend-area"></div>
+      <p class="trend-sum" id="trend-sum"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>数据概览</h2>
+        <span class="card-sub">所有历史累计</span>
+      </div>
+      <div class="overview">
+        <div class="ov-item"><span class="ov-k">总番茄</span><span class="ov-v" id="all-records">0</span></div>
+        <div class="ov-item"><span class="ov-k">总专注时长</span><span class="ov-v" id="all-duration">0 分钟</span></div>
+        <div class="ov-item"><span class="ov-k">连续使用</span><span class="ov-v" id="all-streak">0 天</span></div>
+        <div class="ov-item"><span class="ov-k">打卡天数</span><span class="ov-v" id="all-checkins">0</span></div>
+        <div class="ov-item"><span class="ov-k">最多专注日</span><span class="ov-v" id="all-best">—</span></div>
+        <div class="ov-item"><span class="ov-k">最近一次</span><span class="ov-v" id="all-last">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 设置 -->
+  <section class="view" id="view-settings" hidden>
+    <div class="card">
+      <div class="card-head">
+        <h2>专注设置</h2>
+        <span class="card-sub">时长单位为分钟</span>
+      </div>
+      <p class="set-hint">设置仅保存在本机，不会上传云端。</p>
+      <div class="set-row">
+        <label for="set-focus">专注时长</label>
+        <input type="number" id="set-focus" min="1" max="90" step="1">
+        <span class="unit">分</span>
+      </div>
+      <div class="set-row">
+        <label for="set-short">短休息</label>
+        <input type="number" id="set-short" min="1" max="30" step="1">
+        <span class="unit">分</span>
+      </div>
+      <div class="set-row">
+        <label for="set-long">长休息</label>
+        <input type="number" id="set-long" min="1" max="60" step="1">
+        <span class="unit">分</span>
+      </div>
+      <div class="set-row">
+        <label for="set-interval">长休息间隔</label>
+        <input type="number" id="set-interval" min="2" max="12" step="1">
+        <span class="unit">个</span>
+      </div>
+      <div class="set-row">
+        <label>自动开始下一阶段</label>
+        <input type="checkbox" class="switch" id="set-autostart">
+      </div>
+      <div class="set-row">
+        <label>完成提示音</label>
+        <input type="checkbox" class="switch" id="set-sound">
+      </div>
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn danger" id="set-clear" type="button">清空记录</button>
+        <button class="btn primary" id="set-save" type="button">保存设置</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden aria-hidden="true">
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 class="modal-title" id="modal-title"></h3>
+    <p class="modal-body" id="modal-body"></p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modal-cancel" type="button">取消</button>
+      <button class="btn primary" id="modal-ok" type="button">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- 门户运行时：统一登录、路由保护、跨端同步与返回主页。此处是直接维护的源码。 -->
+<script defer src="../shared/vendor/supabase.js"></script>
+<script defer src="../shared/config.js"></script>
+<script defer src="../shared/hub-auth.js"></script>
+<script defer src="../shared/auth-gate.js"></script>
+<script defer src="../shared/sync-store.js"></script>
+<script defer src="../shared/hub-sync.js"></script>
+<script defer src="../shared/hub-shell.js"></script>
+<script defer src="hub-sync.js"></script>
+<script defer src="model.js"></script>
+<script defer src="app.js"></script>
+</body>
+</html>

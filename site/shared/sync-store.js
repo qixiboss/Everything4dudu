@@ -7,7 +7,8 @@
     words: 'words_sync_items',
     training: 'training_sync_items',
     'exam-schedule': 'exam_sync_items',
-    'cost-trace': 'costtrace_sync_items'
+    'cost-trace': 'costtrace_sync_items',
+    pomodoro: 'pomodoro_sync_items'
   };
   function tableFor(app) { return TABLES[app] || 'sync_items'; }
   var VERSIONS_KEY = 'hub.sync.versions.v2';

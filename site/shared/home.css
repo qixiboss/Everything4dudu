@@ -185,7 +185,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-grid .app:nth-child(3) { animation-delay: .18s; }
 .app-grid .app:nth-child(4) { animation-delay: .24s; }
 .app-grid .app:nth-child(5) { animation-delay: .3s; }
-.home-dock { animation: app-in .55s .34s cubic-bezier(.22,.8,.31,1) both; }
+.app-grid .app:nth-child(6) { animation-delay: .36s; }
+.home-dock { animation: app-in .55s .4s cubic-bezier(.22,.8,.31,1) both; }
 
 ::selection { background: rgba(122,140,239,.35); }
 
@@ -230,6 +231,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .app-icon-schedule { background: linear-gradient(145deg, #68cdb9, #3cae9c); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(60,174,156,.3); }
 .app-icon-changelog { background: linear-gradient(145deg, #e3b071, #c4843f); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(196,132,63,.32); }
 .app-icon-costtrace { background: linear-gradient(145deg, #8792e2, #5f6dca); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(95,109,202,.32); }
+.app-icon-pomodoro { background: linear-gradient(145deg, #6ed8c1, #34a98c); box-shadow: inset 0 1px 1px rgba(255,255,255,.32), 0 12px 24px rgba(52,169,140,.3); }
 
 .app:hover .app-icon { transform: translateY(-3px) scale(1.025); box-shadow: inset 0 1px 1px rgba(255,255,255,.4), 0 16px 29px rgba(51,58,101,.25); }
 .app:active .app-icon { transform: scale(.94); }
