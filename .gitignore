@@ -1,3 +1,20 @@
+# macOS
 .DS_Store
+
+# Node
 node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+
+# AI 工具 / IDE 工作目录
+.workbuddy/
+.zcode/
+.qoder/
+.claude/
 .dev-test-account.local.md
+
+# 本地生成产物（PDF / md 由脚本重新生成）
+output/
