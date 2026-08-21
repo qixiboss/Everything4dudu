@@ -90,12 +90,34 @@
         <p class="timer-next" id="timer-next" aria-live="polite"></p>
         <p class="timer-keys" id="timer-keys">空格 开始 / 暂停 · R 重置</p>
       </div>
+
+      <section class="card forest-card" id="forest-today-card" aria-labelledby="forest-today-title">
+        <div class="card-head">
+          <h2 id="forest-today-title">今日森林</h2>
+          <span class="card-sub" id="forest-today-sub">完成番茄后种下今天的树</span>
+        </div>
+        <div class="forest-stage" id="forest-today" role="img" aria-label="今日森林"></div>
+        <div class="forest-summary" id="forest-today-summary"></div>
+      </section>
     </div>
   </section>
 
   <!-- 洞察 -->
   <section class="view" id="view-insight" hidden>
-    <div class="card">
+    <div class="card forest-card" id="insight-forest-card">
+      <div class="card-head">
+        <h2>专注森林</h2>
+        <div class="forest-range" id="forest-range" role="group" aria-label="森林时间范围">
+          <button class="forest-range-btn active" type="button" data-range="7" aria-pressed="true">近 7 天</button>
+          <button class="forest-range-btn" type="button" data-range="30" aria-pressed="false">近 30 天</button>
+          <button class="forest-range-btn" type="button" data-range="0" aria-pressed="false">全部</button>
+        </div>
+      </div>
+      <div class="forest-stage" id="forest-period" role="img" aria-label="专注森林"></div>
+      <div class="forest-summary" id="forest-period-summary"></div>
+    </div>
+
+    <div class="card" id="insight-calendar">
       <div class="card-head">
         <h2>专注日历</h2>
         <span class="card-sub" id="cal-sub">颜色越深代表当天专注越多</span>
@@ -111,7 +133,7 @@
       <div class="cal-grid" id="cal-grid"></div>
     </div>
 
-    <div class="card">
+    <div class="card" id="insight-overview">
       <div class="card-head">
         <h2>今日概览</h2>
         <span class="card-sub">自动汇总今天</span>
@@ -124,7 +146,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="insight-trend">
       <div class="card-head">
         <h2>专注趋势</h2>
         <select class="range" id="trend-range">
@@ -137,7 +159,7 @@
       <p class="trend-sum" id="trend-sum"></p>
     </div>
 
-    <div class="card">
+    <div class="card" id="insight-all">
       <div class="card-head">
         <h2>数据概览</h2>
         <span class="card-sub">所有历史累计</span>
@@ -221,6 +243,7 @@
 <script defer src="../shared/hub-shell.js"></script>
 <script defer src="hub-sync.js"></script>
 <script defer src="model.js"></script>
+<script defer src="forest.js"></script>
 <script defer src="app.js"></script>
 </body>
 </html>

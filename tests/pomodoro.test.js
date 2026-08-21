@@ -128,6 +128,92 @@ test('buildCalendarGrid 以周一为起始并补齐 6 行共 42 格', () => {
   assert.equal(cells.slice(0, 7).filter((c) => !c.inMonth).length, 5);
 });
 
+test('treeTierFor 按时长分档并给出稳定树种变体', () => {
+  const M = loadModel();
+  assert.equal(M.treeTierFor(1799), M.TREE_TIERS.COMMON);
+  assert.equal(M.treeTierFor(1800), M.TREE_TIERS.BLOSSOM);
+  assert.equal(M.treeTierFor(3599), M.TREE_TIERS.BLOSSOM);
+  assert.equal(M.treeTierFor(3600), M.TREE_TIERS.SPECIAL);
+  assert.ok([1, 2, 3].includes(M.treeVariantFor(M.TREE_TIERS.COMMON, M.seedOf('a'))));
+  assert.ok([1, 2].includes(M.treeVariantFor(M.TREE_TIERS.SPECIAL, M.seedOf('b'))));
+});
+
+test('treeSpeciesFor 覆盖七种稳定树种', () => {
+  const M = loadModel();
+  const seen = new Set();
+  for (let index = 0; index < 20; index += 1) {
+    [M.TREE_TIERS.COMMON, M.TREE_TIERS.BLOSSOM, M.TREE_TIERS.SPECIAL].forEach((tier) => {
+      seen.add(M.treeSpeciesFor(tier, M.seedOf('tree-' + index)));
+    });
+  }
+  assert.equal(seen.size, 7);
+  assert.deepEqual(
+    [...seen].sort(),
+    ['blossom', 'camellia', 'cherry', 'fruit', 'maple', 'oak', 'pine'].sort()
+  );
+});
+
+test('periodForest 只统计已完成专注并按时间排序', () => {
+  const M = loadModel();
+  const log = {
+    '2026-08-19': {
+      date: '2026-08-19',
+      pomodoros: [
+        { id: 'a', mode: 'focus', startedAt: 5, endedAt: 6, durationSec: 900, completed: true },
+        { id: 'break', mode: 'short-break', startedAt: 7, endedAt: 8, durationSec: 300, completed: true },
+        { id: 'incomplete', mode: 'focus', startedAt: 9, endedAt: 10, durationSec: 700, completed: false }
+      ]
+    },
+    '2026-08-20': {
+      date: '2026-08-20',
+      pomodoros: [
+        { id: 'b', mode: 'focus', startedAt: 1, endedAt: 2, durationSec: 1800, completed: true },
+        { id: 'c', mode: 'focus', startedAt: 3, endedAt: 4, durationSec: 3600, completed: true }
+      ]
+    }
+  };
+  const all = M.periodForest(log, 0, new Date('2026-08-20T12:00:00'), 120);
+  assert.equal(JSON.stringify(all.trees.map((tree) => tree.id)), JSON.stringify(['b', 'c', 'a']));
+  assert.equal(all.totalTrees, 3);
+  assert.equal(all.totalFocusSec, 900 + 1800 + 3600);
+  assert.equal(all.capped, false);
+  assert.equal(all.trees[0].tier, M.TREE_TIERS.BLOSSOM);
+  assert.equal(all.trees[1].tier, M.TREE_TIERS.SPECIAL);
+  assert.equal(all.trees[2].tier, M.TREE_TIERS.COMMON);
+
+  const today = M.periodForest(log, 1, new Date('2026-08-20T12:00:00'), 120);
+  assert.equal(JSON.stringify(today.trees.map((tree) => tree.id)), JSON.stringify(['b', 'c']));
+  assert.equal(today.totalFocusSec, 5400);
+
+  const capped = M.periodForest(log, 0, new Date('2026-08-20T12:00:00'), 2);
+  assert.equal(capped.treeCount, 2);
+  assert.equal(capped.totalTrees, 3);
+  assert.equal(capped.capped, true);
+  assert.equal(JSON.stringify(capped.trees.map((tree) => tree.id)), JSON.stringify(['c', 'a']));
+  assert.equal(all.grassCount, 7);
+  assert.equal(all.flowerCount, 3);
+});
+
+test('periodForest 对同一日志生成稳定树条目', () => {
+  const M = loadModel();
+  const log = {
+    '2026-08-20': {
+      date: '2026-08-20',
+      pomodoros: [
+        { id: 'stable-a', mode: 'focus', startedAt: 1, endedAt: 2, durationSec: 1500, completed: true },
+        { id: 'stable-b', mode: 'focus', startedAt: 2, endedAt: 3, durationSec: 3600, completed: true }
+      ]
+    }
+  };
+  const first = M.periodForest(log, 7, new Date('2026-08-20T12:00:00'), 120);
+  const second = M.periodForest(log, 7, new Date('2026-08-20T12:00:00'), 120);
+  assert.deepEqual(first, second);
+  assert.equal(first.trees[0].seed, M.seedOf('stable-a:2026-08-20:1500'));
+  assert.equal(first.trees[1].seed, M.seedOf('stable-b:2026-08-20:3600'));
+  assert.equal(first.trees[0].species, M.treeSpeciesFor(M.treeTierFor(1500), first.trees[0].seed));
+  assert.equal(first.trees[1].species, M.treeSpeciesFor(M.treeTierFor(3600), first.trees[1].seed));
+});
+
 test('fmtMMSS / fmtDuration 格式化时间', () => {
   const M = loadModel();
   assert.equal(M.fmtMMSS(1500), '25:00');

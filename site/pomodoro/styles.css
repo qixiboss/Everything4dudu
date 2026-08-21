@@ -142,6 +142,7 @@ button{
 .timer-layout{display:grid;gap:18px;align-items:start}
 .timer-side{min-width:0;order:1}
 .timer-stage{min-width:0;order:2;display:flex;flex-direction:column;align-items:center}
+.timer-layout .forest-card{min-width:0;order:3;margin-bottom:0}
 
 /* ============ 圆环计时器 ============ */
 .timer-wrap{
@@ -302,6 +303,70 @@ button{
 .ov-k{font-size:12.5px;color:var(--sub)}
 .ov-v{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink);word-break:break-all}
 
+/* ============ 专注森林 ============ */
+.forest-card{margin-bottom:14px}
+.forest-stage{
+  position:relative;
+  min-height:250px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  border:1px solid #10251E;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(93,158,120,.14),transparent 58%),
+    linear-gradient(180deg,#172A24,#12211D);
+  padding:6px;
+}
+.forest-svg{width:100%;height:auto;max-height:430px;display:block}
+.forest-grass{fill:#68C982}
+.forest-grass-rim{fill:none;stroke:rgba(255,255,255,.24);stroke-width:2;stroke-linejoin:round}
+.forest-soil-left{fill:#8A5D39}
+.forest-soil-right{fill:#70472C}
+.forest-shadow{fill:rgba(15,33,25,.22)}
+.forest-empty-text{fill:rgba(255,255,255,.74);font-size:22px;font-weight:700;font-family:var(--sans)}
+.forest-summary{font-size:13px;font-weight:600;color:var(--sub);text-align:center;margin-top:10px}
+.forest-range{
+  margin-left:auto;display:inline-flex;gap:4px;
+  background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:3px;
+}
+.forest-range-btn{
+  padding:7px 11px;border-radius:99px;
+  color:var(--sub);font-weight:700;font-size:13px;line-height:1.2;
+  transition:background .15s,color .15s;
+}
+.forest-range-btn:hover{color:var(--ink)}
+.forest-range-btn.active{background:var(--mint-2);color:#fff}
+.forest-tree{transition:filter .2s ease}
+.forest-tree.is-latest{filter:drop-shadow(0 0 10px rgba(255,224,132,.7))}
+.forest-tree-inner{
+  transform-box:fill-box;
+  transform-origin:50% 100%;
+}
+.forest-tree-inner.is-planting{
+  animation:forest-grow .95s cubic-bezier(.18,.82,.22,1) both;
+}
+.forest-particles{
+  pointer-events:none;
+  transform-box:fill-box;
+  transform-origin:50% 50%;
+  animation:forest-particle-burst 1.15s ease-out forwards;
+}
+@keyframes forest-grow{
+  from{transform:scale(.06);opacity:.25}
+  68%{transform:scale(1.1);opacity:1}
+  to{transform:scale(1);opacity:1}
+}
+@keyframes forest-particle-burst{
+  from{transform:scale(.45);opacity:0}
+  20%{opacity:1}
+  to{transform:scale(1.55);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .forest-tree-inner.is-planting,
+  .forest-particles{animation:none}
+  .forest-tree-inner{transform:none!important}
+}
+
 /* ============ 设置按钮行 ============ */
 .btn-row{display:flex;gap:10px;margin-top:18px}
 .btn-row .btn{flex:1;height:48px}
@@ -404,9 +469,10 @@ input.switch:checked::after{left:23px}
   .tabs{order:0;min-width:0;flex:1;margin-left:auto;background:none;border:none;padding:0}
   .tab{flex:0 1 auto;padding:9px 16px;min-height:42px}
   .main{padding:28px max(24px, env(safe-area-inset-left)) 90px max(24px, env(safe-area-inset-right))}
-  .timer-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px}
-  .timer-side{order:2}
-  .timer-stage{order:1}
+  .timer-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto;gap:28px}
+  .timer-stage{grid-column:1;grid-row:1/3;order:1}
+  .timer-side{grid-column:2;grid-row:1;order:2}
+  .timer-layout .forest-card{grid-column:2;grid-row:2;order:3;margin-bottom:0}
   .stat-row{gap:10px}
   .timer-wrap{width:330px}
   .timer-time{font-size:66px}
@@ -415,14 +481,15 @@ input.switch:checked::after{left:23px}
   .card{padding:22px}
   .card-head h2{font-size:18px}
   .overview{grid-template-columns:repeat(3,1fr)}
-  #view-insight{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;gap:16px;align-items:stretch}
+  #view-insight{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:16px;align-items:stretch}
   #view-insight .card{margin-bottom:0}
-  #view-insight .card:nth-child(1){grid-column:1;grid-row:1/4;display:flex;flex-direction:column}
-  #view-insight .card:nth-child(2){grid-column:2;grid-row:1}
-  #view-insight .card:nth-child(3){grid-column:2;grid-row:2}
-  #view-insight .card:nth-child(4){grid-column:2;grid-row:3}
-  #view-insight .card:nth-child(1) .cal-grid{flex:1 1 auto;grid-auto-rows:1fr}
-  #view-insight .card:nth-child(1) .cal-cell{aspect-ratio:auto}
+  #insight-forest-card{grid-column:1/-1;grid-row:1}
+  #insight-calendar{grid-column:1;grid-row:2/5;display:flex;flex-direction:column}
+  #insight-overview{grid-column:2;grid-row:2}
+  #insight-trend{grid-column:2;grid-row:3}
+  #insight-all{grid-column:2;grid-row:4}
+  #insight-calendar .cal-grid{flex:1 1 auto;grid-auto-rows:1fr}
+  #insight-calendar .cal-cell{aspect-ratio:auto}
   #view-settings{max-width:620px;margin:0 auto}
   .btn-row .btn{flex:0 1 auto;min-width:140px}
 }

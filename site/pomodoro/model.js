@@ -11,6 +11,16 @@
   });
 
   var MODES = Object.freeze({ FOCUS: 'focus', SHORT: 'short-break', LONG: 'long-break' });
+  var TREE_TIERS = Object.freeze({ COMMON: 'common', BLOSSOM: 'blossom', SPECIAL: 'special' });
+  var TREE_SPECIES = Object.freeze({
+    OAK: 'oak',
+    PINE: 'pine',
+    MAPLE: 'maple',
+    BLOSSOM: 'blossom',
+    CAMELLIA: 'camellia',
+    CHERRY: 'cherry',
+    FRUIT: 'fruit'
+  });
   var WEEKDAYS = Object.freeze(['一', '二', '三', '四', '五', '六', '日']);
   var MONTH_NAMES = Object.freeze(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']);
 
@@ -256,6 +266,94 @@
     return cells;
   }
 
+  function seedOf(value) {
+    var text = String(value == null ? '' : value);
+    var hash = 5381;
+    for (var index = 0; index < text.length; index += 1) {
+      hash = ((hash << 5) + hash + text.charCodeAt(index)) | 0;
+    }
+    return hash >>> 0;
+  }
+
+  function treeTierFor(durationSec) {
+    var sec = Number.isFinite(durationSec) && durationSec > 0 ? durationSec : 0;
+    if (sec >= 3600) return TREE_TIERS.SPECIAL;
+    if (sec >= 1800) return TREE_TIERS.BLOSSOM;
+    return TREE_TIERS.COMMON;
+  }
+
+  function treeVariantFor(tier, seed) {
+    var value = seed >>> 0;
+    if (tier === TREE_TIERS.BLOSSOM) return (value % 3) + 1;
+    if (tier === TREE_TIERS.SPECIAL) return (value % 2) + 1;
+    return (value % 3) + 1;
+  }
+
+  function treeSpeciesFor(tier, seed) {
+    var value = seed >>> 0;
+    if (tier === TREE_TIERS.BLOSSOM) {
+      return (value % 2 === 0) ? TREE_SPECIES.BLOSSOM : TREE_SPECIES.CAMELLIA;
+    }
+    if (tier === TREE_TIERS.SPECIAL) {
+      return (value % 2 === 0) ? TREE_SPECIES.CHERRY : TREE_SPECIES.FRUIT;
+    }
+    var commons = [TREE_SPECIES.OAK, TREE_SPECIES.PINE, TREE_SPECIES.MAPLE];
+    return commons[value % commons.length];
+  }
+
+  function periodForest(log, days, now, cap) {
+    var source = log && typeof log === 'object' ? log : {};
+    var limit = Number.isInteger(cap) && cap > 0 ? cap : 120;
+    var reference = now || new Date();
+    var range = Number(days) || 0;
+    var included = null;
+    if (range > 0) {
+      included = {};
+      for (var offset = 0; offset < range; offset += 1) {
+        var cursor = new Date(reference);
+        cursor.setHours(0, 0, 0, 0);
+        cursor.setDate(cursor.getDate() - offset);
+        included[dayKey(cursor)] = true;
+      }
+    }
+    var trees = [];
+    var totalFocusSec = 0;
+    Object.keys(source).sort().forEach(function (key) {
+      if (included && !included[key]) return;
+      var entry = source[key];
+      if (!entry || !Array.isArray(entry.pomodoros)) return;
+      entry.pomodoros.forEach(function (item) {
+        if (!item || item.mode !== MODES.FOCUS || item.completed !== true) return;
+        var id = String(item.id || key + ':' + item.startedAt);
+        var seed = seedOf(id + ':' + key + ':' + (item.durationSec || 0));
+        var tier = treeTierFor(item.durationSec);
+        trees.push({
+          id: id,
+          dateKey: key,
+          startedAt: Number.isFinite(item.startedAt) ? item.startedAt : 0,
+          durationSec: Number.isInteger(item.durationSec) && item.durationSec >= 0 ? item.durationSec : 0,
+          tier: tier,
+          species: treeSpeciesFor(tier, seed),
+          variant: treeVariantFor(tier, seed),
+          seed: seed
+        });
+        totalFocusSec += item.durationSec || 0;
+      });
+    });
+    trees.sort(function (a, b) { return a.startedAt - b.startedAt; });
+    var totalTrees = trees.length;
+    var selected = trees.length > limit ? trees.slice(trees.length - limit) : trees.slice();
+    return {
+      trees: selected,
+      treeCount: selected.length,
+      totalTrees: totalTrees,
+      totalFocusSec: totalFocusSec,
+      capped: totalTrees > selected.length,
+      grassCount: totalFocusSec > 0 ? Math.min(18, 2 + Math.floor(totalFocusSec / 1200)) : 0,
+      flowerCount: totalFocusSec > 0 ? Math.min(12, Math.max(1, Math.floor(totalFocusSec / 1800))) : 0
+    };
+  }
+
   function makeId(prefix) {
     return (prefix || 'p') + '-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e6).toString(36);
   }
@@ -263,6 +361,8 @@
   window.PomodoroModel = {
     KEYS: KEYS,
     MODES: MODES,
+    TREE_TIERS: TREE_TIERS,
+    TREE_SPECIES: TREE_SPECIES,
     WEEKDAYS: WEEKDAYS,
     MONTH_NAMES: MONTH_NAMES,
     defaultSettings: defaultSettings,
@@ -286,6 +386,11 @@
     allSummary: allSummary,
     trendSeries: trendSeries,
     buildCalendarGrid: buildCalendarGrid,
+    seedOf: seedOf,
+    treeTierFor: treeTierFor,
+    treeVariantFor: treeVariantFor,
+    treeSpeciesFor: treeSpeciesFor,
+    periodForest: periodForest,
     makeId: makeId
   };
 })();

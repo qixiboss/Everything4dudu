@@ -13,6 +13,8 @@
   };
   var calendarCursor = new Date();
   var currentView = 'timer';
+  var insightForestRange = 7;
+  var pendingForestCelebrationId = null;
   var SETTINGS_DRAFT = null;
   var modalCb = null;
   var modalPrevFocus = null;
@@ -319,6 +321,7 @@
 
   function finishPhase() {
     var finishedMode = timer.mode;
+    var plantedId = finishedMode === MODES.FOCUS ? timer.currentId : null;
     commitPomodoro(true);
     beep();
     vibrate();
@@ -329,6 +332,16 @@
     timer.currentId = M.makeId('pomo');
     renderTimerStats();
     renderTimerRing();
+    if (plantedId) {
+      if (currentView === 'timer') {
+        renderTodayForest(plantedId);
+      } else if (currentView === 'insight') {
+        renderInsightForest();
+        pendingForestCelebrationId = plantedId;
+      } else {
+        pendingForestCelebrationId = plantedId;
+      }
+    }
     if (nextMode === MODES.LONG) {
       toast('本组完成，来个长休息吧');
     } else if (nextMode === MODES.FOCUS) {
@@ -467,12 +480,71 @@
     if (node) node.textContent = value;
   }
 
+  function latestTreeId(forest) {
+    if (!forest || !forest.trees || !forest.trees.length) return null;
+    return forest.trees[forest.trees.length - 1].id;
+  }
+
+  function forestSummary(forest) {
+    var count = forest && Number.isFinite(forest.treeCount) ? forest.treeCount : 0;
+    var total = forest && Number.isFinite(forest.totalTrees) ? forest.totalTrees : count;
+    var duration = forest && Number.isFinite(forest.totalFocusSec) ? forest.totalFocusSec : 0;
+    var treeText = forest && forest.capped && total > count
+      ? '展示最近 ' + count + ' 棵 · 共 ' + total + ' 棵'
+      : '已种 ' + count + ' 棵';
+    return treeText + ' · 专注 ' + (duration === 0 ? '0 分钟' : M.fmtDuration(duration));
+  }
+
+  function renderForestInto(nodeId, forest, opts) {
+    var node = document.getElementById(nodeId);
+    if (!node || !window.PomodoroForest) return;
+    var options = opts || {};
+    var highlightId = options.highlightId != null ? options.highlightId : latestTreeId(forest);
+    if (!forest || !forest.trees || !forest.trees.length) {
+      window.PomodoroForest.renderEmpty(node, options.emptyText || '完成一个番茄，种下第一棵树');
+      return;
+    }
+    window.PomodoroForest.render(node, forest, {
+      highlightId: highlightId,
+      animateId: options.animateId || null
+    });
+  }
+
+  function renderTodayForest(animateId) {
+    var forest = M.periodForest(state.data.log, 1, new Date(), 120);
+    renderForestInto('forest-today', forest, {
+      animateId: animateId || null
+    });
+    setStat('forest-today-summary', forestSummary(forest));
+    var sub = $('#forest-today-sub');
+    if (sub) sub.textContent = forest.totalTrees ? '今天已经种下 ' + forest.totalTrees + ' 棵树' : '完成番茄后种下今天的树';
+  }
+
+  function renderInsightForest() {
+    var forest = M.periodForest(state.data.log, insightForestRange, new Date(), 120);
+    renderForestInto('forest-period', forest);
+    setStat('forest-period-summary', forestSummary(forest));
+  }
+
+  function setInsightForestRange(value) {
+    insightForestRange = value === 0 || value === 30 ? value : 7;
+    Array.prototype.forEach.call(document.querySelectorAll('.forest-range-btn'), function (button) {
+      var active = Number(button.dataset.range) === insightForestRange;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    renderInsightForest();
+  }
+
   function renderTimer() {
     renderTimerStats();
     renderTimerRing();
+    renderTodayForest(pendingForestCelebrationId);
+    pendingForestCelebrationId = null;
   }
 
   function renderInsight() {
+    renderInsightForest();
     renderCalendar();
     renderInsightOverview();
     renderTrend();
@@ -844,6 +916,11 @@
     });
     var range = $('#trend-range');
     if (range) range.addEventListener('change', renderTrend);
+    var forestRange = $('#forest-range');
+    if (forestRange) forestRange.addEventListener('click', function (event) {
+      var button = event.target.closest('.forest-range-btn');
+      if (button) setInsightForestRange(Number(button.dataset.range));
+    });
     var modeRow = $('#mode-row');
     if (modeRow) modeRow.addEventListener('click', function (event) {
       var chip = event.target.closest('.chip');
@@ -885,6 +962,7 @@
       renderTimerStats();
       renderTimerRing();
       if (currentView === 'insight') renderInsight();
+      else renderTodayForest();
     });
   }
 
