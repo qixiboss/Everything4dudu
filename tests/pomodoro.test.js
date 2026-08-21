@@ -257,3 +257,53 @@ test('损坏的本地存储回退默认设置而不抛出', () => {
   assert.equal(loaded.settings.focusSec, 25 * 60);
   assert.equal(Object.keys(loaded.log).length, 0);
 });
+
+test('periodForestByDay 按天分组并保持每天树条目稳定', () => {
+  const M = loadModel();
+  const log = {
+    '2026-08-19': {
+      date: '2026-08-19',
+      pomodoros: [
+        { id: 'a', mode: 'focus', startedAt: 5, endedAt: 6, durationSec: 900, completed: true },
+        { id: 'b', mode: 'focus', startedAt: 7, endedAt: 8, durationSec: 1500, completed: true }
+      ]
+    },
+    '2026-08-20': {
+      date: '2026-08-20',
+      pomodoros: [
+        { id: 'c', mode: 'focus', startedAt: 1, endedAt: 2, durationSec: 1800, completed: true },
+        { id: 'skip', mode: 'short-break', startedAt: 3, endedAt: 4, durationSec: 300, completed: true }
+      ]
+    }
+  };
+  const first = M.periodForestByDay(log, 0, new Date('2026-08-20T12:00:00'), { maxDays: 36, perDayCap: 12 });
+  const second = M.periodForestByDay(log, 0, new Date('2026-08-20T12:00:00'), { maxDays: 36, perDayCap: 12 });
+  assert.deepEqual(first, second);
+  assert.equal(first.days.length, 2);
+  assert.equal(first.days[0].dateKey, '2026-08-19');
+  assert.equal(first.days[0].treeCount, 2);
+  assert.equal(first.days[1].dateKey, '2026-08-20');
+  assert.equal(first.days[1].treeCount, 1);
+  assert.equal(first.totalTrees, 3);
+  assert.equal(first.totalFocusSec, 900 + 1500 + 1800);
+  assert.equal(first.cappedTrees, 0);
+});
+
+test('periodForestByDay 每天限棵树并在天数超限时截断', () => {
+  const M = loadModel();
+  const log = {};
+  const dayCount = 5;
+  for (let d = 0; d < dayCount; d += 1) {
+    const key = '2026-08-' + String(10 + d).padStart(2, '0');
+    log[key] = { date: key, pomodoros: [] };
+    for (let k = 0; k < 4; k += 1) {
+      log[key].pomodoros.push({ id: key + '-' + k, mode: 'focus', startedAt: k, endedAt: k + 1, durationSec: 1500, completed: true });
+    }
+  }
+  const capped = M.periodForestByDay(log, 0, new Date('2026-08-20T12:00:00'), { maxDays: 3, perDayCap: 2 });
+  assert.equal(capped.days.length, 3);
+  assert.equal(capped.cappedDays, true);
+  assert.equal(capped.days[0].treeCount, 2);
+  assert.equal(capped.days[0].totalTrees, 4);
+  assert.equal(capped.cappedTrees, 2 * 3);
+});

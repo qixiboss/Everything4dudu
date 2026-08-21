@@ -521,9 +521,19 @@
   }
 
   function renderInsightForest() {
-    var forest = M.periodForest(state.data.log, insightForestRange, new Date(), 120);
-    renderForestInto('forest-period', forest);
-    setStat('forest-period-summary', forestSummary(forest));
+    var data = M.periodForestByDay(state.data.log, insightForestRange, new Date(), {
+      maxDays: insightForestRange === 0 ? 36 : insightForestRange,
+      perDayCap: 12
+    });
+    var node = document.getElementById('forest-period');
+    if (node && window.PomodoroForest) {
+      window.PomodoroForest.renderCollage(node, data);
+    }
+    var count = data.days.reduce(function (sum, day) { return sum + day.treeCount; }, 0);
+    var treeText = data.cappedTrees
+      ? '展示最近 ' + count + ' 棵 · 共 ' + data.totalTrees + ' 棵'
+      : '已种 ' + data.totalTrees + ' 棵';
+    setStat('forest-period-summary', treeText + ' · 专注 ' + (data.totalFocusSec === 0 ? '0 分钟' : M.fmtDuration(data.totalFocusSec)));
   }
 
   function setInsightForestRange(value) {

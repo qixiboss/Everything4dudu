@@ -21,6 +21,12 @@
     CHERRY: 'cherry',
     FRUIT: 'fruit'
   });
+  /* 每种树归属的主题地表：决定它长在哪种草地/雪地/沙地上。 */
+  var TREE_BIOMES = Object.freeze({
+    GRASS: 'grass',
+    SNOW: 'snow',
+    SAND: 'sand'
+  });
   var WEEKDAYS = Object.freeze(['一', '二', '三', '四', '五', '六', '日']);
   var MONTH_NAMES = Object.freeze(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']);
 
@@ -301,6 +307,12 @@
     return commons[value % commons.length];
   }
 
+  function treeBiomeFor(species) {
+    if (species === TREE_SPECIES.MAPLE || species === TREE_SPECIES.FRUIT) return TREE_BIOMES.SAND;
+    if (species === TREE_SPECIES.BLOSSOM || species === TREE_SPECIES.CAMELLIA || species === TREE_SPECIES.CHERRY) return TREE_BIOMES.SNOW;
+    return TREE_BIOMES.GRASS;
+  }
+
   function periodForest(log, days, now, cap) {
     var source = log && typeof log === 'object' ? log : {};
     var limit = Number.isInteger(cap) && cap > 0 ? cap : 120;
@@ -335,6 +347,7 @@
           tier: tier,
           species: treeSpeciesFor(tier, seed),
           variant: treeVariantFor(tier, seed),
+          biome: treeBiomeFor(treeSpeciesFor(tier, seed)),
           seed: seed
         });
         totalFocusSec += item.durationSec || 0;
@@ -354,6 +367,83 @@
     };
   }
 
+  /* 按天分组：洞察页把近 7/30/全部天数的森林拆成「每天一个地块」，
+   * 渲染层再把这些地块拼接成拼贴。每天独立限额，避免某一天树太多撑爆小地块。 */
+  function periodForestByDay(log, days, now, opts) {
+    var source = log && typeof log === 'object' ? log : {};
+    var reference = now || new Date();
+    var range = Number(days) || 0;
+    var options = opts || {};
+    var maxDays = Number.isInteger(options.maxDays) && options.maxDays > 0 ? options.maxDays : 36;
+    var perDayCap = Number.isInteger(options.perDayCap) && options.perDayCap > 0 ? options.perDayCap : 12;
+    var included = null;
+    if (range > 0) {
+      included = {};
+      for (var offset = 0; offset < range; offset += 1) {
+        var cursor = new Date(reference);
+        cursor.setHours(0, 0, 0, 0);
+        cursor.setDate(cursor.getDate() - offset);
+        included[dayKey(cursor)] = true;
+      }
+    }
+    var byDay = {};
+    Object.keys(source).sort().forEach(function (key) {
+      if (included && !included[key]) return;
+      var entry = source[key];
+      if (!entry || !Array.isArray(entry.pomodoros)) return;
+      if (!byDay[key]) byDay[key] = { trees: [], totalFocusSec: 0 };
+      entry.pomodoros.forEach(function (item) {
+        if (!item || item.mode !== MODES.FOCUS || item.completed !== true) return;
+        var id = String(item.id || key + ':' + item.startedAt);
+        var seed = seedOf(id + ':' + key + ':' + (item.durationSec || 0));
+        var tier = treeTierFor(item.durationSec);
+        var species = treeSpeciesFor(tier, seed);
+        byDay[key].trees.push({
+          id: id,
+          dateKey: key,
+          startedAt: Number.isFinite(item.startedAt) ? item.startedAt : 0,
+          durationSec: Number.isInteger(item.durationSec) && item.durationSec >= 0 ? item.durationSec : 0,
+          tier: tier,
+          species: species,
+          variant: treeVariantFor(tier, seed),
+          biome: treeBiomeFor(species),
+          seed: seed
+        });
+        byDay[key].totalFocusSec += item.durationSec || 0;
+      });
+    });
+    var dayKeys = Object.keys(byDay).sort();
+    var daysOut = [];
+    var totalTrees = 0;
+    var totalFocusSec = 0;
+    dayKeys.forEach(function (key) {
+      var bucket = byDay[key];
+      bucket.trees.sort(function (a, b) { return a.startedAt - b.startedAt; });
+      var total = bucket.trees.length;
+      var selected = total > perDayCap ? bucket.trees.slice(total - perDayCap) : bucket.trees.slice();
+      totalTrees += total;
+      totalFocusSec += bucket.totalFocusSec;
+      daysOut.push({
+        dateKey: key,
+        trees: selected,
+        treeCount: selected.length,
+        totalTrees: total,
+        totalFocusSec: bucket.totalFocusSec,
+        grassCount: bucket.totalFocusSec > 0 ? Math.min(10, 1 + Math.floor(bucket.totalFocusSec / 1200)) : 0,
+        flowerCount: bucket.totalFocusSec > 0 ? Math.min(8, Math.max(1, Math.floor(bucket.totalFocusSec / 1800))) : 0
+      });
+    });
+    /* 只保留最近 maxDays 天，让拼贴不至于过密。 */
+    var trimmed = daysOut.length > maxDays ? daysOut.slice(daysOut.length - maxDays) : daysOut.slice();
+    return {
+      days: trimmed,
+      totalTrees: totalTrees,
+      totalFocusSec: totalFocusSec,
+      cappedDays: daysOut.length > trimmed.length,
+      cappedTrees: trimmed.reduce(function (sum, day) { return sum + (day.totalTrees - day.treeCount); }, 0)
+    };
+  }
+
   function makeId(prefix) {
     return (prefix || 'p') + '-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e6).toString(36);
   }
@@ -363,6 +453,7 @@
     MODES: MODES,
     TREE_TIERS: TREE_TIERS,
     TREE_SPECIES: TREE_SPECIES,
+    TREE_BIOMES: TREE_BIOMES,
     WEEKDAYS: WEEKDAYS,
     MONTH_NAMES: MONTH_NAMES,
     defaultSettings: defaultSettings,
@@ -390,7 +481,9 @@
     treeTierFor: treeTierFor,
     treeVariantFor: treeVariantFor,
     treeSpeciesFor: treeSpeciesFor,
+    treeBiomeFor: treeBiomeFor,
     periodForest: periodForest,
+    periodForestByDay: periodForestByDay,
     makeId: makeId
   };
 })();

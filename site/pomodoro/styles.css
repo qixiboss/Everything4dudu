@@ -318,12 +318,9 @@ button{
   padding:6px;
 }
 .forest-svg{width:100%;height:auto;max-height:430px;display:block}
-.forest-grass{fill:#68C982}
-.forest-grass-rim{fill:none;stroke:rgba(255,255,255,.24);stroke-width:2;stroke-linejoin:round}
-.forest-soil-left{fill:#8A5D39}
-.forest-soil-right{fill:#70472C}
 .forest-shadow{fill:rgba(15,33,25,.22)}
 .forest-empty-text{fill:rgba(255,255,255,.74);font-size:22px;font-weight:700;font-family:var(--sans)}
+.forest-tile-label{fill:rgba(255,255,255,.6);font-size:15px;font-weight:700;font-family:var(--sans)}
 .forest-summary{font-size:13px;font-weight:600;color:var(--sub);text-align:center;margin-top:10px}
 .forest-range{
   margin-left:auto;display:inline-flex;gap:4px;
